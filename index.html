@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CA Final Study Tracker - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1><i class="fas fa-graduation-cap"></i> CA Final Study Tracker</h1>
+            <p>Track your progress, manage study materials, and ace your exams</p>
+        </div>
+        
+        <div class="auth-tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="login-form" class="auth-form active">
+            <h2>Welcome Back!</h2>
+            <div class="form-group">
+                <label for="login-email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="login-email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="login-password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password">
+                <span class="toggle-password" onclick="togglePassword('login-password')">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+            <button class="btn-primary" onclick="loginUser()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="#" onclick="switchTab('signup')">Sign up here</a></p>
+            </div>
+        </div>
+        
+        <!-- Signup Form -->
+        <div id="signup-form" class="auth-form">
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <label for="signup-name"><i class="fas fa-user"></i> Full Name</label>
+                <input type="text" id="signup-name" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label for="signup-email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="signup-email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="signup-password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="signup-password" placeholder="Create a password (min. 6 chars)">
+                <span class="toggle-password" onclick="togglePassword('signup-password')">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm your password">
+                <span class="toggle-password" onclick="togglePassword('confirm-password')">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+            <button class="btn-primary" onclick="signupUser()">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="#" onclick="switchTab('login')">Login here</a></p>
+            </div>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Please wait...</p>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="error-message"></div>
+        
+        <!-- Nice Connect Section -->
+        <div class="nice-connect-section">
+            <h3><i class="fas fa-handshake"></i> Nice Connect</h3>
+            <p>App Designed by Satyam Kumar</p>
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/in/satyam-kumar5286o" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://youtube.com/@__satyamkumar?si=DFCsdCFrJCIIJglR" target="_blank" title="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://www.instagram.com/satyqm2.o?igsh=bmQ0aThzamRmMHli" target="_blank" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://satqm.github.io/Portfolio-/" target="_blank" title="Portfolio">
+                    <i class="fas fa-briefcase"></i>
+                </a>
+                <a href="https://wa.me/919142300129" target="_blank" title="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+            <p class="contact-info"><i class="fas fa-phone"></i> WhatsApp: 9142300129</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="firebase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Initialize service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
+</body>
+</html>
