@@ -1,25 +1,121 @@
-/ Import Firebase modules
-import { 
-    auth, 
-    db, 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut,
-    doc,
-    setDoc
-} from './firebase-config.js';
+
+        // Import Firebase initialization
+import { initializeFirebase } from './firebase-init.js';
 
 // Global variables
-let currentUser = null;
-let studyData = [];
+let auth = null;
+let db = null;
+let firebaseModules = {};
+let isInitialized = false;
+
+// Initialize the app
+async function initApp() {
+    try {
+        console.log("Initializing Firebase app...");
+        
+        // Initialize Firebase
+        const services = await initializeFirebase();
+        auth = services.auth;
+        db = services.db;
+        
+        // Import required Firebase modules
+        const { 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut 
+        } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+        
+        const { 
+            doc,
+            setDoc,
+            getDoc,
+            updateDoc,
+            collection,
+            query,
+            where,
+            getDocs 
+        } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+        
+        // Store modules
+        firebaseModules = {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut,
+            doc,
+            setDoc,
+            getDoc,
+            updateDoc,
+            collection,
+            query,
+            where,
+            getDocs
+        };
+        
+        isInitialized = true;
+        console.log("Firebase app initialized successfully");
+        
+        // Set up auth state listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User logged in:", user.email);
+                // Redirect if on login page
+                if (window.location.pathname.includes('index.html') || 
+                    window.location.pathname.endsWith('/') ||
+                    window.location.pathname.includes('/CA-Final-Study-Tracker/')) {
+                    window.location.href = 'dashboard.html';
+                }
+            } else {
+                console.log("User not logged in");
+                // Redirect to login if not on login page
+                if (!window.location.pathname.includes('index.html') && 
+                    !window.location.pathname.endsWith('/') &&
+                    !window.location.pathname.includes('/CA-Final-Study-Tracker/')) {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.error("Failed to initialize app:", error);
+        showError("Failed to initialize application. Please check your internet connection and refresh.");
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initApp);
+
+// ========== UI FUNCTIONS ==========
+function showLoading() {
+    const loading = document.getElementById('loading');
+    if (loading) {
+        loading.style.display = 'block';
+    }
+}
+
+function hideLoading() {
+    const loading = document.getElementById('loading');
+    if (loading) loading.style.display = 'none';
+}
+
+function showError(message) {
+    const errorDiv = document.getElementById('error-message');
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+        }, 5000);
+    }
+    console.error(message);
+}
 
 // Initialize Study Data Function
 function initializeStudyData() {
     // Return the complete study data structure
     return [
-        // 
-        "Paper 1: FR", topic: "Introduction to GPFS", subtopic: "Schedule III Div II", weightage: "10-15%", priority: "B", estimatedTime: 2, completed: false, actualHours: 0 },
+        // "Paper 1: FR", topic: "Introduction to GPFS", subtopic: "Schedule III Div II", weightage: "10-15%", priority: "B", estimatedTime: 2, completed: false, actualHours: 0 },
         { subject: "Paper 1: FR", topic: "Introduction to GPFS", subtopic: "Applicability criteria", weightage: "10-15%", priority: "B", estimatedTime: 2, completed: false, actualHours: 0 },
         { subject: "Paper 1: FR", topic: "Conceptual Framework", subtopic: "Application to GPFS", weightage: "5-10%", priority: "A", estimatedTime: 6, completed: false, actualHours: 0 },
         { subject: "Paper 1: FR", topic: "Presentation of Items", subtopic: "Ind AS 1: Presentation", weightage: "5-10%", priority: "A", estimatedTime: 3, completed: false, actualHours: 0 },
@@ -115,10 +211,205 @@ function initializeStudyData() {
         { subject: "Paper 6: IBS", topic: "Multi-disciplinary Cases", subtopic: "FR + AFM + Audit + DT + IDT", weightage: "100%", priority: "A", estimatedTime: 60, completed: false, actualHours: 0 },
     ];
 }
- 
 
-// Tab Switching Function
-function switchTab(tab) {
+
+
+// ========== AUTH FUNCTIONS ==========
+async function signupUser() {
+    if (!isInitialized) {
+        showError("Application is initializing. Please wait a moment...");
+        return;
+    }
+    
+    const name = document.getElementById('signup-name')?.value.trim();
+    const email = document.getElementById('signup-email')?.value.trim();
+    const password = document.getElementById('signup-password')?.value;
+    const confirmPassword = document.getElementById('confirm-password')?.value;
+    
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
+        showError('Please fill all fields');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showError('Passwords do not match');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showError('Password must be at least 6 characters');
+        return;
+    }
+    
+    if (!email.includes('@')) {
+        showError('Please enter a valid email address');
+        return;
+    }
+    
+    try {
+        showLoading();
+        
+        // Create user account
+        const userCredential = await firebaseModules.createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log('User created:', user.uid);
+        
+        // Save user data to Firestore
+        await firebaseModules.setDoc(firebaseModules.doc(db, "users", user.uid), {
+            name: name,
+            email: email,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            progress: initializeStudyData(),
+            videos: [],
+            notes: []
+        });
+        
+        console.log('User data saved to Firestore');
+        
+        // Show success message
+        showError('Account created successfully! Redirecting...');
+        
+        // Wait a moment then redirect
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Signup error:', error);
+        
+        let errorMessage = 'Signup failed. ';
+        switch(error.code) {
+            case 'auth/email-already-in-use':
+                errorMessage = 'Email already exists. Please login instead.';
+                break;
+            case 'auth/invalid-email':
+                errorMessage = 'Invalid email address format.';
+                break;
+            case 'auth/weak-password':
+                errorMessage = 'Password is too weak. Use at least 6 characters.';
+                break;
+            case 'auth/operation-not-allowed':
+                errorMessage = 'Email/password accounts are not enabled. Contact support.';
+                break;
+            case 'auth/network-request-failed':
+                errorMessage = 'Network error. Please check your internet connection.';
+                break;
+            default:
+                errorMessage = error.message || 'An unknown error occurred.';
+        }
+        
+        showError(errorMessage);
+    }
+}
+
+async function loginUser() {
+    if (!isInitialized) {
+        showError("Application is initializing. Please wait a moment...");
+        return;
+    }
+    
+    const email = document.getElementById('login-email')?.value.trim();
+    const password = document.getElementById('login-password')?.value;
+    
+    if (!email || !password) {
+        showError('Please fill all fields');
+        return;
+    }
+    
+    try {
+        showLoading();
+        
+        await firebaseModules.signInWithEmailAndPassword(auth, email, password);
+        
+        // Login successful - redirect will happen via auth state listener
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Login error:', error);
+        
+        let errorMessage = 'Login failed. ';
+        switch(error.code) {
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+                errorMessage = 'Invalid email or password.';
+                break;
+            case 'auth/user-disabled':
+                errorMessage = 'This account has been disabled.';
+                break;
+            case 'auth/too-many-requests':
+                errorMessage = 'Too many failed attempts. Try again later.';
+                break;
+            case 'auth/network-request-failed':
+                errorMessage = 'Network error. Check your internet connection.';
+                break;
+            default:
+                errorMessage = error.message || 'An error occurred.';
+        }
+        
+        showError(errorMessage);
+    }
+}
+
+async function logout() {
+    try {
+        await firebaseModules.signOut(auth);
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+        showError(error.message);
+    }
+}
+
+// ========== DATA FUNCTIONS ==========
+async function loadUserStudyData(userId) {
+    try {
+        const userDoc = await firebaseModules.getDoc(firebaseModules.doc(db, 'users', userId));
+        if (userDoc.exists()) {
+            return userDoc.data().progress || initializeStudyData();
+        } else {
+            return initializeStudyData();
+        }
+    } catch (error) {
+        console.error('Error loading study data:', error);
+        return initializeStudyData();
+    }
+}
+
+async function updateStudyProgress(userId, updatedData) {
+    try {
+        await firebaseModules.updateDoc(firebaseModules.doc(db, 'users', userId), {
+            progress: updatedData,
+            updatedAt: new Date().toISOString()
+        });
+        return true;
+    } catch (error) {
+        console.error('Error updating progress:', error);
+        return false;
+    }
+}
+
+function getStudyStatistics(studyData) {
+    const totalTopics = studyData.length;
+    const completedTopics = studyData.filter(item => item.completed).length;
+    const totalEstimatedHours = studyData.reduce((sum, item) => sum + item.estimatedTime, 0);
+    const totalActualHours = studyData.reduce((sum, item) => sum + item.actualHours, 0);
+    const progressPercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+    
+    return {
+        totalTopics,
+        completedTopics,
+        totalEstimatedHours,
+        totalActualHours,
+        progressPercentage,
+        remainingHours: totalEstimatedHours - totalActualHours
+    };
+}
+
+// ========== EXPORT FUNCTIONS TO GLOBAL SCOPE ==========
+window.switchTab = function(tab) {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const loginTab = document.getElementById('login-tab');
@@ -135,10 +426,9 @@ function switchTab(tab) {
         if (loginTab) loginTab.classList.remove('active');
         if (signupTab) signupTab.classList.add('active');
     }
-}
+};
 
-// Toggle Password Visibility
-function togglePassword(inputId) {
+window.togglePassword = function(inputId) {
     const input = document.getElementById(inputId);
     if (!input) return;
     
@@ -154,182 +444,27 @@ function togglePassword(inputId) {
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
     }
-}
+};
 
-// Show Loading
-function showLoading() {
-    const loading = document.getElementById('loading');
-    if (loading) loading.style.display = 'block';
-}
-
-// Hide Loading
-function hideLoading() {
-    const loading = document.getElementById('loading');
-    if (loading) loading.style.display = 'none';
-}
-
-// Show Error
-function showError(message) {
-    const errorDiv = document.getElementById('error-message');
-    if (errorDiv) {
-        errorDiv.textContent = message;
-        errorDiv.style.display = 'block';
-        setTimeout(() => {
-            errorDiv.style.display = 'none';
-        }, 5000);
-    }
-    console.error(message);
-}
-
-// Signup Function - FIXED
-async function signupUser() {
-    const name = document.getElementById('signup-name')?.value;
-    const email = document.getElementById('signup-email')?.value;
-    const password = document.getElementById('signup-password')?.value;
-    const confirmPassword = document.getElementById('confirm-password')?.value;
-    
-    console.log('Signup attempt:', { name, email, password, confirmPassword });
-    
-    if (!name || !email || !password || !confirmPassword) {
-        showError('Please fill all fields');
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        showError('Passwords do not match');
-        return;
-    }
-    
-    if (password.length < 6) {
-        showError('Password must be at least 6 characters');
-        return;
-    }
-    
-    try {
-        showLoading();
-        console.log('Creating user...');
-        
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        
-        console.log('User created:', user.uid);
-        
-        // Create user document in Firestore
-        await setDoc(doc(db, 'users', user.uid), {
-            name: name,
-            email: email,
-            createdAt: new Date().toISOString(),
-            progress: initializeStudyData(),
-            videos: [],
-            notes: []
-        });
-        
-        console.log('User data saved to Firestore');
-        
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
-        
-    } catch (error) {
-        hideLoading();
-        console.error('Signup error:', error);
-        
-        let errorMessage = 'Signup failed. ';
-        if (error.code === 'auth/email-already-in-use') {
-            errorMessage += 'Email already exists.';
-        } else if (error.code === 'auth/invalid-email') {
-            errorMessage += 'Invalid email address.';
-        } else if (error.code === 'auth/weak-password') {
-            errorMessage += 'Password is too weak.';
-        } else {
-            errorMessage += error.message;
-        }
-        
-        showError(errorMessage);
-    }
-}
-
-// Login Function
-async function loginUser() {
-    const email = document.getElementById('login-email')?.value;
-    const password = document.getElementById('login-password')?.value;
-    
-    console.log('Login attempt:', { email, password });
-    
-    if (!email || !password) {
-        showError('Please fill all fields');
-        return;
-    }
-    
-    try {
-        showLoading();
-        console.log('Logging in...');
-        
-        await signInWithEmailAndPassword(auth, email, password);
-        console.log('Login successful');
-        
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
-        
-    } catch (error) {
-        hideLoading();
-        console.error('Login error:', error);
-        
-        let errorMessage = 'Login failed. ';
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-            errorMessage += 'Invalid email or password.';
-        } else if (error.code === 'auth/too-many-requests') {
-            errorMessage += 'Too many attempts. Try again later.';
-        } else {
-            errorMessage += error.message;
-        }
-        
-        showError(errorMessage);
-    }
-}
-
-// Logout Function
-async function logout() {
-    try {
-        console.log('Logging out...');
-        await signOut(auth);
-        window.location.href = 'index.html';
-    } catch (error) {
-        console.error('Logout error:', error);
-        showError(error.message);
-    }
-}
-
-// Check Auth State
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUser = user;
-        console.log('User logged in:', user.email);
-        
-        // If on login page, redirect to dashboard
-        if (window.location.pathname.includes('index.html') || 
-            window.location.pathname.endsWith('/')) {
-            window.location.href = 'dashboard.html';
-        }
-    } else {
-        currentUser = null;
-        console.log('User not logged in');
-        
-        // If not on login page, redirect to login
-        if (!window.location.pathname.includes('index.html') && 
-            !window.location.pathname.endsWith('/')) {
-            window.location.href = 'index.html';
-        }
-    }
-});
-
-// Export functions to global scope
-window.switchTab = switchTab;
-window.togglePassword = togglePassword;
 window.signupUser = signupUser;
 window.loginUser = loginUser;
 window.logout = logout;
 window.showLoading = showLoading;
 window.hideLoading = hideLoading;
 window.showError = showError;
+window.getStudyStatistics = getStudyStatistics;
+window.loadUserStudyData = loadUserStudyData;
+window.updateStudyProgress = updateStudyProgress;
 
-
+// ========== SERVICE WORKER REGISTRATION ==========
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(registration => {
+                console.log('ServiceWorker registered:', registration);
+            })
+            .catch(error => {
+                console.log('ServiceWorker registration failed:', error);
+            });
+    });
+}
