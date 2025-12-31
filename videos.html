@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CA Final Videos - Study Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>CA Final Study Videos</h1>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+            <a href="videos.html" class="active"><i class="fas fa-video"></i> Videos</a>
+            <a href="notes.html"><i class="fas fa-file-alt"></i> Notes</a>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="section-header">
+            <h2><i class="fas fa-video"></i> Video Resources</h2>
+            <button class="btn-primary" onclick="showVideoForm()">
+                <i class="fas fa-plus"></i> Add Video
+            </button>
+        </div>
+
+        <!-- Video Form Modal -->
+        <div id="video-form-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Video Resource</h3>
+                    <button class="close-modal" onclick="closeVideoForm()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="video-subject">Subject</label>
+                        <select id="video-subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="Paper 1: FR">Paper 1: FR</option>
+                            <option value="Paper 2: AFM">Paper 2: AFM</option>
+                            <option value="Paper 3: Audit">Paper 3: Audit</option>
+                            <option value="Paper 4: DT">Paper 4: DT</option>
+                            <option value="Paper 5: IDT">Paper 5: IDT</option>
+                            <option value="Paper 6: IBS">Paper 6: IBS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-topic">Topic</label>
+                        <input type="text" id="video-topic" placeholder="Enter topic name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-title">Video Title</label>
+                        <input type="text" id="video-title" placeholder="Enter video title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-url">Video URL</label>
+                        <input type="url" id="video-url" placeholder="https://youtube.com/..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-type">Type</label>
+                        <select id="video-type">
+                            <option value="youtube">YouTube</option>
+                            <option value="playlist">Playlist</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-duration">Duration (minutes)</label>
+                        <input type="number" id="video-duration" min="1" placeholder="Duration in minutes">
+                    </div>
+                    <div class="form-group">
+                        <label for="video-notes">Notes</label>
+                        <textarea id="video-notes" placeholder="Add any notes about this video..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeVideoForm()">Cancel</button>
+                    <button class="btn-primary" onclick="saveVideo()">Save Video</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Filters -->
+        <div class="filter-section">
+            <select id="filter-video-subject" onchange="filterVideos()">
+                <option value="all">All Subjects</option>
+                <option value="Paper 1: FR">Paper 1: FR</option>
+                <option value="Paper 2: AFM">Paper 2: AFM</option>
+                <option value="Paper 3: Audit">Paper 3: Audit</option>
+                <option value="Paper 4: DT">Paper 4: DT</option>
+                <option value="Paper 5: IDT">Paper 5: IDT</option>
+                <option value="Paper 6: IBS">Paper 6: IBS</option>
+            </select>
+            <input type="text" id="search-video" placeholder="Search videos..." onkeyup="filterVideos()">
+        </div>
+
+        <!-- Videos Grid -->
+        <div class="videos-grid" id="videos-container">
+            <!-- Videos will be loaded here -->
+        </div>
+    </div>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script src="app.js"></script>
+    <script src="videos.js"></script>
+</body>
+</html>
