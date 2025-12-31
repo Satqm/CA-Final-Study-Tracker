@@ -241,3 +241,54 @@
     </script>
 </body>
 </html>
+<script>
+    // Debug helper - check if functions are available
+    console.log('Global functions available:');
+    console.log('- switchTab:', typeof window.switchTab);
+    console.log('- signupUser:', typeof window.signupUser);
+    console.log('- loginUser:', typeof window.loginUser);
+    
+    // Fallback functions if module doesn't load
+    if (typeof window.signupUser === 'undefined') {
+        console.warn('signupUser not loaded, creating fallback');
+        
+        window.signupUser = function() {
+            alert('App is still loading. Please wait a moment and try again.');
+            console.error('signupUser function not properly loaded');
+        };
+    }
+    
+    if (typeof window.loginUser === 'undefined') {
+        console.warn('loginUser not loaded, creating fallback');
+        
+        window.loginUser = function() {
+            alert('App is still loading. Please wait a moment and try again.');
+            console.error('loginUser function not properly loaded');
+        };
+    }
+    
+    // Add click event listeners as backup
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add click handlers to buttons as backup
+        const signupBtn = document.querySelector('.btn-primary[onclick*="signupUser"]');
+        const loginBtn = document.querySelector('.btn-primary[onclick*="loginUser"]');
+        
+        if (signupBtn) {
+            signupBtn.addEventListener('click', function(e) {
+                if (typeof window.signupUser !== 'function') {
+                    e.preventDefault();
+                    alert('Please refresh the page. App not loaded properly.');
+                }
+            });
+        }
+        
+        if (loginBtn) {
+            loginBtn.addEventListener('click', function(e) {
+                if (typeof window.loginUser !== 'function') {
+                    e.preventDefault();
+                    alert('Please refresh the page. App not loaded properly.');
+                }
+            });
+        }
+    });
+</script>
