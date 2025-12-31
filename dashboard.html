@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CA Final Dashboard - Study Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>CA Final Study Tracker</h1>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a>
+            <a href="videos.html"><i class="fas fa-video"></i> Videos</a>
+            <a href="notes.html"><i class="fas fa-file-alt"></i> Notes</a>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <div class="container">
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="user-greeting">
+                <h2>Welcome, <span id="user-name">User</span>!</h2>
+                <p>Track your CA Final preparation progress</p>
+            </div>
+            <div class="user-stats">
+                <div class="stat-card">
+                    <i class="fas fa-book"></i>
+                    <div>
+                        <h3 id="total-topics">0</h3>
+                        <p>Total Topics</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <h3 id="completed-topics">0</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <h3 id="total-hours">0</h3>
+                        <p>Study Hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="dashboard-section">
+            <h2><i class="fas fa-chart-line"></i> Progress Overview</h2>
+            <div class="progress-cards">
+                <div class="progress-card">
+                    <h3>Overall Progress</h3>
+                    <div class="chart-container">
+                        <canvas id="overallProgressChart"></canvas>
+                    </div>
+                    <div class="progress-info">
+                        <span id="overall-percentage">0%</span>
+                        <p>Course Completion</p>
+                    </div>
+                </div>
+                <div class="progress-card">
+                    <h3>Subject-wise Progress</h3>
+                    <div class="subject-selector">
+                        <select id="subject-select" onchange="updateSubjectProgress()">
+                            <option value="all">All Subjects</option>
+                            <option value="Paper 1: FR">Paper 1: FR</option>
+                            <option value="Paper 2: AFM">Paper 2: AFM</option>
+                            <option value="Paper 3: Audit">Paper 3: Audit</option>
+                            <option value="Paper 4: DT">Paper 4: DT</option>
+                            <option value="Paper 5: IDT">Paper 5: IDT</option>
+                            <option value="Paper 6: IBS">Paper 6: IBS</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="subjectProgressChart"></canvas>
+                    </div>
+                    <div class="progress-info">
+                        <span id="subject-percentage">0%</span>
+                        <p id="subject-label">Subject Completion</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Section -->
+        <div class="dashboard-section">
+            <h2><i class="fas fa-tachometer-alt"></i> Key Performance Indicators</h2>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <i class="fas fa-hourglass-half"></i>
+                        <h3>Time Management</h3>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-item">
+                            <span>Planned Hours</span>
+                            <strong id="planned-hours">680</strong>
+                        </div>
+                        <div class="kpi-item">
+                            <span>Actual Hours</span>
+                            <strong id="actual-hours">0</strong>
+                        </div>
+                        <div class="kpi-item">
+                            <span>Hours Remaining</span>
+                            <strong id="hours-remaining">680</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Weightage Coverage</h3>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-item">
+                            <span>High Priority (A)</span>
+                            <strong id="priority-a">0%</strong>
+                        </div>
+                        <div class="kpi-item">
+                            <span>Medium Priority (B)</span>
+                            <strong id="priority-b">0%</strong>
+                        </div>
+                        <div class="kpi-item">
+                            <span>Low Priority (C)</span>
+                            <strong id="priority-c">0%</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Study Timeline</h3>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-item">
+                            <span>Days to Exam</span>
+                            <strong id="days-to-exam">180</strong>
+                        </div>
+                        <div class="kpi-item">
+                            <span>Daily Target (hrs)</span>
+                            <strong id="daily-target">3.8</strong>
+                        </div>
+                        <div class="kpi-item">
+                            <span>Current Pace</span>
+                            <strong id="current-pace">0 hrs/day</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Tracker Table -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-table"></i> Study Tracker</h2>
+                <div class="table-controls">
+                    <select id="filter-subject" onchange="filterTable()">
+                        <option value="all">All Subjects</option>
+                        <option value="Paper 1: FR">Paper 1: FR</option>
+                        <option value="Paper 2: AFM">Paper 2: AFM</option>
+                        <option value="Paper 3: Audit">Paper 3: Audit</option>
+                        <option value="Paper 4: DT">Paper 4: DT</option>
+                        <option value="Paper 5: IDT">Paper 5: IDT</option>
+                        <option value="Paper 6: IBS">Paper 6: IBS</option>
+                    </select>
+                    <select id="filter-status" onchange="filterTable()">
+                        <option value="all">All Status</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <input type="text" id="search-topic" placeholder="Search topics..." onkeyup="filterTable()">
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="study-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Topic</th>
+                            <th>Subtopic</th>
+                            <th>Weightage</th>
+                            <th>Priority</th>
+                            <th>Est. Time (hrs)</th>
+                            <th>Actual Hours</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-summary">
+                <p>Showing <span id="visible-rows">0</span> of <span id="total-rows">0</span> topics</p>
+                <button class="btn-secondary" onclick="exportData()">
+                    <i class="fas fa-download"></i> Export Progress
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="dashboard-section">
+            <h2><i class="fas fa-history"></i> Recent Activity</h2>
+            <div class="activity-list" id="activity-list">
+                <!-- Activity items will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for updating progress -->
+    <div id="progress-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Study Progress</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="modal-subject">Subject</label>
+                    <input type="text" id="modal-subject" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="modal-topic">Topic</label>
+                    <input type="text" id="modal-topic" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="modal-subtopic">Subtopic</label>
+                    <input type="text" id="modal-subtopic" readonly>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modal-actual-hours">Actual Hours Spent</label>
+                        <input type="number" id="modal-actual-hours" min="0" step="0.5" placeholder="Enter hours">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-status">Completion Status</label>
+                        <select id="modal-status">
+                            <option value="pending">Pending</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="modal-notes">Notes (Optional)</label>
+                    <textarea id="modal-notes" placeholder="Add any notes about this topic..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveProgress()">Save Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
