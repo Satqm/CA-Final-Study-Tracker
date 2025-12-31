@@ -5,10 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CA Final Study Tracker - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    
+    <!-- Security: Restrict Firebase API key usage -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com;
+        script-src 'self' 'unsafe-inline' https://*.gstatic.com https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebaseapp.com;
+    ">
+    
     <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --gray-color: #6c757d;
+        }
+        
         .auth-tabs {
             display: flex;
             margin-bottom: 1.5rem;
@@ -56,10 +71,46 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        /* App loading overlay */
+        #app-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="auth-container">
+    <!-- Loading overlay -->
+    <div id="app-loader">
+        <div class="spinner"></div>
+        <p style="color: var(--gray-color);">Loading CA Final Study Tracker...</p>
+    </div>
+
+    <div class="auth-container" style="display: none;">
         <div class="auth-header">
             <h1><i class="fas fa-graduation-cap"></i> CA Final Study Tracker</h1>
             <p>Track your progress, manage study materials, and ace your exams</p>
@@ -159,136 +210,31 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module" src="firebase-config.js"></script>
-    <script src="app.js"></script>
+    <!-- Firebase initialization -->
+    <script type="module" src="./firebase-config-public.js"></script>
+    <script type="module" src="./firebase-init.js"></script>
+    <script type="module" src="./app.js"></script>
+    
+    <!-- Hide loader and show app when ready -->
     <script>
-        // Tab Switching Function
-        function switchTab(tab) {
-            console.log('Switching to tab:', tab);
-            
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const loginTab = document.getElementById('login-tab');
-            const signupTab = document.getElementById('signup-tab');
-            
-            if (tab === 'login') {
-                loginForm.classList.add('active');
-                signupForm.classList.remove('active');
-                loginTab.classList.add('active');
-                signupTab.classList.remove('active');
-            } else {
-                loginForm.classList.remove('active');
-                signupForm.classList.add('active');
-                loginTab.classList.remove('active');
-                signupTab.classList.add('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loader after 2 seconds or when app is ready
+            setTimeout(function() {
+                const loader = document.getElementById('app-loader');
+                const container = document.querySelector('.auth-container');
+                if (loader) loader.style.display = 'none';
+                if (container) container.style.display = 'block';
+            }, 2000);
+        });
+        
+        // Fallback in case Firebase fails to load
+        window.addEventListener('error', function(e) {
+            if (e.target.src && e.target.src.includes('firebase')) {
+                console.error('Firebase failed to load:', e);
+                document.getElementById('app-loader').innerHTML = 
+                    '<h3>Firebase Error</h3><p>Failed to load Firebase services. Please check your internet connection and refresh.</p>';
             }
-        }
-        
-        // Toggle Password Visibility
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            const icon = input.nextElementSibling.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-        
-        // Show Loading
-        function showLoading() {
-            const loading = document.getElementById('loading');
-            if (loading) loading.style.display = 'block';
-        }
-        
-        // Hide Loading
-        function hideLoading() {
-            const loading = document.getElementById('loading');
-            if (loading) loading.style.display = 'none';
-        }
-        
-        // Show Error
-        function showError(message) {
-            const errorDiv = document.getElementById('error-message');
-            if (errorDiv) {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                }, 5000);
-            }
-            console.error(message);
-        }
-        
-        // Initialize service worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
+        });
     </script>
 </body>
-</html>
-<script>
-    // Debug helper - check if functions are available
-    console.log('Global functions available:');
-    console.log('- switchTab:', typeof window.switchTab);
-    console.log('- signupUser:', typeof window.signupUser);
-    console.log('- loginUser:', typeof window.loginUser);
-    
-    // Fallback functions if module doesn't load
-    if (typeof window.signupUser === 'undefined') {
-        console.warn('signupUser not loaded, creating fallback');
-        
-        window.signupUser = function() {
-            alert('App is still loading. Please wait a moment and try again.');
-            console.error('signupUser function not properly loaded');
-        };
-    }
-    
-    if (typeof window.loginUser === 'undefined') {
-        console.warn('loginUser not loaded, creating fallback');
-        
-        window.loginUser = function() {
-            alert('App is still loading. Please wait a moment and try again.');
-            console.error('loginUser function not properly loaded');
-        };
-    }
-    
-    // Add click event listeners as backup
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add click handlers to buttons as backup
-        const signupBtn = document.querySelector('.btn-primary[onclick*="signupUser"]');
-        const loginBtn = document.querySelector('.btn-primary[onclick*="loginUser"]');
-        
-        if (signupBtn) {
-            signupBtn.addEventListener('click', function(e) {
-                if (typeof window.signupUser !== 'function') {
-                    e.preventDefault();
-                    alert('Please refresh the page. App not loaded properly.');
-                }
-            });
-        }
-        
-        if (loginBtn) {
-            loginBtn.addEventListener('click', function(e) {
-                if (typeof window.loginUser !== 'function') {
-                    e.preventDefault();
-                    alert('Please refresh the page. App not loaded properly.');
-                }
-            });
-        }
-    });
-</script>
+                    </html>
