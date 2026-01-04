@@ -694,14 +694,34 @@
         // UTILITY FUNCTIONS
         // ====================
         function copyToClipboard() {
-            const textToCopy = licenseKeyDisplay.textContent;
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast('License key copied to clipboard!', 'success');
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-                showToast('Failed to copy to clipboard', 'error');
-            });
+    // Get the first line only (the actual license key)
+    const lines = licenseKeyDisplay.textContent.split('\n');
+    const generatedKey = lines[0];
+    
+    // Check if it's the placeholder text
+    if (generatedKey.includes('Your generated license key')) {
+        showToast('No license key to copy. Generate one first.', 'error');
+        return;
+    }
+    
+    navigator.clipboard.writeText(generatedKey).then(() => {
+        showToast('License key copied to clipboard!', 'success');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        
+        // Fallback method
+        const textArea = document.createElement('textarea');
+        textArea.value = generatedKey;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast('License key copied to clipboard!', 'success');
+        } catch (err2) {
+            showToast('Failed to copy to clipboard', 'error');
+        }
+        document.body.removeChild(textArea);
+    });
         }
         
         function testLicenseKey() {
