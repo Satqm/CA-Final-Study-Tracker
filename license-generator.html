@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CA Final Pro Tracker - License Key Generator (Revised)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 32px;
+            background: linear-gradient(90deg, #2c3e50, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .compatibility-banner {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+        }
+        
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .form-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+        
+        .form-section h3 i {
+            color: #3498db;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+        }
+        
+        .generated-key {
+            margin-top: 30px;
+        }
+        
+        .key-display {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin-bottom: 20px;
+            border: 2px solid #3498db;
+            max-height: 200px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+        
+        .json-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            line-height: 1.4;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #3498db;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(243, 156, 18, 0.3);
+        }
+        
+        .predefined-keys {
+            margin-top: 40px;
+        }
+        
+        .predefined-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .predefined-key {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .predefined-key:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+        
+        .predefined-key h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .predefined-key p {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 18px 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 5px solid #2ecc71;
+            max-width: 400px;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast i {
+            font-size: 24px;
+            color: #2ecc71;
+        }
+        
+        .toast.error i {
+            color: #e74c3c;
+        }
+        
+        .toast.error {
+            border-left-color: #e74c3c;
+        }
+        
+        .toast.warning i {
+            color: #f39c12;
+        }
+        
+        .toast.warning {
+            border-left-color: #f39c12;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .info-box {
+            background: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 18px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+        }
+        
+        .info-box h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .info-box p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .encryption-info {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f9f5ff;
+            border-radius: 12px;
+            border: 2px solid #e9d8fd;
+        }
+        
+        .encryption-info h4 {
+            color: #6b46c1;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .encryption-steps {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .step-number {
+            background: #6b46c1;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .badge-success {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .badge-warning {
+            background: rgba(243, 156, 18, 0.1);
+            color: #d35400;
+        }
+        
+        .badge-danger {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+        }
+        
+        .tab-container {
+            margin-bottom: 25px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .test-results.active {
+            display: block;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .result-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .result-value {
+            font-weight: 600;
+            color: #27ae60;
+        }
+        
+        .result-value.invalid {
+            color: #e74c3c;
+        }
+        
+        .result-value.expired {
+            color: #f39c12;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-btn {
+            padding: 8px 16px;
+            background: #edf2f7;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quick-btn:hover {
+            background: #e2e8f0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-key"></i> CA Final Pro Tracker License Generator</h1>
+            <p>Professional License Key Generator • Compatible with App Version 4.0+</p>
+        </div>
+        
+        <div class="compatibility-banner">
+            <i class="fas fa-check-circle"></i>
+            <div>
+                <strong>FIXED:</strong> Encryption/Decryption issue resolved. Keys now work with main application.
+            </div>
+        </div>
+        
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab active" data-tab="generate">Generate License</button>
+                <button class="tab" data-tab="test">Test & Validate</button>
+                <button class="tab" data-tab="batch">Batch Generation</button>
+            </div>
+            
+            <!-- Generate Tab -->
+            <div class="tab-content active" id="generate-tab">
+                <div class="info-box">
+                    <h4><i class="fas fa-info-circle"></i> Important Update</h4>
+                    <p>This generator now uses <strong>single-layer encryption</strong> to match the main application's decryption logic. All generated keys will work with the CA Final Pro Tracker app.</p>
+                </div>
+                
+                <div class="form-container">
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Customer Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="customerName">Customer Name *</label>
+                            <input type="text" id="customerName" placeholder="Enter customer name" value="Premium User">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="licenseType">License Type *</label>
+                            <select id="licenseType">
+                                <option value="premium">Premium (1 Year)</option>
+                                <option value="lifetime">Lifetime</option>
+                                <option value="trial">Trial (7 Days)</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date *</label>
+                            <input type="date" id="expiryDate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="maxDevices">Maximum Devices</label>
+                            <select id="maxDevices">
+                                <option value="1">1 Device</option>
+                                <option value="2">2 Devices</option>
+                                <option value="3" selected>3 Devices</option>
+                                <option value="5">5 Devices</option>
+                                <option value="unlimited">Unlimited</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3><i class="fas fa-lock"></i> Security Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="deviceId">Device ID (Optional)</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="deviceId" placeholder="Leave empty for multi-device" style="flex: 1;">
+                                <button type="button" id="generateDeviceIdBtn" class="quick-btn">
+                                    <i class="fas fa-random"></i>
+                                </button>
+                            </div>
+                            <small style="color: #7f8c8d; display: block; margin-top: 5px;">If provided, license will only work on this specific device</small>
+                        </div>
+                        
+                        <div class="encryption-info">
+                            <h4><i class="fas fa-shield-alt"></i> Encryption Method</h4>
+                            <p><strong>Single-layer AES-256 Encryption</strong></p>
+                            <div class="encryption-steps">
+                                <div class="step">
+                                    <div class="step-number">1</div>
+                                    <span>License Data (JSON)</span>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">2</div>
+                                    <span>AES-256 Encryption with Master Key</span>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">3</div>
+                                    <span>Base64 Encoded License Key</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="includeDemoKey" checked>
+                            <label for="includeDemoKey">Include demo license key in output</label>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="includeInstructions" checked>
+                            <label for="includeInstructions">Include activation instructions</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="generated-key">
+                    <h3><i class="fas fa-key"></i> Generated License Key</h3>
+                    <div class="key-display" id="licenseKeyDisplay">
+                        Your generated license key will appear here...
+                    </div>
+                    
+                    <h4 style="margin-top: 20px; color: #2c3e50;">Raw License Data (JSON):</h4>
+                    <div class="json-display" id="jsonDisplay">
+                        License data will appear here...
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="generateBtn">
+                        <i class="fas fa-bolt"></i> Generate License Key
+                    </button>
+                    <button class="btn btn-secondary" id="copyBtn" disabled>
+                        <i class="fas fa-copy"></i> Copy Key
+                    </button>
+                    <button class="btn btn-success" id="testGeneratedBtn">
+                        <i class="fas fa-check"></i> Test This Key
+                    </button>
+                    <button class="btn btn-warning" id="saveBtn" disabled>
+                        <i class="fas fa-save"></i> Save as File
+                    </button>
+                </div>
+                
+                <div class="predefined-keys">
+                    <h3><i class="fas fa-star"></i> Quick Templates</h3>
+                    <div class="predefined-grid">
+                        <div class="predefined-key" data-template="premium">
+                            <h4>Premium 1-Year</h4>
+                            <p>Full Features • 1 Year</p>
+                            <span class="badge badge-success">Most Popular</span>
+                        </div>
+                        <div class="predefined-key" data-template="lifetime">
+                            <h4>Lifetime License</h4>
+                            <p>No Expiry • All Updates</p>
+                        </div>
+                        <div class="predefined-key" data-template="trial">
+                            <h4>7-Day Trial</h4>
+                            <p>Demo • All Features</p>
+                            <span class="badge badge-warning">Trial</span>
+                        </div>
+                        <div class="predefined-key" data-template="demo">
+                            <h4>Demo License</h4>
+                            <p>Fixed Key • Testing Only</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test Tab -->
+            <div class="tab-content" id="test-tab">
+                <div class="info-box">
+                    <h4><i class="fas fa-vial"></i> License Testing</h4>
+                    <p>Test any license key to verify it works with the main application. This tool simulates the exact validation logic used in the CA Final Pro Tracker app.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="testLicenseKey">License Key to Test</label>
+                    <textarea id="testLicenseKey" rows="4" placeholder="Paste license key here..."></textarea>
+                    <div class="quick-actions">
+                        <button class="quick-btn" id="pasteFromClipboard">
+                            <i class="fas fa-paste"></i> Paste from Clipboard
+                        </button>
+                        <button class="quick-btn" id="loadDemoKey">
+                            <i class="fas fa-play-circle"></i> Load Demo Key
+                        </button>
+                        <button class="quick-btn" id="clearTestKey">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" id="testLicenseBtn" style="width: 100%; margin-top: 15px;">
+                    <i class="fas fa-search"></i> Test License Key
+                </button>
+                
+                <div class="test-results" id="testResults">
+                    <h4><i class="fas fa-clipboard-check"></i> Test Results</h4>
+                    <div id="testResultsContent">
+                        <!-- Results will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Batch Tab -->
+            <div class="tab-content" id="batch-tab">
+                <div class="info-box">
+                    <h4><i class="fas fa-copy"></i> Batch Generation</h4>
+                    <p>Generate multiple license keys at once. Useful for bulk distribution or testing.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="batchCount">Number of Keys to Generate</label>
+                    <input type="number" id="batchCount" min="1" max="100" value="5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="batchPrefix">Customer Name Prefix</label>
+                    <input type="text" id="batchPrefix" value="Customer">
+                </div>
+                
+                <div class="form-group">
+                    <label>License Type</label>
+                    <select id="batchLicenseType">
+                        <option value="premium">Premium (1 Year)</option>
+                        <option value="yearly">Yearly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="trial">Trial (7 Days)</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" id="generateBatchBtn">
+                    <i class="fas fa-layer-group"></i> Generate Batch
+                </button>
+                
+                <div class="generated-key" id="batchResults" style="display: none; margin-top: 30px;">
+                    <h3><i class="fas fa-list-alt"></i> Generated Batch Keys</h3>
+                    <div class="key-display" id="batchKeyDisplay">
+                        Batch results will appear here...
+                    </div>
+                    
+                    <div class="button-group" style="margin-top: 20px;">
+                        <button class="btn btn-secondary" id="copyBatchBtn">
+                            <i class="fas fa-copy"></i> Copy All
+                        </button>
+                        <button class="btn btn-warning" id="downloadBatchBtn">
+                            <i class="fas fa-download"></i> Download CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 CA Final Pro Tracker • Developed by Satyam Kumar</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                <i class="fas fa-shield-alt"></i> Single-layer AES-256 encryption • Compatible with App v4.0+
+            </p>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <h4 id="toast-title">Success!</h4>
+            <p id="toast-message">Operation completed successfully.</p>
+        </div>
+    </div>
+
+    <script>
+        // ====================
+        // CONSTANTS
+        // ====================
+        const MASTER_KEY = "S@tyamCA2026@Premium";
+        const DEMO_LICENSE = "DEMO-CA-FINAL-2026-TRIAL-KEY";
+        
+        // ====================
+        // GLOBAL VARIABLES
+        // ====================
+        let currentLicenseData = null;
+        let batchKeys = [];
+        
+        // ====================
+        // DOM ELEMENTS
+        // ====================
+        const customerNameInput = document.getElementById('customerName');
+        const licenseTypeSelect = document.getElementById('licenseType');
+        const expiryDateInput = document.getElementById('expiryDate');
+        const maxDevicesSelect = document.getElementById('maxDevices');
+        const deviceIdInput = document.getElementById('deviceId');
+        const includeDemoKeyCheckbox = document.getElementById('includeDemoKey');
+        const includeInstructionsCheckbox = document.getElementById('includeInstructions');
+        const licenseKeyDisplay = document.getElementById('licenseKeyDisplay');
+        const jsonDisplay = document.getElementById('jsonDisplay');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const testGeneratedBtn = document.getElementById('testGeneratedBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toast-title');
+        const toastMessage = document.getElementById('toast-message');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const testLicenseKeyInput = document.getElementById('testLicenseKey');
+        const testLicenseBtn = document.getElementById('testLicenseBtn');
+        const testResults = document.getElementById('testResults');
+        const testResultsContent = document.getElementById('testResultsContent');
+        const generateDeviceIdBtn = document.getElementById('generateDeviceIdBtn');
+        const generateBatchBtn = document.getElementById('generateBatchBtn');
+        const batchResults = document.getElementById('batchResults');
+        const batchKeyDisplay = document.getElementById('batchKeyDisplay');
+        const copyBatchBtn = document.getElementById('copyBatchBtn');
+        const downloadBatchBtn = document.getElementById('downloadBatchBtn');
+        
+        // ====================
+        // INITIALIZATION
+        // ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default expiry date (1 year from now)
+            const defaultExpiry = new Date();
+            defaultExpiry.setFullYear(defaultExpiry.getFullYear() + 1);
+            expiryDateInput.value = defaultExpiry.toISOString().split('T')[0];
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Generate initial key
+            generateLicenseKey();
+        });
+        
+        function setupEventListeners() {
+            // Generate button
+            generateBtn.addEventListener('click', generateLicenseKey);
+            
+            // Copy button
+            copyBtn.addEventListener('click', copyToClipboard);
+            
+            // Test button for generated key
+            testGeneratedBtn.addEventListener('click', () => {
+                const licenseKey = licenseKeyDisplay.textContent.split('\n')[0];
+                if (licenseKey && !licenseKey.includes('Your generated license key')) {
+                    testLicenseKeyInput.value = licenseKey;
+                    // Switch to test tab
+                    switchTab('test');
+                    // Run test
+                    setTimeout(() => testLicenseKey(), 100);
+                }
+            });
+            
+            // Save button
+            saveBtn.addEventListener('click', saveLicenseAsFile);
+            
+            // Auto-generate when inputs change
+            customerNameInput.addEventListener('input', generateLicenseKey);
+            licenseTypeSelect.addEventListener('change', function() {
+                updateExpiryDateBasedOnType();
+                generateLicenseKey();
+            });
+            expiryDateInput.addEventListener('change', generateLicenseKey);
+            maxDevicesSelect.addEventListener('change', generateLicenseKey);
+            deviceIdInput.addEventListener('input', generateLicenseKey);
+            includeDemoKeyCheckbox.addEventListener('change', generateLicenseKey);
+            includeInstructionsCheckbox.addEventListener('change', generateLicenseKey);
+            
+            // Generate device ID button
+            generateDeviceIdBtn.addEventListener('click', generateDeviceId);
+            
+            // Predefined template buttons
+            document.querySelectorAll('.predefined-key').forEach(button => {
+                button.addEventListener('click', function() {
+                    const template = this.getAttribute('data-template');
+                    applyTemplate(template);
+                });
+            });
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Test tab functionality
+            document.getElementById('pasteFromClipboard').addEventListener('click', pasteFromClipboard);
+            document.getElementById('loadDemoKey').addEventListener('click', loadDemoKey);
+            document.getElementById('clearTestKey').addEventListener('click', clearTestKey);
+            testLicenseBtn.addEventListener('click', testLicenseKey);
+            
+            // Batch generation
+            generateBatchBtn.addEventListener('click', generateBatchKeys);
+            copyBatchBtn.addEventListener('click', copyBatchToClipboard);
+            downloadBatchBtn.addEventListener('click', downloadBatchAsCSV);
+        }
+        
+        function switchTab(tabId) {
+            // Update active tab
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Show active content
+            tabContents.forEach(content => {
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+        
+        function updateExpiryDateBasedOnType() {
+            const type = licenseTypeSelect.value;
+            const today = new Date();
+            let expiryDate = new Date(today);
+            
+            switch(type) {
+                case 'trial':
+                    expiryDate.setDate(today.getDate() + 7);
+                    break;
+                case 'monthly':
+                    expiryDate.setMonth(today.getMonth() + 1);
+                    break;
+                case 'yearly':
+                    expiryDate.setFullYear(today.getFullYear() + 1);
+                    break;
+                case 'premium':
+                    expiryDate.setFullYear(today.getFullYear() + 1);
+                    break;
+                case 'lifetime':
+                    expiryDate.setFullYear(today.getFullYear() + 100);
+                    break;
+            }
+            
+            expiryDateInput.value = expiryDate.toISOString().split('T')[0];
+        }
+        
+        function generateDeviceId() {
+            // Generate a random device ID
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let deviceId = '';
+            for (let i = 0; i < 16; i++) {
+                deviceId += chars.charAt(Math.floor(Math.random() * chars.length));
+                if ((i + 1) % 4 === 0 && i < 15) deviceId += '-';
+            }
+            deviceIdInput.value = deviceId;
+            generateLicenseKey();
+        }
+        
+        function applyTemplate(template) {
+            const today = new Date();
+            
+            switch(template) {
+                case 'premium':
+                    customerNameInput.value = 'Premium User';
+                    licenseTypeSelect.value = 'premium';
+                    maxDevicesSelect.value = '3';
+                    deviceIdInput.value = '';
+                    updateExpiryDateBasedOnType();
+                    break;
+                    
+                case 'lifetime':
+                    customerNameInput.value = 'Lifetime User';
+                    licenseTypeSelect.value = 'lifetime';
+                    maxDevicesSelect.value = 'unlimited';
+                    deviceIdInput.value = '';
+                    updateExpiryDateBasedOnType();
+                    break;
+                    
+                case 'trial':
+                    customerNameInput.value = 'Trial User';
+                    licenseTypeSelect.value = 'trial';
+                    maxDevicesSelect.value = '1';
+                    deviceIdInput.value = '';
+                    updateExpiryDateBasedOnType();
+                    break;
+                    
+                case 'demo':
+                    customerNameInput.value = 'Demo User';
+                    licenseTypeSelect.value = 'trial';
+                    maxDevicesSelect.value = '1';
+                    deviceIdInput.value = '';
+                    includeDemoKeyCheckbox.checked = true;
+                    updateExpiryDateBasedOnType();
+                    break;
+            }
+            
+            generateLicenseKey();
+        }
+        
+        // ====================
+        // LICENSE GENERATION
+        // ====================
+        function generateLicenseKey() {
+            try {
+                // Get form values
+                const customerName = customerNameInput.value.trim() || 'Premium User';
+                const licenseType = licenseTypeSelect.value;
+                const expiryDate = expiryDateInput.value;
+                const maxDevices = maxDevicesSelect.value;
+                const deviceId = deviceIdInput.value.trim();
+                const includeDemoKey = includeDemoKeyCheckbox.checked;
+                const includeInstructions = includeInstructionsCheckbox.checked;
+                
+                // Create license data object
+                const licenseData = {
+                    customer: customerName,
+                    type: licenseType,
+                    expiry: expiryDate,
+                    maxDevices: maxDevices,
+                    deviceId: deviceId || null,
+                    generated: new Date().toISOString(),
+                    version: '4.0',
+                    app: 'CA Final Pro Tracker'
+                };
+                
+                // Generate license key (SINGLE ENCRYPTION)
+                const licenseKey = encryptLicenseData(licenseData);
+                
+                // Store for later use
+                currentLicenseData = licenseData;
+                
+                // Display results
+                jsonDisplay.textContent = JSON.stringify(licenseData, null, 2);
+                
+                let displayText = licenseKey;
+                
+                if (includeDemoKey) {
+                    displayText += `\n\n--- DEMO LICENSE KEY (for testing) ---\n${DEMO_LICENSE}`;
+                }
+                
+                if (includeInstructions) {
+                    displayText += `\n\n--- ACTIVATION INSTRUCTIONS ---\n1. Copy the license key above\n2. Open CA Final Pro Tracker app\n3. Paste the key in the license input\n4. Click "Activate"\n5. Start using the app!`;
+                }
+                
+                licenseKeyDisplay.textContent = displayText;
+                
+                // Enable buttons
+                copyBtn.disabled = false;
+                testGeneratedBtn.disabled = false;
+                saveBtn.disabled = false;
+                
+                // Show success message
+                showToast('License key generated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error generating license key:', error);
+                licenseKeyDisplay.textContent = 'Error generating license key. Please check your inputs.';
+                jsonDisplay.textContent = 'Error: ' + error.message;
+                showToast('Error generating license key', 'error');
+            }
+        }
+        
+        function encryptLicenseData(licenseData) {
+            // Convert data to JSON string
+            const jsonString = JSON.stringify(licenseData);
+            
+            // SINGLE LAYER ENCRYPTION with MASTER_KEY
+            const encrypted = CryptoJS.AES.encrypt(jsonString, MASTER_KEY).toString();
+            
+            return encrypted;
+        }
+        
+        function decryptLicenseKey(licenseKey) {
+            try {
+                // Handle demo license separately
+                if (licenseKey.trim() === DEMO_LICENSE) {
+                    const demoExpiry = new Date();
+                    demoExpiry.setDate(demoExpiry.getDate() + 7);
+                    
+                    return {
+                        customer: "Demo User",
+                        type: "trial",
+                        expiry: demoExpiry.toISOString().split('T')[0],
+                        maxDevices: "1",
+                        deviceId: null,
+                        generated: new Date().toISOString(),
+                        version: '4.0',
+                        app: 'CA Final Pro Tracker',
+                        isDemo: true
+                    };
+                }
+                
+                // SINGLE LAYER DECRYPTION with MASTER_KEY
+                const decrypted = CryptoJS.AES.decrypt(licenseKey, MASTER_KEY).toString(CryptoJS.enc.Utf8);
+                
+                if (!decrypted) {
+                    return null;
+                }
+                
+                const licenseData = JSON.parse(decrypted);
+                licenseData.isDemo = false;
+                return licenseData;
+                
+            } catch (error) {
+                console.error('Decryption error:', error);
+                return null;
+            }
+        }
+        
+        // ====================
+        // TESTING FUNCTIONALITY
+        // ====================
+        function pasteFromClipboard() {
+            navigator.clipboard.readText().then(text => {
+                testLicenseKeyInput.value = text;
+                showToast('Pasted from clipboard!', 'success');
+            }).catch(err => {
+                showToast('Failed to read clipboard', 'error');
+            });
+        }
+        
+        function loadDemoKey() {
+            testLicenseKeyInput.value = DEMO_LICENSE;
+            showToast('Demo license loaded!', 'success');
+        }
+        
+        function clearTestKey() {
+            testLicenseKeyInput.value = '';
+            testResults.classList.remove('active');
+        }
+        
+        function testLicenseKey() {
+            const licenseKey = testLicenseKeyInput.value.trim();
+            
+            if (!licenseKey) {
+                showToast('Please enter a license key to test', 'error');
+                return;
+            }
+            
+            const licenseData = decryptLicenseKey(licenseKey);
+            
+            if (!licenseData) {
+                testResultsContent.innerHTML = `
+                    <div class="result-item">
+                        <span class="result-label">Status:</span>
+                        <span class="result-value invalid">INVALID</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Error:</span>
+                        <span class="result-value invalid">Cannot decrypt license key</span>
+                    </div>
+                `;
+                testResults.classList.add('active');
+                showToast('Invalid license key', 'error');
+                return;
+            }
+            
+            // Check if expired
+            const expiryDate = new Date(licenseData.expiry);
+            const today = new Date();
+            const isExpired = expiryDate < today;
+            const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+            
+            // Check device binding
+            const deviceId = generateTestDeviceId();
+            const deviceBound = licenseData.deviceId !== null;
+            const deviceMatch = licenseData.deviceId === deviceId;
+            
+            let deviceStatus = 'Not Bound';
+            if (deviceBound && deviceMatch) deviceStatus = 'Bound & Matching';
+            if (deviceBound && !deviceMatch) deviceStatus = 'Bound & Mismatch';
+            
+            // Build results HTML
+            let resultsHTML = `
+                <div class="result-item">
+                    <span class="result-label">Status:</span>
+                    <span class="result-value ${licenseData.isDemo ? 'badge-warning' : 'badge-success'}">
+                        ${licenseData.isDemo ? 'DEMO VALID' : 'VALID'}
+                    </span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Customer:</span>
+                    <span class="result-value">${licenseData.customer}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Type:</span>
+                    <span class="result-value">${licenseData.type.toUpperCase()}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Expiry:</span>
+                    <span class="result-value ${isExpired ? 'expired' : ''}">
+                        ${licenseData.expiry} ${isExpired ? '(EXPIRED)' : `(${daysUntilExpiry} days left)`}
+                    </span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Max Devices:</span>
+                    <span class="result-value">${licenseData.maxDevices}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Device Binding:</span>
+                    <span class="result-value ${deviceBound && !deviceMatch ? 'invalid' : ''}">
+                        ${deviceStatus}
+                    </span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Version:</span>
+                    <span class="result-value">${licenseData.version}</span>
+                </div>
+            `;
+            
+            // Add warnings if needed
+            if (isExpired) {
+                resultsHTML += `
+                    <div style="background: rgba(243, 156, 18, 0.1); padding: 10px; border-radius: 6px; margin-top: 10px; color: #d35400;">
+                        <i class="fas fa-exclamation-triangle"></i> License has expired!
+                    </div>
+                `;
+            }
+            
+            if (deviceBound && !deviceMatch) {
+                resultsHTML += `
+                    <div style="background: rgba(231, 76, 60, 0.1); padding: 10px; border-radius: 6px; margin-top: 10px; color: #c0392b;">
+                        <i class="fas fa-exclamation-circle"></i> License is bound to another device!
+                    </div>
+                `;
+            }
+            
+            if (licenseData.isDemo) {
+                resultsHTML += `
+                    <div style="background: rgba(52, 152, 219, 0.1); padding: 10px; border-radius: 6px; margin-top: 10px; color: #2980b9;">
+                        <i class="fas fa-info-circle"></i> This is a demo license (7-day trial)
+                    </div>
+                `;
+            }
+            
+            testResultsContent.innerHTML = resultsHTML;
+            testResults.classList.add('active');
+            
+            showToast('License key tested successfully!', 'success');
+        }
+        
+        function generateTestDeviceId() {
+            // Simulate device ID generation similar to main app
+            const navigatorInfo = JSON.stringify({
+                userAgent: navigator.userAgent.substring(0, 50),
+                language: navigator.language,
+                platform: navigator.platform
+            });
+            
+            return CryptoJS.SHA256(navigatorInfo).toString().substring(0, 16);
+        }
+        
+        // ====================
+        // BATCH GENERATION
+        // ====================
+        function generateBatchKeys() {
+            const count = parseInt(document.getElementById('batchCount').value) || 5;
+            const prefix = document.getElementById('batchPrefix').value.trim() || 'Customer';
+            const licenseType = document.getElementById('batchLicenseType').value;
+            
+            batchKeys = [];
+            let batchOutput = '';
+            
+            const today = new Date();
+            const expiryDate = new Date(today);
+            
+            switch(licenseType) {
+                case 'trial':
+                    expiryDate.setDate(today.getDate() + 7);
+                    break;
+                case 'monthly':
+                    expiryDate.setMonth(today.getMonth() + 1);
+                    break;
+                case 'yearly':
+                case 'premium':
+                    expiryDate.setFullYear(today.getFullYear() + 1);
+                    break;
+            }
+            
+            const expiryStr = expiryDate.toISOString().split('T')[0];
+            
+            for (let i = 1; i <= count; i++) {
+                const licenseData = {
+                    customer: `${prefix} ${i}`,
+                    type: licenseType,
+                    expiry: expiryStr,
+                    maxDevices: "1",
+                    deviceId: null,
+                    generated: new Date().toISOString(),
+                    version: '4.0',
+                    app: 'CA Final Pro Tracker'
+                };
+                
+                const licenseKey = encryptLicenseData(licenseData);
+                batchKeys.push({ data: licenseData, key: licenseKey });
+                
+                batchOutput += `License ${i}:\n`;
+                batchOutput += `Customer: ${licenseData.customer}\n`;
+                batchOutput += `Type: ${licenseData.type}\n`;
+                batchOutput += `Key: ${licenseKey}\n`;
+                batchOutput += `---\n\n`;
+            }
+            
+            batchKeyDisplay.textContent = batchOutput;
+            batchResults.style.display = 'block';
+            
+            showToast(`${count} license keys generated!`, 'success');
+        }
+        
+        // ====================
+        // UTILITY FUNCTIONS
+        // ====================
+        function copyToClipboard() {
+            // Get the first line only (the actual license key)
+            const lines = licenseKeyDisplay.textContent.split('\n');
+            const generatedKey = lines[0];
+            
+            // Check if it's the placeholder text
+            if (generatedKey.includes('Your generated license key')) {
+                showToast('No license key to copy. Generate one first.', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(generatedKey).then(() => {
+                showToast('License key copied to clipboard!', 'success');
+            }).catch(err => {
+                // Fallback method
+                const textArea = document.createElement('textarea');
+                textArea.value = generatedKey;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('License key copied to clipboard!', 'success');
+                } catch (err2) {
+                    showToast('Failed to copy to clipboard', 'error');
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+        
+        function copyBatchToClipboard() {
+            if (batchKeys.length === 0) {
+                showToast('No batch keys to copy', 'error');
+                return;
+            }
+            
+            let textToCopy = '';
+            batchKeys.forEach((item, index) => {
+                textToCopy += `License ${index + 1}: ${item.key}\n`;
+            });
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast(`${batchKeys.length} keys copied to clipboard!`, 'success');
+            }).catch(err => {
+                showToast('Failed to copy batch keys', 'error');
+            });
+        }
+        
+        function saveLicenseAsFile() {
+            if (!currentLicenseData) {
+                showToast('No license data to save', 'error');
+                return;
+            }
+            
+            const licenseKey = licenseKeyDisplay.textContent.split('\n')[0];
+            const content = `CA FINAL PRO TRACKER - LICENSE KEY\n\n` +
+                           `Generated: ${new Date().toLocaleString()}\n` +
+                           `Customer: ${currentLicenseData.customer}\n` +
+                           `Type: ${currentLicenseData.type}\n` +
+                           `Expiry: ${currentLicenseData.expiry}\n` +
+                           `Max Devices: ${currentLicenseData.maxDevices}\n\n` +
+                           `LICENSE KEY:\n${licenseKey}\n\n` +
+                           `---\n` +
+                           `Activation Instructions:\n` +
+                           `1. Copy the license key above\n` +
+                           `2. Open CA Final Pro Tracker app\n` +
+                           `3. Paste the key in the license input\n` +
+                           `4. Click "Activate"\n` +
+                           `5. Start using the app!\n\n` +
+                           `For support: https://wa.me/919142300129`;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CA_License_${currentLicenseData.customer.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('License saved as file!', 'success');
+        }
+        
+        function downloadBatchAsCSV() {
+            if (batchKeys.length === 0) {
+                showToast('No batch keys to download', 'error');
+                return;
+            }
+            
+            let csvContent = "Customer,Type,Expiry,Max Devices,License Key\n";
+            
+            batchKeys.forEach(item => {
+                const row = [
+                    `"${item.data.customer}"`,
+                    `"${item.data.type}"`,
+                    `"${item.data.expiry}"`,
+                    `"${item.data.maxDevices}"`,
+                    `"${item.key}"`
+                ].join(',');
+                csvContent += row + "\n";
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CA_Licenses_Batch_${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Batch keys downloaded as CSV!', 'success');
+        }
+        
+        function showToast(message, type = 'success') {
+            toastTitle.textContent = type === 'success' ? 'Success!' : 
+                                   type === 'error' ? 'Error!' : 
+                                   type === 'warning' ? 'Warning!' : 'Info';
+            
+            toastMessage.textContent = message;
+            
+            // Update icon and styling
+            const icon = toast.querySelector('i');
+            icon.className = type === 'success' ? 'fas fa-check-circle' :
+                           type === 'error' ? 'fas fa-exclamation-circle' :
+                           type === 'warning' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
+            
+            toast.className = `toast ${type}`;
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // ====================
+        // CONSOLE DEBUGGING
+        // ====================
+        window.debugLicense = function(licenseKey) {
+            console.log('=== License Debug Information ===');
+            console.log('Key:', licenseKey);
+            
+            const licenseData = decryptLicenseKey(licenseKey);
+            if (licenseData) {
+                console.log('Decrypted Data:', licenseData);
+                
+                // Check expiry
+                const expiryDate = new Date(licenseData.expiry);
+                const today = new Date();
+                console.log('Expiry Check:', expiryDate < today ? 'EXPIRED' : 'VALID');
+                console.log('Days until expiry:', Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24)));
+                
+                return licenseData;
+            } else {
+                console.log('FAILED: Could not decrypt license key');
+                return null;
+            }
+        };
+        
+        window.generateSampleKeys = function() {
+            console.log('=== Sample License Keys ===');
+            
+            const samples = [
+                {
+                    customer: 'Premium User',
+                    type: 'premium',
+                    expiry: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+                    maxDevices: '3'
+                },
+                {
+                    customer: 'Trial User',
+                    type: 'trial',
+                    expiry: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0],
+                    maxDevices: '1'
+                },
+                {
+                    customer: 'Lifetime User',
+                    type: 'lifetime',
+                    expiry: new Date(new Date().setFullYear(new Date().getFullYear() + 100)).toISOString().split('T')[0],
+                    maxDevices: 'unlimited'
+                }
+            ];
+            
+            samples.forEach((data, index) => {
+                const key = encryptLicenseData(data);
+                console.log(`Sample ${index + 1}:`, data);
+                console.log(`Key: ${key}`);
+                console.log('---');
+            });
+            
+            console.log('Demo License:', DEMO_LICENSE);
+        };
+        
+        // Generate initial sample on load (for testing)
+        setTimeout(() => {
+            console.log('License Generator v1.1 - Fixed Single-Layer Encryption');
+            console.log('Use window.debugLicense(key) to test any license key');
+            console.log('Use window.generateSampleKeys() to see sample outputs');
+        }, 1000);
+    </script>
+</body>
+</html>
