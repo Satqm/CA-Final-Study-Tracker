@@ -1,201 +1,16 @@
-I'll help you fix these issues step-by-step. Let me break it down into clear instructions:
-
-PART 1: Fix Subject Completion Hours Distribution
-
-Problem: When marking topics as completed, it saves 1 hour instead of using planned weightage or user-entered hours.
-
-Solution Steps:
-
-1. Find the toggleTopicStatus function (around line 1400-1450 in the script)
-2. Replace it with this updated version:
-
-```javascript
-function toggleTopicStatus(subjectId, topicName) {
-    if (!userProgress.subjects[subjectId] || !userProgress.subjects[subjectId].topics[topicName]) {
-        return;
-    }
-    
-    const topic = userProgress.subjects[subjectId].topics[topicName];
-    const currentStatus = topic.status;
-    
-    // Cycle through statuses: not-started -> inprogress -> completed -> not-started
-    const nextStatus = currentStatus === 'not-started' ? 'inprogress' : 
-                     currentStatus === 'inprogress' ? 'completed' : 'not-started';
-    
-    topic.status = nextStatus;
-    
-    // If marking as completed, calculate hours based on weightage
-    if (nextStatus === 'completed') {
-        // Find topic data from syllabus to get weightage
-        const subjectData = syllabusData[subjectId];
-        const syllabusTopic = subjectData.topics.find(t => t.name === topicName);
-        
-        if (syllabusTopic) {
-            // Calculate topic planned hours based on subject distribution
-            const subjectPlannedHours = userStudyPlan?.subjectHours?.[subjectId] || 0;
-            const topicWeightage = syllabusTopic.weightage;
-            const topicPlannedHours = (topicWeightage / 100) * subjectPlannedHours;
-            
-            Object.keys(topic.subtopics).forEach(subtopicName => {
-                const subtopic = topic.subtopics[subtopicName];
-                
-                // If user hasn't entered hours, calculate based on subtopic weightage
-                if (!subtopic.actualHours || subtopic.actualHours === 0) {
-                    // Find subtopic data to get its weight
-                    const subtopicData = syllabusTopic.subtopics.find(s => s.name === subtopicName);
-                    if (subtopicData) {
-                        const subtopicWeightage = subtopicData.weight;
-                        // Calculate hours: subtopic weight * topic planned hours
-                        subtopic.actualHours = (subtopicWeightage / 100) * topicPlannedHours;
-                    } else {
-                        // Fallback: distribute equally
-                        const numSubtopics = Object.keys(topic.subtopics).length;
-                        subtopic.actualHours = topicPlannedHours / numSubtopics;
-                    }
-                }
-                
-                subtopic.completed = true;
-            });
-        } else {
-            // If syllabus topic not found, just mark subtopics as completed
-            Object.keys(topic.subtopics).forEach(subtopicName => {
-                topic.subtopics[subtopicName].completed = true;
-            });
-        }
-    } else if (nextStatus === 'not-started') {
-        // Reset hours if going back to not-started
-        Object.keys(topic.subtopics).forEach(subtopicName => {
-            const subtopic = topic.subtopics[subtopicName];
-            // Only reset if it's the default 1 hour (indicating it was auto-set)
-            if (subtopic.actualHours === 1) {
-                subtopic.actualHours = 0;
-            }
-            subtopic.completed = false;
-        });
-    }
-    
-    // Update completed topics count
-    updateCompletedTopics(subjectId);
-    
-    DataStorage.save('progress', userProgress);
-    loadSubjectContent();
-    updateDashboard(); // Update dashboard instantly
-    
-    showToast(`Topic marked as ${nextStatus}`, 'success');
-}
-```
-
-PART 2: Fix Targets UI Logic
-
-Problem: Complete buttons appear when Actual Hours = 0, but disappear when hours > 0
-
-Solution Steps:
-
-1. Find the loadTargets function (around line 1600-1700)
-2. Update the button rendering logic inside this function:
-
-Look for this section in loadTargets (around line 1650-1700):
-
-```javascript
-// Inside the target rendering loop, replace the target-actions section:
-```
-
-Replace it with:
-
-```javascript
-<div class="target-actions">
-    ${target.actualHours > 0 ? `
-        <button class="complete-target-btn ${target.actualHours >= target.plannedHours ? 'btn-success' : 'btn-warning'}" 
-                style="padding: 8px 16px; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; ${target.actualHours >= target.plannedHours ? 'background: var(--success);' : 'background: var(--warning);'}">
-            ${target.actualHours >= target.plannedHours ? '✅ Completed - Archive to History' : `Partially Done (${target.actualHours}/${target.plannedHours} hrs) - Archive?`}
-        </button>
-    ` : `
-        <span style="color: var(--gray); font-weight: 600; padding: 8px 16px; background: #f8f9fa; border-radius: 6px;">Pending (0 hrs)</span>
-    `}
-    <button class="delete-target-btn" style="padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-        <i class="fas fa-trash"></i> Delete
-    </button>
-</div>
-```
-
-1. Create a helper function (add this near other helper functions around line 200-300):
-
-```javascript
-function isEligibleForArchive(actual, planned) {
-    return actual > 0;
-}
-```
-
-1. Update the completeTarget function (around line 1750-1800):
-
-Replace the entire function with:
-
-```javascript
-function completeTarget(index) {
-    if (index >= 0 && index < userTargets.length) {
-        const target = userTargets[index];
-        
-        // Only allow archiving if actual hours > 0
-        if (!isEligibleForArchive(target.actualHours, target.plannedHours)) {
-            showToast('Cannot archive target with 0 actual hours. Please enter actual hours first.', 'error');
-            return;
-        }
-        
-        target.completed = true;
-        target.completedDate = new Date().toISOString();
-        target.status = 'completed';
-        
-        // Calculate achievement percentage
-        const achievement = target.plannedHours > 0 ? 
-            Math.round((target.actualHours || 0) / target.plannedHours * 100) : 0;
-        target.achievement = achievement;
-        
-        // Set detailed status
-        if (achievement >= 100) {
-            target.detailedStatus = 'completed';
-        } else if (achievement >= 80) {
-            target.detailedStatus = 'almost-completed';
-        } else {
-            target.detailedStatus = 'partial';
-        }
-        
-        // Move to completed targets
-        completedTargets.push(target);
-        userTargets.splice(index, 1);
-        
-        DataStorage.save('targets', userTargets);
-        DataStorage.save('completedTargets', completedTargets);
-        
-        loadTargets();
-        loadTargetHistory();
-        updateDashboard();
-        
-        showToast('Target archived to history!', 'success');
-    }
-}
-```
-
-PART 3: Fix License Validation with Aggressive Sanitization
-
-Update the validateLicense function (around line 750-800):
-
-Replace the entire function with:
-
-```javascript
 function validateLicense(licenseKey) {
     try {
-        // Step 1: Aggressive Input Sanitization
+        // ===== STEP 1: AGGRESSIVE INPUT SANITIZATION =====
         let cleanKey = licenseKey.trim().toUpperCase();
+        cleanKey = cleanKey.replace(/\s+/g, ''); // Remove all whitespace
         
-        // Remove all whitespace (spaces, tabs, newlines)
-        cleanKey = cleanKey.replace(/\s+/g, '');
-        
-        // Handle demo license separately
-        if (cleanKey === DEMO_LICENSE.replace(/\s+/g, '').toUpperCase()) {
+        // ===== STEP 2: HANDLE DEMO LICENSE =====
+        const demoKeyClean = DEMO_LICENSE.trim().toUpperCase().replace(/\s+/g, '');
+        if (cleanKey === demoKeyClean) {
             return { 
                 valid: true, 
                 data: { 
-                    key: cleanKey, 
+                    key: DEMO_LICENSE,
                     type: 'DEMO', 
                     customer: 'Demo User', 
                     expiry: '2026-12-31' 
@@ -203,141 +18,94 @@ function validateLicense(licenseKey) {
             };
         }
         
-        // Step 2: Validate Format (XXXX-XXXX-XXXX-C)
-        const pattern = /^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]$/;
-        if (!pattern.test(cleanKey)) {
-            return { valid: false, error: 'Invalid license key format. Expected: XXXX-XXXX-XXXX-C' };
+        // ===== STEP 3: VALIDATE FORMAT (XXXX-XXXX-XXXX-C) =====
+        // Remove dashes for validation
+        const keyWithoutDashes = cleanKey.replace(/-/g, '');
+        
+        // Check if it's 13 alphanumeric characters
+        if (!/^[A-Z0-9]{13}$/.test(keyWithoutDashes)) {
+            return { valid: false, error: 'Invalid license key format. Expected: XXXX-XXXX-XXXX-C (13 alphanumeric characters)' };
         }
         
-        // Step 3: Extract payload and checksum
-        const parts = cleanKey.split('-');
-        const payload = (parts[0] + parts[1] + parts[2]).replace(/-/g, ''); // First 12 chars
-        const providedChecksum = parts[3]; // Last char
+        // ===== STEP 4: EXTRACT PAYLOAD AND CHECKSUM =====
+        const payload = keyWithoutDashes.substring(0, 12);
+        const providedChecksum = keyWithoutDashes.substring(12, 13);
         
-        // Step 4: Weighted Modulo-36 Checksum Calculation
+        // ===== STEP 5: WEIGHTED MODULO-36 CHECKSUM CALCULATION =====
         let sum = 0;
+        let calculationSteps = [];
+        
         for (let i = 0; i < payload.length; i++) {
-            sum += payload.charCodeAt(i) * (i + 1); // i+1 for 1-based position
+            const charCode = payload.charCodeAt(i);
+            const weight = i + 1; // 1-based position
+            const product = charCode * weight;
+            sum += product;
+            calculationSteps.push(`${payload[i]}: ${charCode} × ${weight} = ${product}`);
         }
         
-        const calculatedChecksum = (sum % 36).toString(36).toUpperCase();
+        const moduloResult = sum % 36;
+        const calculatedChecksum = moduloResult.toString(36).toUpperCase();
         
-        // Step 5: Verify Checksum
+        // ===== STEP 6: VERIFY CHECKSUM =====
         if (calculatedChecksum !== providedChecksum) {
+            console.log('Checksum validation failed:', {
+                payload,
+                providedChecksum,
+                calculatedChecksum,
+                sum,
+                moduloResult,
+                steps: calculationSteps
+            });
             return { valid: false, error: 'Invalid license key checksum' };
         }
         
-        // Step 6: Additional validations
-        const expiryDate = new Date('2026-12-31');
+        // ===== STEP 7: ADDITIONAL VALIDATIONS =====
+        const expiryDate = new Date('2026-12-31'); // Fixed expiry for now
         const currentDate = new Date();
         
         if (expiryDate < currentDate) {
             return { valid: false, error: 'License has expired' };
         }
         
-        // Success - Return license data
+        // ===== STEP 8: LICENSE DATA CONSTRUCTION =====
+        // Extract customer initials from payload
+        let customerName = 'Premium User';
+        if (/^[A-Z]{2}/.test(payload)) {
+            const firstTwo = payload.substring(0, 2);
+            customerName = `${firstTwo[0]}.${firstTwo[1]}. License Holder`;
+        }
+        
+        // Determine license type based on pattern
+        let licenseType = 'PREMIUM';
+        if (payload.startsWith('STU') || payload.includes('STUDENT')) {
+            licenseType = 'STUDENT';
+        } else if (payload.startsWith('TRIAL') || payload.includes('TRIAL')) {
+            licenseType = 'TRIAL';
+        }
+        
+        // Format key with dashes for display
+        const formattedKey = payload.substring(0,4) + '-' + 
+                           payload.substring(4,8) + '-' + 
+                           payload.substring(8,12) + '-' + 
+                           providedChecksum;
+        
+        // ===== STEP 9: RETURN VALID LICENSE DATA =====
         return { 
             valid: true, 
             data: { 
-                key: cleanKey, 
-                type: 'PREMIUM', 
-                customer: 'Valid User', 
+                key: formattedKey,
+                originalKey: licenseKey,
+                type: licenseType, 
+                customer: customerName, 
                 expiry: '2026-12-31',
-                deviceId: deviceId // Bind to current device
+                deviceId: deviceId, // Bind to current device
+                checksumVerified: true,
+                validationDate: new Date().toISOString()
             } 
         };
         
     } catch (error) {
+        console.error('License validation error:', error);
         return { valid: false, error: 'License validation failed: ' + error.message };
     }
 }
-```
-
-Update the activateLicense function (around line 850-900):
-
-Replace the beginning of the function (first few lines):
-
-```javascript
-function activateLicense() {
-    const licenseInput = document.getElementById('license-input');
-    let licenseKey = licenseInput.value;
-    
-    if (!licenseKey) {
-        showLicenseStatus('expired', 'Please enter a license key');
-        return;
-    }
-    
-    // Apply aggressive sanitization
-    licenseKey = licenseKey.trim().toUpperCase().replace(/\s+/g, '');
-    
-    // Update input with cleaned value
-    licenseInput.value = licenseKey;
-    
-    // Handle demo license
-    if (licenseKey === DEMO_LICENSE.replace(/\s+/g, '').toUpperCase()) {
-        useDemoLicense();
-        return;
-    }
-    
-    const validation = validateLicense(licenseKey);
-    // ... rest of the function remains the same
-```
-
-ADDITIONAL FIX: Update Device ID Display
-
-In the updateDeviceId function (around line 700), add:
-
-```javascript
-function updateDeviceId() {
-    // Generate a more persistent device ID
-    const navigatorInfo = JSON.stringify({
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        hardwareConcurrency: navigator.hardwareConcurrency,
-        deviceMemory: navigator.deviceMemory,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    });
-    
-    // Use SHA256 for more reliable device ID
-    deviceId = CryptoJS.SHA256(navigatorInfo).toString().substring(0, 16).toUpperCase();
-    
-    // Update all device ID displays
-    const deviceIdElements = document.querySelectorAll('[id*="device-id"], [id*="device"]');
-    deviceIdElements.forEach(el => {
-        el.textContent = deviceId;
-    });
-}
-```
-
-QUICK REFERENCE FOR COPY-PASTE LOCATIONS:
-
-1. Subject Hours Fix: Replace toggleTopicStatus function (lines ~1400-1450)
-2. Targets UI Fix:
-   · Update button rendering in loadTargets (lines ~1650-1700)
-   · Add isEligibleForArchive helper (around line 250)
-   · Replace completeTarget function (lines ~1750-1800)
-3. License Validation Fix:
-   · Replace validateLicense function (lines ~750-800)
-   · Update beginning of activateLicense function (lines ~850-855)
-   · Update updateDeviceId function (around line 700)
-
-TESTING YOUR FIXES:
-
-1. Test Subject Completion:
-   · Mark a topic as completed
-   · Check if hours are calculated based on weightage
-   · Enter custom hours in subtopic, then mark completed - should keep your hours
-2. Test Targets UI:
-   · Create a target with 0 actual hours - should show "Pending (0 hrs)"
-   · Enter actual hours > 0 - should show archive button
-   · Try archiving with 0 hours - should show error
-3. Test License Validation:
-   · Enter a key with spaces: "ABC 123-456-789-D"
-   · Should auto-clean to "ABC123-456-789-D"
-   · Test checksum validation
-
-Note: The license format should be: 4 chars - 4 chars - 4 chars - 1 checksum char
-Example valid format: ABCD-EFGH-IJKL-M where M is the calculated checksum.
-
-Would you like me to provide the exact line numbers or any additional helper functions?
