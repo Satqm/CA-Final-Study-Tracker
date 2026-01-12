@@ -1939,7 +1939,10 @@
             border: 1px solid rgba(0, 0, 0, 0.05);
             animation: slideUp 0.5s ease;
         }
-        
+        #quote-section {
+    background: linear-gradient(135deg, rgba(255,193,7,0.05) 0%, rgba(255,152,0,0.05) 100%);
+    border: 1px solid rgba(255,193,7,0.2);
+}
         .motivation-card-header {
             display: flex;
             justify-content: space-between;
@@ -2969,7 +2972,7 @@
                     <div class="export-import-section">
                         <h3><i class="fas fa-database"></i> Data Management</h3>
                         <p>Backup your study data or restore from previous backup</p>
-                    <div class="data-actions">
+ <div class="data-actions">
     <button class="btn" id="backup-all-btn">
         <i class="fas fa-file-export"></i> Backup All Data
     </button>
@@ -2979,8 +2982,14 @@
     <button class="btn" id="export-resources-btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
         <i class="fas fa-sticky-note"></i> Export Resources Only
     </button>
+    <button class="btn btn-accent" id="import-videos-only-btn">
+        <i class="fas fa-upload"></i> Import Videos Only
+    </button>
+    <button class="btn btn-accent" id="import-resources-only-btn">
+        <i class="fas fa-upload"></i> Import Resources Only
+    </button>
     <button class="btn btn-accent" id="restore-backup-btn">
-        <i class="fas fa-file-import"></i> Restore Backup
+        <i class="fas fa-file-import"></i> Restore Full Backup
     </button>
     <input type="file" id="backup-file" accept=".json" style="display: none;">
     <input type="file" id="import-videos-file" accept=".json" style="display: none;">
@@ -3486,12 +3495,7 @@
                         </div>
                      
 
-/* Motivation Quote Styles */
-.quote-section {
-    background: linear-gradient(135deg, rgba(255,193,7,0.05) 0%, rgba(255,152,0,0.05) 100%);
-    border: 1px solid rgba(255,193,7,0.2);
-}
-                        
+                     
                         <!-- Custom Quotes Section -->
                         <div class="motivation-card" id="custom-quotes-section">
                             <div class="motivation-card-header">
@@ -4823,22 +4827,17 @@ document.getElementById('recalculate-data-btn')?.addEventListener('click', async
             document.getElementById('add-resources-btn').addEventListener('click', addResource);
             document.getElementById('search-resources').addEventListener('input', searchResources);
             
-            // Data backup
             document.getElementById('backup-all-btn').addEventListener('click', backupAllData);
-            // Add to the existing event listeners
-document.getElementById('export-videos-btn').addEventListener('click', exportVideosOnly);
-document.getElementById('export-resources-btn').addEventListener('click', exportResourcesOnly);
-document.getElementById('import-videos-file').addEventListener('change', importVideosOnly);
-document.getElementById('import-resources-file').addEventListener('change', importResourcesOnly);
-
-// Add buttons to trigger file selection
-document.getElementById('export-videos-btn').addEventListener('click', () => {
-    document.getElementById('import-videos-file').click();
-});
-document.getElementById('export-resources-btn').addEventListener('click', () => {
-    document.getElementById('import-resources-file').click();
-});
-
+            document.getElementById('export-videos-btn').addEventListener('click', exportVideosOnly);
+            document.getElementById('export-resources-btn').addEventListener('click', exportResourcesOnly);
+            document.getElementById('import-videos-only-btn').addEventListener('click', () => {
+                document.getElementById('import-videos-file').click();
+            });
+            document.getElementById('import-resources-only-btn').addEventListener('click', () => {
+                document.getElementById('import-resources-file').click();
+            });
+            document.getElementById('import-videos-file').addEventListener('change', importVideosOnly);
+            document.getElementById('import-resources-file').addEventListener('change', importResourcesOnly);
             
             document.getElementById('restore-backup-btn').addEventListener('click', () => document.getElementById('backup-file').click());
             document.getElementById('backup-file').addEventListener('change', restoreBackupData);
@@ -7698,7 +7697,8 @@ async function deleteTarget(index) {
                 showToast('Failed to create backup', 'error');
             }
         }
-        async function exportVideosOnly() {
+// ==================== VIDEO & RESOURCES IMPORT/EXPORT FUNCTIONS ====================
+async function exportVideosOnly() {
     try {
         const videosData = {
             videos: userVideos,
@@ -7768,7 +7768,7 @@ async function importVideosOnly(event) {
             userVideos = data.videos || [];
             await DataStorage.save('videos', userVideos);
             loadVideos();
-            showToast('Videos imported successfully!', 'success');
+            showToast(`${userVideos.length} videos imported successfully!`, 'success');
         } catch (error) {
             console.error('Import videos error:', error);
             showToast('Failed to import videos file', 'error');
@@ -7794,7 +7794,7 @@ async function importResourcesOnly(event) {
             userResources = data.resources || [];
             await DataStorage.save('resources', userResources);
             loadResources();
-            showToast('Resources imported successfully!', 'success');
+            showToast(`${userResources.length} resources imported successfully!`, 'success');
         } catch (error) {
             console.error('Import resources error:', error);
             showToast('Failed to import resources file', 'error');
