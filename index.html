@@ -475,6 +475,7 @@
             flex-wrap: wrap;
         }
         
+        
         .btn {
             display: inline-block;
             padding: 12px 24px;
@@ -2421,7 +2422,241 @@
                 gap: 10px;
             }
         }
-          
+          /* ============= STREAK & ACHIEVEMENTS STYLES ============= */
+.streak-hero-section {
+    background: linear-gradient(135deg, #2c3e50 0%, #4a235a 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.streak-hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,193,7,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.streak-hero-content {
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.streak-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.streak-number {
+    font-size: 96px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #FFC107, #FF9800);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 20px rgba(255,193,7,0.3);
+}
+
+.streak-flame {
+    font-size: 64px;
+    color: #FFC107;
+    animation: flamePulse 2s ease-in-out infinite;
+}
+
+.streak-flame.inactive {
+    color: #95a5a6;
+    animation: none;
+    filter: grayscale(100%);
+}
+
+@keyframes flamePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.streak-message {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    margin-top: 10px;
+}
+
+/* Weekly Consistency Tracker */
+.weekly-consistency-tracker {
+    padding: 30px 20px;
+}
+
+.week-days {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.day-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.day-label {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.day-progress {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e9ecef;
+    transition: all 0.3s;
+}
+
+.day-circle.completed .day-progress {
+    background: #FFC107;
+    box-shadow: 0 0 10px rgba(255,193,7,0.5);
+}
+
+.day-circle.completed .day-label {
+    color: #FFC107;
+    font-weight: 700;
+}
+
+.day-circle.current {
+    border: 2px solid var(--secondary);
+    animation: pulseCurrent 1.5s infinite;
+}
+
+@keyframes pulseCurrent {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,152,219,0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(52,152,219,0); }
+}
+
+.day-circle.future {
+    opacity: 0.5;
+}
+
+.week-summary {
+    text-align: center;
+    font-size: 16px;
+    color: var(--gray);
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* Badges Carousel */
+.badges-section {
+    overflow: hidden;
+}
+
+.badges-carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 25px;
+    padding: 30px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary) #f1f1f1;
+}
+
+.badges-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.badges-carousel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.badges-carousel::-webkit-scrollbar-thumb {
+    background: var(--secondary);
+    border-radius: 10px;
+}
+
+.badge-item {
+    flex: 0 0 auto;
+    width: 140px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: 2px solid #e9ecef;
+}
+
+.badge-item.unlocked {
+    border-color: #FFC107;
+    background: linear-gradient(135deg, rgba(255,193,7,0.05) 0%, rgba(255,152,0,0.05) 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(255,193,7,0.2);
+}
+
+.badge-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+    transition: all 0.3s;
+}
+
+.badge-item.unlocked .badge-icon {
+    opacity: 1;
+    animation: badgeGlow 2s infinite;
+}
+
+@keyframes badgeGlow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(255,193,7,0.5)); }
+    50% { filter: drop-shadow(0 0 15px rgba(255,193,7,0.8)); }
+}
+
+.badge-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.badge-status {
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.badge-item.unlocked .badge-status {
+    color: #FFC107;
+    font-weight: 600;
+}
+
+.badge-description {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: var(--primary);
+    font-weight: 500;
+    border-top: 1px solid #eee;
+}
         
     </style>
 </head>
@@ -2532,6 +2767,14 @@
                                 <i class="fas fa-calendar-alt"></i> Update Study Plan
                             </button>
                         </div>
+                        <div class="page-actions">
+    <button class="btn" id="update-target-btn">
+        <i class="fas fa-calendar-alt"></i> Update Study Plan
+    </button>
+    <button class="btn btn-warning" id="recalculate-data-btn">
+        <i class="fas fa-sync-alt"></i> Recalculate Data
+    </button>
+</div>
                     </div>
                     
                     <!-- Study Plan Card -->
@@ -3241,241 +3484,7 @@
                                 </div>
                             </div>
                         </div>
-                        /* ============= STREAK & ACHIEVEMENTS STYLES ============= */
-.streak-hero-section {
-    background: linear-gradient(135deg, #2c3e50 0%, #4a235a 100%);
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.streak-hero-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,193,7,0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-}
-
-@keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.streak-hero-content {
-    text-align: center;
-    padding: 40px 20px;
-    position: relative;
-    z-index: 1;
-}
-
-.streak-display {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 20px;
-}
-
-.streak-number {
-    font-size: 96px;
-    font-weight: 800;
-    background: linear-gradient(90deg, #FFC107, #FF9800);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 4px 20px rgba(255,193,7,0.3);
-}
-
-.streak-flame {
-    font-size: 64px;
-    color: #FFC107;
-    animation: flamePulse 2s ease-in-out infinite;
-}
-
-.streak-flame.inactive {
-    color: #95a5a6;
-    animation: none;
-    filter: grayscale(100%);
-}
-
-@keyframes flamePulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-}
-
-.streak-message {
-    font-size: 20px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.9);
-    margin-top: 10px;
-}
-
-/* Weekly Consistency Tracker */
-.weekly-consistency-tracker {
-    padding: 30px 20px;
-}
-
-.week-days {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.day-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: all 0.3s;
-}
-
-.day-label {
-    font-weight: 600;
-    color: var(--primary);
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-.day-progress {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #e9ecef;
-    transition: all 0.3s;
-}
-
-.day-circle.completed .day-progress {
-    background: #FFC107;
-    box-shadow: 0 0 10px rgba(255,193,7,0.5);
-}
-
-.day-circle.completed .day-label {
-    color: #FFC107;
-    font-weight: 700;
-}
-
-.day-circle.current {
-    border: 2px solid var(--secondary);
-    animation: pulseCurrent 1.5s infinite;
-}
-
-@keyframes pulseCurrent {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(52,152,219,0.4); }
-    50% { box-shadow: 0 0 0 10px rgba(52,152,219,0); }
-}
-
-.day-circle.future {
-    opacity: 0.5;
-}
-
-.week-summary {
-    text-align: center;
-    font-size: 16px;
-    color: var(--gray);
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    font-weight: 500;
-}
-
-/* Badges Carousel */
-.badges-section {
-    overflow: hidden;
-}
-
-.badges-carousel {
-    display: flex;
-    overflow-x: auto;
-    gap: 25px;
-    padding: 30px 20px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--secondary) #f1f1f1;
-}
-
-.badges-carousel::-webkit-scrollbar {
-    height: 8px;
-}
-
-.badges-carousel::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.badges-carousel::-webkit-scrollbar-thumb {
-    background: var(--secondary);
-    border-radius: 10px;
-}
-
-.badge-item {
-    flex: 0 0 auto;
-    width: 140px;
-    text-align: center;
-    padding: 20px;
-    border-radius: 20px;
-    background: white;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    transition: all 0.3s;
-    border: 2px solid #e9ecef;
-}
-
-.badge-item.unlocked {
-    border-color: #FFC107;
-    background: linear-gradient(135deg, rgba(255,193,7,0.05) 0%, rgba(255,152,0,0.05) 100%);
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(255,193,7,0.2);
-}
-
-.badge-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
-    opacity: 0.3;
-    transition: all 0.3s;
-}
-
-.badge-item.unlocked .badge-icon {
-    opacity: 1;
-    animation: badgeGlow 2s infinite;
-}
-
-@keyframes badgeGlow {
-    0%, 100% { filter: drop-shadow(0 0 5px rgba(255,193,7,0.5)); }
-    50% { filter: drop-shadow(0 0 15px rgba(255,193,7,0.8)); }
-}
-
-.badge-label {
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.badge-status {
-    font-size: 12px;
-    color: var(--gray);
-    font-weight: 500;
-}
-
-.badge-item.unlocked .badge-status {
-    color: #FFC107;
-    font-weight: 600;
-}
-
-.badge-description {
-    text-align: center;
-    padding: 20px;
-    font-size: 16px;
-    color: var(--primary);
-    font-weight: 500;
-    border-top: 1px solid #eee;
-}
+                     
 
 /* Motivation Quote Styles */
 .quote-section {
@@ -4613,6 +4622,10 @@
             if (!dbInitialized) {
                 showToast('Failed to initialize database. Some features may not work.', 'error');
             }
+                // Recalculate heatmap data to ensure consolidation
+    setTimeout(async () => {
+        await recalculateHeatmapData();
+    }, 1000);
             
             // Set today's date in start date input
             const today = new Date().toISOString().split('T')[0];
@@ -4760,6 +4773,11 @@
                     updateDashboard();
                 });
             });
+            // Add to the existing event listeners section
+document.getElementById('recalculate-data-btn')?.addEventListener('click', async () => {
+    await recalculateHeatmapData();
+    showToast('All data recalculated and consolidated!', 'success');
+});
             
             // Chart type buttons
             document.querySelectorAll('.chart-type-btn').forEach(btn => {
@@ -5856,7 +5874,12 @@ function checkMissedStudyDays() {
                 console.error('Error saving subtopic:', error);
                 if (callback) callback(false);
             }
-        }
+           // Also update heatmap data
+    const today = new Date().toISOString().split('T')[0];
+    await recalculateHeatmapData();
+    
+    // Update KPI cards
+    updateDashboard(); }
         
         // Helper function to check if a target matches syllabus structure
         function doesTargetMatchSyllabus(target) {
@@ -6044,24 +6067,16 @@ function checkMissedStudyDays() {
                         if (subtopic.completed) {
                             totalSubtopicsCompleted++;
                         }
-                        
-                        // Update heatmap data if we have a date
-                        if (subtopic.lastUpdated) {
-                            const dateObj = new Date(subtopic.lastUpdated);
-                            const dateString = dateObj.toISOString().split('T')[0];
-                            const [year, month, day] = dateString.split('-');
-                            
-                            if (!heatmapData[year]) {
-                                heatmapData[year] = {};
-                            }
-                            
-                            // Add to existing hours or set new
-                            heatmapData[year][dateString] = (heatmapData[year][dateString] || 0) + hours;
-                        }
                     });
                 }
             }
-                    
+            
+            // A subject is completed only if it has topics and all are completed
+            if (subjectCompleted && Object.keys(subject.topics).length > 0) {
+                completedSubjects++;
+            }
+        }
+    }     
                 // A subject is completed only if it has topics and all are completed
             if (subjectCompleted && Object.keys(subject.topics).length > 0) {
                 completedSubjects++;
@@ -8599,33 +8614,140 @@ async function importResourcesOnly(event) {
             return weekDays;
         }
         
-               // Function to update heatmap data when study hours are logged
-        async function updateHeatmapData(dateString, hours) {
-            // The dateString should already be in YYYY-MM-DD format
-            const year = dateString.split('-')[0];
-            
-            if (!userMotivation.heatmapData[year]) {
-                userMotivation.heatmapData[year] = {};
-            }
-            
-            // IMPORTANT: Make sure we're adding hours, not replacing
-            const currentHours = userMotivation.heatmapData[year][dateString] || 0;
-            userMotivation.heatmapData[year][dateString] = currentHours + hours;
-            
-            console.log(`Updated heatmap: ${dateString} = ${userMotivation.heatmapData[year][dateString]} hours`);
-            
-            // Save to IndexedDB
-            await DataStorage.manualSave('motivation', userMotivation, (success) => {
-                if (success && currentPage === 'motivation') {
-                    // Refresh the current view
-                    if (heatmapViewMode === 'month') {
-                        generateMonthHeatmap(currentHeatmapYear, currentHeatmapMonth);
-                    } else {
-                        generateYearHeatmap(currentHeatmapYear);
+   // Update heatmap data when study hours are logged
+async function updateHeatmapData(dateString, hours) {
+    // The dateString should already be in YYYY-MM-DD format
+    const year = dateString.split('-')[0];
+    
+    if (!userMotivation.heatmapData[year]) {
+        userMotivation.heatmapData[year] = {};
+    }
+    
+    // If we're receiving a difference, add it; otherwise set the value
+    const currentHours = userMotivation.heatmapData[year][dateString] || 0;
+    
+    // Determine if we should add or set
+    // For subject subtopic updates, we should replace the total for that date
+    // So we need to recalculate total hours for that date
+    const allTargets = [...userTargets, ...completedTargets];
+    const targetsForDate = allTargets.filter(target => target.date === dateString);
+    const targetHours = targetsForDate.reduce((sum, target) => sum + (target.actualHours || 0), 0);
+    
+    // Also get hours from subject progress for this date
+    let subjectHoursForDate = 0;
+    if (userProgress && userProgress.subjects) {
+        for (const subjectId in userProgress.subjects) {
+            for (const topicName in userProgress.subjects[subjectId].topics) {
+                const topic = userProgress.subjects[subjectId].topics[topicName];
+                if (topic.subtopics) {
+                    for (const subtopicName in topic.subtopics) {
+                        const subtopic = topic.subtopics[subtopicName];
+                        if (subtopic.lastUpdated) {
+                            const subtopicDate = new Date(subtopic.lastUpdated).toISOString().split('T')[0];
+                            if (subtopicDate === dateString) {
+                                subjectHoursForDate += subtopic.actualHours || 0;
+                            }
+                        }
                     }
                 }
-            });
+            }
         }
+    }
+    
+    // Total hours for this date
+    const totalHoursForDate = targetHours + subjectHoursForDate;
+    
+    // Update heatmap with total
+    userMotivation.heatmapData[year][dateString] = totalHoursForDate;
+    
+    console.log(`Updated heatmap: ${dateString} = ${totalHoursForDate} hours (Targets: ${targetHours}h, Subjects: ${subjectHoursForDate}h)`);
+    
+    // Save to IndexedDB
+    await DataStorage.manualSave('motivation', userMotivation, (success) => {
+        if (success && currentPage === 'motivation') {
+            // Refresh the current view
+            if (heatmapViewMode === 'month') {
+                generateMonthHeatmap(currentHeatmapYear, currentHeatmapMonth);
+            } else {
+                generateYearHeatmap(currentHeatmapYear);
+            }
+        }
+    });
+}
+
+// Function to recalculate all heatmap data
+async function recalculateHeatmapData() {
+    console.log("Recalculating heatmap data...");
+    
+    // Clear existing heatmap data
+    userMotivation.heatmapData = {};
+    
+    // Collect data from all sources
+    const allTargets = [...userTargets, ...completedTargets];
+    const allDates = {};
+    
+    // Process targets
+    allTargets.forEach(target => {
+        if (target.date && (target.actualHours || 0) > 0) {
+            const dateStr = target.date;
+            const year = dateStr.split('-')[0];
+            
+            if (!allDates[dateStr]) {
+                allDates[dateStr] = 0;
+            }
+            allDates[dateStr] += target.actualHours || 0;
+        }
+    });
+    
+    // Process subject progress
+    if (userProgress && userProgress.subjects) {
+        for (const subjectId in userProgress.subjects) {
+            for (const topicName in userProgress.subjects[subjectId].topics) {
+                const topic = userProgress.subjects[subjectId].topics[topicName];
+                if (topic.subtopics) {
+                    for (const subtopicName in topic.subtopics) {
+                        const subtopic = topic.subtopics[subtopicName];
+                        if (subtopic.lastUpdated && (subtopic.actualHours || 0) > 0) {
+                            const dateStr = new Date(subtopic.lastUpdated).toISOString().split('T')[0];
+                            const year = dateStr.split('-')[0];
+                            
+                            if (!allDates[dateStr]) {
+                                allDates[dateStr] = 0;
+                            }
+                            allDates[dateStr] += subtopic.actualHours || 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Organize by year for heatmap
+    for (const dateStr in allDates) {
+        const year = dateStr.split('-')[0];
+        if (!userMotivation.heatmapData[year]) {
+            userMotivation.heatmapData[year] = {};
+        }
+        userMotivation.heatmapData[year][dateStr] = allDates[dateStr];
+    }
+    
+    console.log("Heatmap data recalculated:", userMotivation.heatmapData);
+    
+    // Save the updated heatmap data
+    await DataStorage.manualSave('motivation', userMotivation);
+    
+    // Update UI if on motivation page
+    if (currentPage === 'motivation') {
+        if (heatmapViewMode === 'month') {
+            generateMonthHeatmap(currentHeatmapYear, currentHeatmapMonth);
+        } else {
+            generateYearHeatmap(currentHeatmapYear);
+        }
+    }
+    
+    // Update KPI cards
+    updateDashboard();
+}
 
         // ==================== STREAK CALCULATION FUNCTIONS ====================
 function calculateStreak() {
