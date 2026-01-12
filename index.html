@@ -2726,15 +2726,23 @@
                     <div class="export-import-section">
                         <h3><i class="fas fa-database"></i> Data Management</h3>
                         <p>Backup your study data or restore from previous backup</p>
-                        <div class="data-actions">
-                            <button class="btn" id="backup-all-btn">
-                                <i class="fas fa-file-export"></i> Backup All Data
-                            </button>
-                            <button class="btn btn-accent" id="restore-backup-btn">
-                                <i class="fas fa-file-import"></i> Restore Backup
-                            </button>
-                            <input type="file" id="backup-file" accept=".json" style="display: none;">
-                        </div>
+                    <div class="data-actions">
+    <button class="btn" id="backup-all-btn">
+        <i class="fas fa-file-export"></i> Backup All Data
+    </button>
+    <button class="btn" id="export-videos-btn" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+        <i class="fas fa-video"></i> Export Videos Only
+    </button>
+    <button class="btn" id="export-resources-btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
+        <i class="fas fa-sticky-note"></i> Export Resources Only
+    </button>
+    <button class="btn btn-accent" id="restore-backup-btn">
+        <i class="fas fa-file-import"></i> Restore Backup
+    </button>
+    <input type="file" id="backup-file" accept=".json" style="display: none;">
+    <input type="file" id="import-videos-file" accept=".json" style="display: none;">
+    <input type="file" id="import-resources-file" accept=".json" style="display: none;">
+</div>
                         <div id="backup-message" class="auth-message" style="margin-top: 15px;"></div>
                     </div>
                 </div>
@@ -2982,19 +2990,126 @@
                         </div>
                     </div>
                 </div>
-                  <!-- Motivation Page -->
-                <div class="page" id="motivation-page">
-                    <div class="page-header">
-                        <h2 class="page-title"><i class="fas fa-fire"></i> Motivation & Focus</h2>
-                        <div class="page-actions">
-                            <button class="btn btn-accent" id="refresh-quote-btn">
-                                <i class="fas fa-sync-alt"></i> New Quote
-                            </button>
-                            <button class="btn" id="add-custom-quote-btn">
-                                <i class="fas fa-plus"></i> Custom Quote
-                            </button>
-                        </div>
+              <!-- Motivation Page -->
+<div class="page" id="motivation-page">
+    <div class="page-header">
+        <h2 class="page-title"><i class="fas fa-fire"></i> Motivation & Achievements</h2>
+        <div class="page-actions">
+            <button class="btn btn-accent" id="refresh-quote-btn">
+                <i class="fas fa-sync-alt"></i> New Quote
+            </button>
+            <button class="btn" id="add-custom-quote-btn">
+                <i class="fas fa-plus"></i> Custom Quote
+            </button>
+        </div>
+    </div>
+    
+    <!-- Streak & Achievements Dashboard -->
+    <div class="motivation-container">
+        <!-- SECTION 1: Hero Streak Display -->
+        <div class="motivation-card streak-hero-section">
+            <div class="streak-hero-content">
+                <div class="streak-display">
+                    <div class="streak-number" id="hero-streak-number">0</div>
+                    <div class="streak-flame" id="hero-streak-flame">
+                        <i class="fas fa-fire"></i>
                     </div>
+                </div>
+                <div class="streak-message" id="streak-message">Start your study streak today!</div>
+            </div>
+        </div>
+        
+        <!-- SECTION 2: Weekly Consistency Tracker -->
+        <div class="motivation-card weekly-tracker-section">
+            <div class="motivation-card-header">
+                <h3><i class="fas fa-calendar-week"></i> This Week's Progress</h3>
+            </div>
+            <div class="weekly-consistency-tracker">
+                <div class="week-days">
+                    <div class="day-circle" data-day="0">
+                        <div class="day-label">S</div>
+                        <div class="day-progress"></div>
+                    </div>
+                    <div class="day-circle" data-day="1">
+                        <div class="day-label">M</div>
+                        <div class="day-progress"></div>
+                    </div>
+                    <div class="day-circle" data-day="2">
+                        <div class="day-label">T</div>
+                        <div class="day-progress"></div>
+                    </div>
+                    <div class="day-circle" data-day="3">
+                        <div class="day-label">W</div>
+                        <div class="day-progress"></div>
+                    </div>
+                    <div class="day-circle" data-day="4">
+                        <div class="day-label">T</div>
+                        <div class="day-progress"></div>
+                    </div>
+                    <div class="day-circle" data-day="5">
+                        <div class="day-label">F</div>
+                        <div class="day-progress"></div>
+                    </div>
+                    <div class="day-circle" data-day="6">
+                        <div class="day-label">S</div>
+                        <div class="day-progress"></div>
+                    </div>
+                </div>
+                <div class="week-summary" id="week-summary">No study sessions this week yet</div>
+            </div>
+        </div>
+        
+        <!-- SECTION 3: Milestone Badge Carousel -->
+        <div class="motivation-card badges-section">
+            <div class="motivation-card-header">
+                <h3><i class="fas fa-trophy"></i> Achievement Badges</h3>
+            </div>
+            <div class="badges-carousel">
+                <div class="badge-item" data-level="1">
+                    <div class="badge-icon">⭐</div>
+                    <div class="badge-label">3-Day Star</div>
+                    <div class="badge-status">Locked</div>
+                </div>
+                <div class="badge-item" data-level="2">
+                    <div class="badge-icon">🌟</div>
+                    <div class="badge-label">5-Day Superstar</div>
+                    <div class="badge-status">Locked</div>
+                </div>
+                <div class="badge-item" data-level="3">
+                    <div class="badge-icon">🏆</div>
+                    <div class="badge-label">7-Day Champion</div>
+                    <div class="badge-status">Locked</div>
+                </div>
+                <div class="badge-item" data-level="4">
+                    <div class="badge-icon">🥇</div>
+                    <div class="badge-label">30-Day Icon</div>
+                    <div class="badge-status">Locked</div>
+                </div>
+                <div class="badge-item" data-level="5">
+                    <div class="badge-icon">💎</div>
+                    <div class="badge-label">100-Day Invincible</div>
+                    <div class="badge-status">Locked</div>
+                </div>
+                <div class="badge-item" data-level="6">
+                    <div class="badge-icon">☀️</div>
+                    <div class="badge-label">365-Day Master</div>
+                    <div class="badge-status">Locked</div>
+                </div>
+            </div>
+            <div class="badge-description" id="badge-description">Unlock badges by maintaining your study streak!</div>
+        </div>
+        
+        <!-- Existing heatmap section -->
+        <div class="motivation-card" id="heatmap-section">
+            <!-- Keep existing heatmap HTML here -->
+        </div>
+        
+        <!-- Existing custom quotes section -->
+        <div class="motivation-card" id="custom-quotes-section">
+            <!-- Keep existing custom quotes HTML here -->
+        </div>
+    </div>
+</div>
                     
                     <!-- Motivation Container -->
                     <div class="motivation-container">
@@ -3126,6 +3241,247 @@
                                 </div>
                             </div>
                         </div>
+                        /* ============= STREAK & ACHIEVEMENTS STYLES ============= */
+.streak-hero-section {
+    background: linear-gradient(135deg, #2c3e50 0%, #4a235a 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.streak-hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,193,7,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.streak-hero-content {
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.streak-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.streak-number {
+    font-size: 96px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #FFC107, #FF9800);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 20px rgba(255,193,7,0.3);
+}
+
+.streak-flame {
+    font-size: 64px;
+    color: #FFC107;
+    animation: flamePulse 2s ease-in-out infinite;
+}
+
+.streak-flame.inactive {
+    color: #95a5a6;
+    animation: none;
+    filter: grayscale(100%);
+}
+
+@keyframes flamePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.streak-message {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    margin-top: 10px;
+}
+
+/* Weekly Consistency Tracker */
+.weekly-consistency-tracker {
+    padding: 30px 20px;
+}
+
+.week-days {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.day-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.day-label {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.day-progress {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e9ecef;
+    transition: all 0.3s;
+}
+
+.day-circle.completed .day-progress {
+    background: #FFC107;
+    box-shadow: 0 0 10px rgba(255,193,7,0.5);
+}
+
+.day-circle.completed .day-label {
+    color: #FFC107;
+    font-weight: 700;
+}
+
+.day-circle.current {
+    border: 2px solid var(--secondary);
+    animation: pulseCurrent 1.5s infinite;
+}
+
+@keyframes pulseCurrent {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,152,219,0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(52,152,219,0); }
+}
+
+.day-circle.future {
+    opacity: 0.5;
+}
+
+.week-summary {
+    text-align: center;
+    font-size: 16px;
+    color: var(--gray);
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* Badges Carousel */
+.badges-section {
+    overflow: hidden;
+}
+
+.badges-carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 25px;
+    padding: 30px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary) #f1f1f1;
+}
+
+.badges-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.badges-carousel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.badges-carousel::-webkit-scrollbar-thumb {
+    background: var(--secondary);
+    border-radius: 10px;
+}
+
+.badge-item {
+    flex: 0 0 auto;
+    width: 140px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: 2px solid #e9ecef;
+}
+
+.badge-item.unlocked {
+    border-color: #FFC107;
+    background: linear-gradient(135deg, rgba(255,193,7,0.05) 0%, rgba(255,152,0,0.05) 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(255,193,7,0.2);
+}
+
+.badge-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+    transition: all 0.3s;
+}
+
+.badge-item.unlocked .badge-icon {
+    opacity: 1;
+    animation: badgeGlow 2s infinite;
+}
+
+@keyframes badgeGlow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(255,193,7,0.5)); }
+    50% { filter: drop-shadow(0 0 15px rgba(255,193,7,0.8)); }
+}
+
+.badge-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.badge-status {
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.badge-item.unlocked .badge-status {
+    color: #FFC107;
+    font-weight: 600;
+}
+
+.badge-description {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: var(--primary);
+    font-weight: 500;
+    border-top: 1px solid #eee;
+}
+
+/* Motivation Quote Styles */
+.quote-section {
+    background: linear-gradient(135deg, rgba(255,193,7,0.05) 0%, rgba(255,152,0,0.05) 100%);
+    border: 1px solid rgba(255,193,7,0.2);
+}
                         
                         <!-- Custom Quotes Section -->
                         <div class="motivation-card" id="custom-quotes-section">
@@ -4451,6 +4807,21 @@
             
             // Data backup
             document.getElementById('backup-all-btn').addEventListener('click', backupAllData);
+            // Add to the existing event listeners
+document.getElementById('export-videos-btn').addEventListener('click', exportVideosOnly);
+document.getElementById('export-resources-btn').addEventListener('click', exportResourcesOnly);
+document.getElementById('import-videos-file').addEventListener('change', importVideosOnly);
+document.getElementById('import-resources-file').addEventListener('change', importResourcesOnly);
+
+// Add buttons to trigger file selection
+document.getElementById('export-videos-btn').addEventListener('click', () => {
+    document.getElementById('import-videos-file').click();
+});
+document.getElementById('export-resources-btn').addEventListener('click', () => {
+    document.getElementById('import-resources-file').click();
+});
+
+            
             document.getElementById('restore-backup-btn').addEventListener('click', () => document.getElementById('backup-file').click());
             document.getElementById('backup-file').addEventListener('change', restoreBackupData);
             
@@ -4497,6 +4868,303 @@
                     }
                 });
             });
+
+            // ==================== NOTIFICATIONS & AI MOOD ALGORITHM ====================
+class StudyNotifier {
+    constructor() {
+        this.notificationSettings = {
+            enabled: true,
+            dailyGoal: 4,
+            reminderTimes: ['09:00', '14:00', '19:00'],
+            moodBasedMessages: true
+        };
+        
+        this.moodMessages = {
+            morning: [
+                "Good morning! Ready to conquer your studies today? 🌅",
+                "Early bird gets the worm! Start your study session now. 📚",
+                "Morning study sessions lead to maximum retention. Let's begin! 💪"
+            ],
+            afternoon: [
+                "Afternoon energy dip? A study session will boost your focus! ☕",
+                "Perfect time for a productive study break. What's your target? 🎯",
+                "Keep the momentum going! How about tackling a challenging topic? ⚡"
+            ],
+            evening: [
+                "Evening study sessions can be super productive. Ready to focus? 🌙",
+                "Review what you learned today to reinforce it in memory. 🔄",
+                "One more study session before bed can make a big difference. 🌟"
+            ],
+            lowMood: [
+                "Feeling stuck? Just 15 minutes of study can break the inertia. 🚀",
+                "Progress, not perfection. Every small step counts. 👣",
+                "Remember why you started. You've got this! 💫"
+            ],
+            highMood: [
+                "You're on fire! Use this energy to tackle tough topics. 🔥",
+                "Great momentum! Challenge yourself with advanced concepts. 🚀",
+                "Your consistency is paying off. Keep pushing forward! 💎"
+            ]
+        };
+    }
+    
+    checkStudyStatus() {
+        if (!this.notificationSettings.enabled) return;
+        
+        const today = new Date().toISOString().split('T')[0];
+        let hoursStudiedToday = 0;
+        
+        // Get hours studied today from all sources
+        const allTargets = [...userTargets, ...completedTargets];
+        allTargets.forEach(target => {
+            if (target.date === today) {
+                hoursStudiedToday += target.actualHours || 0;
+            }
+        });
+        
+        // Also check heatmap data
+        const currentYear = new Date().getFullYear().toString();
+        if (userMotivation.heatmapData[currentYear] && userMotivation.heatmapData[currentYear][today]) {
+            hoursStudiedToday += userMotivation.heatmapData[currentYear][today];
+        }
+        
+        const remainingHours = this.notificationSettings.dailyGoal - hoursStudiedToday;
+        
+        if (remainingHours > 0) {
+            this.sendMotivationalNotification(remainingHours, hoursStudiedToday);
+        }
+    }
+    
+    detectUserMood() {
+        // Simple mood detection based on study patterns
+        const recentStudyHours = this.getRecentStudyHours(7); // Last 7 days
+        const avgDailyHours = recentStudyHours.reduce((a, b) => a + b, 0) / 7;
+        
+        if (avgDailyHours < 2) return 'lowMood';
+        if (avgDailyHours > 4) return 'highMood';
+        return 'neutral';
+    }
+    
+    getRecentStudyHours(days) {
+        const hours = [];
+        const today = new Date();
+        
+        for (let i = 0; i < days; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            
+            let dailyHours = 0;
+            const currentYear = new Date().getFullYear().toString();
+            if (userMotivation.heatmapData[currentYear] && userMotivation.heatmapData[currentYear][dateStr]) {
+                dailyHours += userMotivation.heatmapData[currentYear][dateStr];
+            }
+            
+            hours.push(dailyHours);
+        }
+        
+        return hours;
+    }
+    
+    sendMotivationalNotification(remainingHours, completedHours) {
+        if (!('Notification' in window)) return;
+        
+        if (Notification.permission === 'granted') {
+            const mood = this.detectUserMood();
+            const timeOfDay = this.getTimeOfDay();
+            const message = this.generateMotivationalMessage(mood, timeOfDay, remainingHours, completedHours);
+            
+            new Notification('CA Final Study Reminder 📚', {
+                body: message,
+                icon: '/icon.png',
+                requireInteraction: true
+            });
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    this.sendMotivationalNotification(remainingHours, completedHours);
+                }
+            });
+        }
+    }
+    
+    getTimeOfDay() {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'morning';
+        if (hour < 17) return 'afternoon';
+        return 'evening';
+    }
+    
+    generateMotivationalMessage(mood, timeOfDay, remainingHours, completedHours) {
+        let messages = [];
+        
+        // Add time-based message
+        if (this.moodMessages[timeOfDay]) {
+            messages.push(this.moodMessages[timeOfDay][Math.floor(Math.random() * this.moodMessages[timeOfDay].length)]);
+        }
+        
+        // Add mood-based message
+        if (mood !== 'neutral' && this.notificationSettings.moodBasedMessages) {
+            messages.push(this.moodMessages[mood][Math.floor(Math.random() * this.moodMessages[mood].length)]);
+        }
+        
+        // Add progress-based message
+        if (completedHours > 0) {
+            messages.push(`Great job! You've already studied ${completedHours} hours today. ${remainingHours > 0 ? `Just ${remainingHours} more to reach your goal!` : "You've reached your goal! 🎉"}`);
+        } else {
+            messages.push(`You haven't studied today yet. Your target: ${this.notificationSettings.dailyGoal} hours. Start now!`);
+        }
+        
+        // Add study tip
+        const tips = [
+            "Tip: Break your study into 25-min Pomodoro sessions with 5-min breaks.",
+            "Tip: Review yesterday's topics before starting new material.",
+            "Tip: Focus on understanding concepts, not just memorization.",
+            "Tip: Practice with past papers to identify weak areas.",
+            "Tip: Teach what you've learned to reinforce understanding."
+        ];
+        messages.push(tips[Math.floor(Math.random() * tips.length)]);
+        
+        return messages.join('\n\n');
+    }
+    
+    scheduleNotifications() {
+        // Clear existing intervals
+        if (this.notificationInterval) {
+            clearInterval(this.notificationInterval);
+        }
+        
+        // Check every hour
+        this.notificationInterval = setInterval(() => {
+            const now = new Date();
+            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
+                               now.getMinutes().toString().padStart(2, '0');
+            
+            // Check if it's time for a scheduled reminder
+            if (this.notificationSettings.reminderTimes.includes(currentTime)) {
+                this.checkStudyStatus();
+            }
+            
+            // Also check at random intervals for mood-based messages
+            if (Math.random() < 0.1) { // 10% chance per hour
+                const mood = this.detectUserMood();
+                if (mood === 'lowMood') {
+                    this.sendMotivationalNotification(4, 0); // Encourage to start
+                }
+            }
+        }, 60 * 60 * 1000); // Check every hour
+        
+        // Initial check
+        this.checkStudyStatus();
+    }
+    
+    updateSettings(newSettings) {
+        this.notificationSettings = { ...this.notificationSettings, ...newSettings };
+        this.scheduleNotifications();
+    }
+}
+
+// Initialize notifier
+const studyNotifier = new StudyNotifier();
+
+// Add notification settings to settings modal
+function addNotificationSettings() {
+    const settingsModal = document.getElementById('settings-modal');
+    if (!settingsModal) return;
+    
+    const modalBody = settingsModal.querySelector('.modal-body');
+    const notificationSection = document.createElement('div');
+    notificationSection.innerHTML = `
+        <div style="margin-bottom: 30px;">
+            <h4 style="margin-bottom: 15px;">AI Study Coach</h4>
+            <div style="display: grid; gap: 15px;">
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="enable-ai-coach" checked>
+                    <span>Enable AI Study Coach</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="enable-mood-messages" checked>
+                    <span>Personalized mood-based messages</span>
+                </label>
+                <div class="form-group">
+                    <label for="daily-goal">Daily Study Goal (hours)</label>
+                    <input type="number" id="daily-goal" min="1" max="12" value="4" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label for="reminder-times">Reminder Times (comma-separated)</label>
+                    <input type="text" id="reminder-times" value="09:00,14:00,19:00">
+                </div>
+                <button class="btn" id="test-notification-btn" style="background: var(--warning);">
+                    <i class="fas fa-bell"></i> Test Notification
+                </button>
+            </div>
+        </div>
+    `;
+    
+    modalBody.insertBefore(notificationSection, modalBody.firstChild);
+    
+    // Add event listeners
+    document.getElementById('test-notification-btn')?.addEventListener('click', () => {
+        studyNotifier.sendMotivationalNotification(2, 2);
+        showToast('Test notification sent!', 'success');
+    });
+    
+    // Update settings when saved
+    const originalSaveSettings = window.saveSettings;
+    window.saveSettings = async function() {
+        const aiCoachEnabled = document.getElementById('enable-ai-coach').checked;
+        const moodMessagesEnabled = document.getElementById('enable-mood-messages').checked;
+        const dailyGoal = parseFloat(document.getElementById('daily-goal').value) || 4;
+        const reminderTimes = document.getElementById('reminder-times').value.split(',').map(t => t.trim());
+        
+        studyNotifier.updateSettings({
+            enabled: aiCoachEnabled,
+            moodBasedMessages: moodMessagesEnabled,
+            dailyGoal: dailyGoal,
+            reminderTimes: reminderTimes
+        });
+        
+        // Call original save function
+        return originalSaveSettings();
+    };
+}
+
+// Initialize notifications when app loads
+document.addEventListener('DOMContentLoaded', () => {
+    // Delay initialization to let app load
+    setTimeout(() => {
+        addNotificationSettings();
+        studyNotifier.scheduleNotifications();
+        
+        // Check for missed study days
+        checkMissedStudyDays();
+    }, 3000);
+});
+
+function checkMissedStudyDays() {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    let studiedYesterday = false;
+    const currentYear = new Date().getFullYear().toString();
+    if (userMotivation.heatmapData[currentYear] && userMotivation.heatmapData[currentYear][yesterdayStr]) {
+        studiedYesterday = true;
+    }
+    
+    if (!studiedYesterday && studyNotifier.notificationSettings.enabled) {
+        // Send encouragement for missed day
+        setTimeout(() => {
+            if (Notification.permission === 'granted') {
+                new Notification('Missed Yesterday? No Problem!', {
+                    body: `Everyone has off days. What matters is getting back on track today! 💪\n\nTip: Try to study at the same time each day to build a habit.`,
+                    icon: '/icon.png'
+                });
+            }
+        }, 5000);
+    }
+}
             
             // Motivation page event listeners
             document.getElementById('refresh-quote-btn')?.addEventListener('click', loadRandomQuote);
@@ -5337,38 +6005,62 @@
             }
         }
         
-        function updateGlobalKPIs() {
-            let totalActualHours = 0;
-            let totalPlannedHours = userStudyPlan?.totalHours || 720;
-            let completedTopics = 0;
-            let completedSubjects = 0;
-            let totalSubtopicsCompleted = 0;
-            let totalSubtopics = 0;
+  function updateGlobalKPIs() {
+    let totalActualHours = 0;
+    let totalPlannedHours = userStudyPlan?.totalHours || 720;
+    let completedTopics = 0;
+    let completedSubjects = 0;
+    let totalSubtopicsCompleted = 0;
+    let totalSubtopics = 0;
+    
+    // Collect heatmap data from both sources
+    let heatmapData = userMotivation.heatmapData || {};
+    const currentYear = new Date().getFullYear().toString();
+    
+    // Initialize year if not exists
+    if (!heatmapData[currentYear]) {
+        heatmapData[currentYear] = {};
+    }
+    
+    if (userProgress.subjects) {
+        for (const subjectId in userProgress.subjects) {
+            const subject = userProgress.subjects[subjectId];
             
-            if (userProgress.subjects) {
-                for (const subjectId in userProgress.subjects) {
-                    const subject = userProgress.subjects[subjectId];
-                    
-                    let subjectCompleted = true;
-                    for (const topicName in subject.topics) {
-                        const topic = subject.topics[topicName];
-                        
-                        if (topic.status === 'completed') {
-                            completedTopics++;
-                        } else {
-                            subjectCompleted = false;
+            let subjectCompleted = true;
+            for (const topicName in subject.topics) {
+                const topic = subject.topics[topicName];
+                
+                if (topic.status === 'completed') {
+                    completedTopics++;
+                } else {
+                    subjectCompleted = false;
+                }
+                
+                if (topic.subtopics) {
+                    Object.entries(topic.subtopics).forEach(([subtopicName, subtopic]) => {
+                        const hours = subtopic.actualHours || 0;
+                        totalActualHours += hours;
+                        totalSubtopics++;
+                        if (subtopic.completed) {
+                            totalSubtopicsCompleted++;
                         }
                         
-                        if (topic.subtopics) {
-                            Object.values(topic.subtopics).forEach(subtopic => {
-                                totalActualHours += subtopic.actualHours || 0;
-                                totalSubtopics++;
-                                if (subtopic.completed) {
-                                    totalSubtopicsCompleted++;
-                                }
-                            });
+                        // Update heatmap data if we have a date
+                        if (subtopic.lastUpdated) {
+                            const dateObj = new Date(subtopic.lastUpdated);
+                            const dateString = dateObj.toISOString().split('T')[0];
+                            const [year, month, day] = dateString.split('-');
+                            
+                            if (!heatmapData[year]) {
+                                heatmapData[year] = {};
+                            }
+                            
+                            // Add to existing hours or set new
+                            heatmapData[year][dateString] = (heatmapData[year][dateString] || 0) + hours;
                         }
-                    }
+                    });
+                }
+            }
                     
                 // A subject is completed only if it has topics and all are completed
             if (subjectCompleted && Object.keys(subject.topics).length > 0) {
@@ -6991,7 +7683,111 @@ async function deleteTarget(index) {
                 showToast('Failed to create backup', 'error');
             }
         }
+        async function exportVideosOnly() {
+    try {
+        const videosData = {
+            videos: userVideos,
+            exportDate: new Date().toISOString(),
+            version: '2.0',
+            type: 'videos-only'
+        };
         
+        const blob = new Blob([JSON.stringify(videosData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ca_final_videos_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Videos exported successfully!', 'success');
+    } catch (error) {
+        console.error('Export videos error:', error);
+        showToast('Failed to export videos', 'error');
+    }
+}
+
+async function exportResourcesOnly() {
+    try {
+        const resourcesData = {
+            resources: userResources,
+            exportDate: new Date().toISOString(),
+            version: '2.0',
+            type: 'resources-only'
+        };
+        
+        const blob = new Blob([JSON.stringify(resourcesData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ca_final_resources_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Resources exported successfully!', 'success');
+    } catch (error) {
+        console.error('Export resources error:', error);
+        showToast('Failed to export resources', 'error');
+    }
+}
+
+async function importVideosOnly(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.type !== 'videos-only') {
+                showToast('Invalid videos file format', 'error');
+                return;
+            }
+            
+            userVideos = data.videos || [];
+            await DataStorage.save('videos', userVideos);
+            loadVideos();
+            showToast('Videos imported successfully!', 'success');
+        } catch (error) {
+            console.error('Import videos error:', error);
+            showToast('Failed to import videos file', 'error');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+async function importResourcesOnly(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.type !== 'resources-only') {
+                showToast('Invalid resources file format', 'error');
+                return;
+            }
+            
+            userResources = data.resources || [];
+            await DataStorage.save('resources', userResources);
+            loadResources();
+            showToast('Resources imported successfully!', 'success');
+        } catch (error) {
+            console.error('Import resources error:', error);
+            showToast('Failed to import resources file', 'error');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
         function restoreBackupData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -7830,6 +8626,213 @@ async function deleteTarget(index) {
                 }
             });
         }
+
+        // ==================== STREAK CALCULATION FUNCTIONS ====================
+function calculateStreak() {
+    const today = new Date().toISOString().split('T')[0];
+    const streakData = {
+        currentStreak: 0,
+        longestStreak: 0,
+        weeklyProgress: [0, 0, 0, 0, 0, 0, 0],
+        unlockedBadges: []
+    };
+    
+    // Get all study dates from heatmap data
+    let allStudyDates = [];
+    for (const year in userMotivation.heatmapData) {
+        for (const date in userMotivation.heatmapData[year]) {
+            const hours = userMotivation.heatmapData[year][date];
+            if (hours > 0) {
+                allStudyDates.push(date);
+            }
+        }
+    }
+    
+    // Sort dates ascending
+    allStudyDates.sort();
+    
+    // Calculate current streak
+    let currentDate = new Date(today);
+    let streakCount = 0;
+    
+    while (true) {
+        const dateStr = currentDate.toISOString().split('T')[0];
+        if (allStudyDates.includes(dateStr)) {
+            streakCount++;
+            currentDate.setDate(currentDate.getDate() - 1);
+        } else {
+            break;
+        }
+    }
+    
+    streakData.currentStreak = streakCount;
+    
+    // Calculate longest streak
+    let longestStreak = 0;
+    let tempStreak = 0;
+    let lastDate = null;
+    
+    allStudyDates.forEach(dateStr => {
+        const currentDate = new Date(dateStr);
+        
+        if (lastDate) {
+            const diffDays = Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) {
+                tempStreak++;
+            } else {
+                longestStreak = Math.max(longestStreak, tempStreak);
+                tempStreak = 1;
+            }
+        } else {
+            tempStreak = 1;
+        }
+        
+        lastDate = currentDate;
+        longestStreak = Math.max(longestStreak, tempStreak);
+    });
+    
+    streakData.longestStreak = longestStreak;
+    
+    // Calculate weekly progress (last 7 days)
+    const todayObj = new Date();
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(todayObj);
+        date.setDate(todayObj.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        let totalHours = 0;
+        for (const year in userMotivation.heatmapData) {
+            if (userMotivation.heatmapData[year][dateStr]) {
+                totalHours += userMotivation.heatmapData[year][dateStr];
+            }
+        }
+        
+        streakData.weeklyProgress[6 - i] = totalHours > 0 ? 1 : 0;
+    }
+    
+    // Determine unlocked badges
+    const badgeThresholds = [3, 5, 7, 30, 100, 365];
+    badgeThresholds.forEach((threshold, index) => {
+        if (longestStreak >= threshold) {
+            streakData.unlockedBadges.push(index + 1);
+        }
+    });
+    
+    return streakData;
+}
+
+function updateStreakUI() {
+    const streakData = calculateStreak();
+    
+    // Update hero streak display
+    document.getElementById('hero-streak-number').textContent = streakData.currentStreak;
+    document.getElementById('streak-message').textContent = 
+        streakData.currentStreak > 0 
+            ? `${streakData.currentStreak}-day Study Streak! ${getStreakMessage(streakData.currentStreak)}`
+            : "Start your study streak today!";
+    
+    // Update flame animation
+    const flame = document.getElementById('hero-streak-flame');
+    const today = new Date().toISOString().split('T')[0];
+    let studiedToday = false;
+    
+    for (const year in userMotivation.heatmapData) {
+        if (userMotivation.heatmapData[year][today] > 0) {
+            studiedToday = true;
+            break;
+        }
+    }
+    
+    flame.classList.toggle('inactive', !studiedToday);
+    
+    // Update weekly tracker
+    const days = document.querySelectorAll('.day-circle');
+    const todayIndex = new Date().getDay(); // 0 = Sunday, 6 = Saturday
+    
+    days.forEach((day, index) => {
+        const dayOffset = (index - todayIndex + 7) % 7;
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() - dayOffset);
+        const dateStr = targetDate.toISOString().split('T')[0];
+        
+        day.classList.remove('completed', 'current', 'future');
+        
+        // Check if this day has study data
+        let hasStudyData = false;
+        for (const year in userMotivation.heatmapData) {
+            if (userMotivation.heatmapData[year][dateStr] > 0) {
+                hasStudyData = true;
+                break;
+            }
+        }
+        
+        if (hasStudyData) {
+            day.classList.add('completed');
+        }
+        
+        if (dayOffset === 0) {
+            day.classList.add('current');
+        } else if (dayOffset > 0) {
+            day.classList.add('future');
+        }
+    });
+    
+    // Update week summary
+    const completedDays = streakData.weeklyProgress.filter(Boolean).length;
+    document.getElementById('week-summary').textContent = 
+        completedDays > 0 
+            ? `${completedDays}/7 days studied this week`
+            : "No study sessions this week yet";
+    
+    // Update badges
+    const badges = document.querySelectorAll('.badge-item');
+    badges.forEach(badge => {
+        const level = parseInt(badge.dataset.level);
+        const isUnlocked = streakData.unlockedBadges.includes(level);
+        
+        badge.classList.toggle('unlocked', isUnlocked);
+        badge.querySelector('.badge-status').textContent = 
+            isUnlocked ? 'Unlocked!' : 'Locked';
+    });
+    
+    // Update badge description
+    const nextBadge = streakData.unlockedBadges.length + 1;
+    const nextThreshold = [3, 5, 7, 30, 100, 365][nextBadge - 1] || 'more';
+    document.getElementById('badge-description').textContent = 
+        streakData.unlockedBadges.length === 6
+            ? "🎉 All badges unlocked! You're a study master!"
+            : `Next: Reach ${nextThreshold} days to unlock the next badge!`;
+}
+
+function getStreakMessage(streak) {
+    if (streak >= 365) return "You're unstoppable! 🌟";
+    if (streak >= 100) return "Incredible dedication! 💎";
+    if (streak >= 30) return "Amazing consistency! 🏆";
+    if (streak >= 7) return "Great momentum! ⚡";
+    if (streak >= 3) return "Keep it up! 🔥";
+    return "Great start! ⭐";
+}
+
+// Update streak UI when motivation page loads
+function loadMotivationPage() {
+    // Load random quote
+    loadRandomQuote();
+    
+    // Load heatmap
+    initializeHeatmap();
+    
+    // Load custom quotes
+    loadCustomQuotes();
+    
+    // Update week indicator
+    updateWeekIndicator();
+    
+    // Update quote progress
+    updateQuoteProgress();
+    
+    // Update streak UI
+    updateStreakUI();
+}
       // ====================
 // SERVICE WORKER FOR OFFLINE CAPABILITY
 // ====================
