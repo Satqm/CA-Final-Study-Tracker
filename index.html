@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#2c3e50">
     <meta name="description" content="CA Final Professional Offline Tracker - Advanced study planning and progress analytics">
-    <title>CA Final Pro Tracker</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -3244,17 +3244,18 @@
     </div>
     
     <!-- Delete Entries Modal -->
-    <div class="modal" id="delete-modal">
-        <div class="modal-content">
+ <div class="modal" id="delete-modal">
+    <div class="modal-content">
+        <form id="delete-form">
             <div class="modal-header">
                 <h3><i class="fas fa-trash"></i> Delete Entries</h3>
-                <button class="modal-close" id="delete-close">&times;</button>
+                <button class="modal-close" id="delete-close" type="button">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="delete-type-selector">
-                    <button class="entry-type-btn active" data-type="targets">Targets</button>
-                    <button class="entry-type-btn" data-type="videos">Videos</button>
-                    <button class="entry-type-btn" data-type="resources">Resources</button>
+                    <button type="button" class="entry-type-btn active" data-type="targets">Targets</button>
+                    <button type="button" class="entry-type-btn" data-type="videos">Videos</button>
+                    <button type="button" class="entry-type-btn" data-type="resources">Resources</button>
                 </div>
                 
                 <div class="entry-list-container" id="entry-list-container">
@@ -3262,16 +3263,17 @@
                 </div>
                 
                 <div class="password-input">
-                    <input type="password" id="delete-password" placeholder="Enter password to confirm deletion">
+                    <input type="password" id="delete-password" placeholder="Enter password to confirm deletion" form="delete-form">
                 </div>
                 
-                <button class="btn btn-accent" id="confirm-delete-btn" style="margin-top: 20px; width: 100%;">
+                <button class="btn btn-accent" id="confirm-delete-btn" style="margin-top: 20px; width: 100%;" type="submit">
                     <i class="fas fa-trash"></i> Delete Selected Entries
                 </button>
                 <div id="delete-message" class="auth-message" style="margin-top: 15px;"></div>
             </div>
-        </div>
+        </form>
     </div>
+</div>
     
     <!-- Settings Modal -->
     <div class="modal" id="settings-modal">
@@ -4096,73 +4098,69 @@ static async importAll(jsonData) {
 }
 
 
-           // ==================== DATA STORAGE SYSTEM ====================
+               // ==================== DATA STORAGE SYSTEM ====================
         class DataStorage {
             // Initialize IndexedDB
             static async init() {
                 try {
                     await IndexedDBStorage.init();
+                    console.log('IndexedDB initialized successfully');
                     return true;
                 } catch (error) {
                     console.error('Failed to initialize IndexedDB:', error);
+                    // Fallback to localStorage if IndexedDB fails
                     return false;
                 }
             }
             
-          // Load user data from IndexedDB - FIXED: Handle all data types correctly
-static async loadUserData() {
-    try {
-        const [
-            user, progress, targets, completedTargets,
-            studyPlan, videos, resources, stats,
-            motivation
-        ] = await Promise.all([
-            IndexedDBStorage.get('user', 'user'),
-            IndexedDBStorage.get('progress', 'progress'),
-            IndexedDBStorage.getAll('targets'),
-            IndexedDBStorage.getAll('completedTargets'),
-            IndexedDBStorage.get('studyPlan', 'studyPlan'),
-            IndexedDBStorage.getAll('videos'),
-            IndexedDBStorage.getAll('resources'),
-            IndexedDBStorage.get('stats', 'stats'),
-            IndexedDBStorage.get('motivation', 'motivation')
-        ]);
-        
-        return {
-            user: user || initializeUser(),
-            progress: progress || initializeProgress(),
-            targets: Array.isArray(targets) ? targets : [],
-            completedTargets: Array.isArray(completedTargets) ? completedTargets : [],
-            studyPlan: studyPlan || initializeStudyPlan(),
-            videos: Array.isArray(videos) ? videos : [],
-            resources: Array.isArray(resources) ? resources : [],
-            stats: stats || initializeStats(),
-            motivation: motivation || initializeMotivation()
-        };
-    } catch (error) {
-        console.error('Error loading user data:', error);
-        return {
-            user: initializeUser(),
-            progress: initializeProgress(),
-            targets: [],
-            completedTargets: [],
-            studyPlan: initializeStudyPlan(),
-            videos: [],
-            resources: [],
-            stats: initializeStats(),
-            motivation: initializeMotivation()
-        };
-    }
-}
+            // Load user data from IndexedDB
+            static async loadUserData() {
+                try {
+                    const user = await IndexedDBStorage.get('user', 'user');
+                    const progress = await IndexedDBStorage.get('progress', 'progress');
+                    const targets = await IndexedDBStorage.getAll('targets');
+                    const completedTargets = await IndexedDBStorage.getAll('completedTargets');
+                    const studyPlan = await IndexedDBStorage.get('studyPlan', 'studyPlan');
+                    const videos = await IndexedDBStorage.getAll('videos');
+                    const resources = await IndexedDBStorage.getAll('resources');
+                    const stats = await IndexedDBStorage.get('stats', 'stats');
+                    const motivation = await IndexedDBStorage.get('motivation', 'motivation');
+                    
+                    return {
+                        user: user || initializeUser(),
+                        progress: progress || initializeProgress(),
+                        targets: Array.isArray(targets) ? targets : [],
+                        completedTargets: Array.isArray(completedTargets) ? completedTargets : [],
+                        studyPlan: studyPlan || initializeStudyPlan(),
+                        videos: Array.isArray(videos) ? videos : [],
+                        resources: Array.isArray(resources) ? resources : [],
+                        stats: stats || initializeStats(),
+                        motivation: motivation || initializeMotivation()
+                    };
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                    // Return default data if loading fails
+                    return {
+                        user: initializeUser(),
+                        progress: initializeProgress(),
+                        targets: [],
+                        completedTargets: [],
+                        studyPlan: initializeStudyPlan(),
+                        videos: [],
+                        resources: [],
+                        stats: initializeStats(),
+                        motivation: initializeMotivation()
+                    };
+                }
+            }
             
-            // Save specific data - FIXED: Consistent saving for all data types
+            // Save specific data
             static async save(storeName, data) {
                 try {
                     if (storeName === 'targets' || storeName === 'completedTargets' || 
                         storeName === 'videos' || storeName === 'resources') {
-                        // For array stores - clear first
+                        // For array stores
                         await IndexedDBStorage.clear(storeName);
-                        
                         const items = Array.isArray(data) ? data : [];
                         for (let i = 0; i < items.length; i++) {
                             await IndexedDBStorage.set(storeName, {
@@ -4264,138 +4262,164 @@ static async loadUserData() {
                 localStorage.removeItem('ca_pro_migrated');
             }
             
-                // Export all data - FIXED: Include ALL data types
-        static async exportAll() {
-            const exportData = {
-                user: currentUser,
-                progress: userProgress,
-                targets: userTargets,
-                completedTargets: completedTargets,
-                studyPlan: userStudyPlan,
-                videos: userVideos,
-                resources: userResources,
-                stats: userStats,
-                motivation: userMotivation,
-                exportDate: new Date().toISOString(),
-                version: '2.0',
-                app: 'CA Final Pro Tracker'
-            };
-            return JSON.stringify(exportData, null, 2);
-        }
-                // Import all data - FIXED: Import ALL data types
-        static async importAll(jsonData) {
-            try {
-                const data = JSON.parse(jsonData);
-                
-                // Validate the backup file
-                if (!data.version || !data.app || data.app !== 'CA Final Pro Tracker') {
+            // Export all data
+            static async exportAll() {
+                const exportData = {
+                    user: currentUser,
+                    progress: userProgress,
+                    targets: userTargets,
+                    completedTargets: completedTargets,
+                    studyPlan: userStudyPlan,
+                    videos: userVideos,
+                    resources: userResources,
+                    stats: userStats,
+                    motivation: userMotivation,
+                    exportDate: new Date().toISOString(),
+                    version: '2.0',
+                    app: 'CA Final Pro Tracker'
+                };
+                return JSON.stringify(exportData, null, 2);
+            }
+            
+            // Import all data
+            static async importAll(jsonData) {
+                try {
+                    const data = JSON.parse(jsonData);
+                    
+                    // Validate the backup file
+                    if (!data.version || !data.app || data.app !== 'CA Final Pro Tracker') {
+                        return { 
+                            success: false, 
+                            error: 'Invalid backup file format' 
+                        };
+                    }
+                    
+                    // Import all data types
+                    if (data.user) {
+                        currentUser = data.user;
+                        await DataStorage.save('user', currentUser);
+                    }
+                    
+                    if (data.progress) {
+                        userProgress = data.progress;
+                        await DataStorage.save('progress', userProgress);
+                    }
+                    
+                    if (data.targets) {
+                        userTargets = data.targets;
+                        await DataStorage.save('targets', userTargets);
+                    }
+                    
+                    if (data.completedTargets) {
+                        completedTargets = data.completedTargets;
+                        await DataStorage.save('completedTargets', completedTargets);
+                    }
+                    
+                    if (data.studyPlan) {
+                        userStudyPlan = data.studyPlan;
+                        await DataStorage.save('studyPlan', userStudyPlan);
+                    }
+                    
+                    if (data.videos) {
+                        userVideos = data.videos;
+                        await DataStorage.save('videos', userVideos);
+                    }
+                    
+                    if (data.resources) {
+                        userResources = data.resources;
+                        await DataStorage.save('resources', userResources);
+                    }
+                    
+                    if (data.stats) {
+                        userStats = data.stats;
+                        await DataStorage.save('stats', userStats);
+                    }
+                    
+                    if (data.motivation) {
+                        userMotivation = data.motivation;
+                        await DataStorage.save('motivation', userMotivation);
+                    }
+                    
+                    return { success: true, message: 'Data imported successfully' };
+                } catch (error) {
+                    console.error('Import error:', error);
                     return { 
                         success: false, 
-                        error: 'Invalid backup file format' 
+                        error: 'Invalid backup file format or corrupted data' 
                     };
                 }
-                
-                // Import all data types
-                if (data.user) {
-                    currentUser = data.user;
-                    await DataStorage.save('user', currentUser);
-                }
-                
-                if (data.progress) {
-                    userProgress = data.progress;
-                    await DataStorage.save('progress', userProgress);
-                }
-                
-                if (data.targets) {
-                    userTargets = data.targets;
-                    await DataStorage.save('targets', userTargets);
-                }
-                
-                if (data.completedTargets) {
-                    completedTargets = data.completedTargets;
-                    await DataStorage.save('completedTargets', completedTargets);
-                }
-                
-                if (data.studyPlan) {
-                    userStudyPlan = data.studyPlan;
-                    await DataStorage.save('studyPlan', userStudyPlan);
-                }
-                
-                if (data.videos) {
-                    userVideos = data.videos;
-                    await DataStorage.save('videos', userVideos);
-                }
-                
-                if (data.resources) {
-                    userResources = data.resources;
-                    await DataStorage.save('resources', userResources);
-                }
-                
-                if (data.stats) {
-                    userStats = data.stats;
-                    await DataStorage.save('stats', userStats);
-                }
-                
-                if (data.motivation) {
-                    userMotivation = data.motivation;
-                    await DataStorage.save('motivation', userMotivation);
-                }
-                
-                return { success: true, message: 'Data imported successfully' };
-            } catch (error) {
-                console.error('Import error:', error);
-                return { 
-                    success: false, 
-                    error: 'Invalid backup file format or corrupted data' 
-                };
             }
         }
-        }
 
 
-        // ==================== INITIALIZATION ====================
+            // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize IndexedDB
-            const dbInitialized = await DataStorage.init();
-            if (!dbInitialized) {
-                showToast('Failed to initialize database. Some features may not work.', 'error');
-            }
+            console.log('DOM Content Loaded - Starting app initialization...');
             
-            // Set today's date in start date input
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('start-date').value = today;
-            document.getElementById('target-date').value = today;
-            
-            // Check if user is already logged in
-            const userData = await DataStorage.loadUserData();
-            const savedUser = userData.user;
-            
-            if (savedUser && savedUser.name) {
-                // User is logged in, skip welcome screen
-                currentUser = savedUser;
-                userProgress = userData.progress;
-                userTargets = userData.targets;
-                completedTargets = userData.completedTargets;
-                userStudyPlan = userData.studyPlan;
-                 userVideos = userData.videos;
-                userResources = userData.resources;
-                userStats = userData.stats;
-                userMotivation = userData.motivation;
-                loadApp();
-            } else {
-                // Show welcome screen
+            try {
+                // Initialize IndexedDB
+                console.log('Initializing IndexedDB...');
+                const dbInitialized = await DataStorage.init();
+                
+                if (!dbInitialized) {
+                    console.warn('IndexedDB initialization failed, using fallback data');
+                    showToast('Using offline mode. Some features may be limited.', 'warning');
+                }
+                
+                // Set today's date in start date input
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('start-date').value = today;
+                document.getElementById('target-date').value = today;
+                
+                // Check if user is already logged in
+                console.log('Loading user data...');
+                const userData = await DataStorage.loadUserData();
+                const savedUser = userData.user;
+                
+                console.log('Loaded user data:', savedUser);
+                
+                if (savedUser && savedUser.name && savedUser.name.trim() !== '') {
+                    console.log('User found:', savedUser.name);
+                    // User is logged in, skip welcome screen
+                    currentUser = savedUser;
+                    userProgress = userData.progress;
+                    userTargets = userData.targets;
+                    completedTargets = userData.completedTargets;
+                    userStudyPlan = userData.studyPlan;
+                    userVideos = userData.videos;
+                    userResources = userData.resources;
+                    userStats = userData.stats;
+                    userMotivation = userData.motivation;
+                    
+                    loadApp();
+                } else {
+                    console.log('No user found, showing welcome screen');
+                    // Show welcome screen
+                    document.getElementById('welcome-container').style.display = 'flex';
+                    document.getElementById('app-container').style.display = 'none';
+                }
+                
+                // Initialize app
+                console.log('Setting up event listeners...');
+                setupEventListeners();
+                
+                if (savedUser && savedUser.name) {
+                    console.log('Loading default content...');
+                    loadDefaultContent();
+                    updateUserUI();
+                }
+                
+                console.log('App initialization complete!');
+            } catch (error) {
+                console.error('CRITICAL ERROR during initialization:', error);
+                
+                // Emergency fallback: Show welcome screen
                 document.getElementById('welcome-container').style.display = 'flex';
                 document.getElementById('app-container').style.display = 'none';
-            }
-            
-            // Initialize app
-            setupEventListeners();
-            if (savedUser && savedUser.name) {
-                loadDefaultContent();
-                updateUserUI();
+                
+                showToast('App initialization failed. Please refresh the page.', 'error');
             }
         });
-        
         function loadApp() {
             // Hide welcome, show app
             document.getElementById('welcome-container').style.display = 'none';
@@ -8019,6 +8043,34 @@ console.log('ServiceWorker registration successful with scope:', registration.sc
     });
 });
 }
+                // Emergency fallback initialization
+        window.addEventListener('load', function() {
+            console.log('Window loaded - checking if app started...');
+            
+            // Check if welcome screen is visible after 2 seconds
+            setTimeout(function() {
+                const welcomeScreen = document.getElementById('welcome-container');
+                const appScreen = document.getElementById('app-container');
+                
+                if (welcomeScreen.style.display !== 'flex' && 
+                    appScreen.style.display !== 'block') {
+                    console.log('App didn\'t start properly - forcing welcome screen');
+                    welcomeScreen.style.display = 'flex';
+                    appScreen.style.display = 'none';
+                    
+                    // Enable the start button with basic functionality
+                    document.getElementById('start-btn').onclick = function() {
+                        const userName = document.getElementById('user-name-input').value.trim();
+                        if (userName) {
+                            currentUser = { name: userName, initials: userName.substring(0, 2).toUpperCase() };
+                            loadApp();
+                        } else {
+                            alert('Please enter your name');
+                        }
+                    };
+                }
+            }, 2000);
+        });
     </script>
 </body>
 </html>
