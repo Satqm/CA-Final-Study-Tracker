@@ -4096,7 +4096,7 @@ static async importAll(jsonData) {
 }
 
 
-        // ==================== DATA STORAGE SYSTEM ====================
+           // ==================== DATA STORAGE SYSTEM ====================
         class DataStorage {
             // Initialize IndexedDB
             static async init() {
@@ -4155,34 +4155,34 @@ static async loadUserData() {
     }
 }
             
-             // Save specific data - FIXED: Consistent saving for all data types
-static async save(storeName, data) {
-    try {
-        await IndexedDBStorage.clear(storeName);
-        
-        if (storeName === 'targets' || storeName === 'completedTargets' || 
-            storeName === 'videos' || storeName === 'resources') {
-            // For array stores
-            const items = Array.isArray(data) ? data : [];
-            for (let i = 0; i < items.length; i++) {
-                await IndexedDBStorage.set(storeName, {
-                    id: `${storeName}_${i}_${Date.now()}`,
-                    data: items[i]
-                });
+            // Save specific data - FIXED: Consistent saving for all data types
+            static async save(storeName, data) {
+                try {
+                    if (storeName === 'targets' || storeName === 'completedTargets' || 
+                        storeName === 'videos' || storeName === 'resources') {
+                        // For array stores - clear first
+                        await IndexedDBStorage.clear(storeName);
+                        
+                        const items = Array.isArray(data) ? data : [];
+                        for (let i = 0; i < items.length; i++) {
+                            await IndexedDBStorage.set(storeName, {
+                                id: `${storeName}_${i}_${Date.now()}`,
+                                data: items[i]
+                            });
+                        }
+                    } else {
+                        // For single object stores
+                        await IndexedDBStorage.set(storeName, {
+                            id: storeName,
+                            data: data
+                        });
+                    }
+                    return true;
+                } catch (error) {
+                    console.error(`Error saving ${storeName}:`, error);
+                    return false;
+                }
             }
-        } else {
-            // For single object stores
-            await IndexedDBStorage.set(storeName, {
-                id: storeName,
-                data: data
-            });
-        }
-        return true;
-    } catch (error) {
-        console.error(`Error saving ${storeName}:`, error);
-        return false;
-    }
-}
             
             // Auto-save with debounce
             static async autoSave(storeName, data) {
@@ -4264,15 +4264,92 @@ static async save(storeName, data) {
                 localStorage.removeItem('ca_pro_migrated');
             }
             
-            // Export all data
-            static async exportAll() {
-                return await IndexedDBStorage.exportAll();
+                // Export all data - FIXED: Include ALL data types
+        static async exportAll() {
+            const exportData = {
+                user: currentUser,
+                progress: userProgress,
+                targets: userTargets,
+                completedTargets: completedTargets,
+                studyPlan: userStudyPlan,
+                videos: userVideos,
+                resources: userResources,
+                stats: userStats,
+                motivation: userMotivation,
+                exportDate: new Date().toISOString(),
+                version: '2.0',
+                app: 'CA Final Pro Tracker'
+            };
+            return JSON.stringify(exportData, null, 2);
+        }
+                // Import all data - FIXED: Import ALL data types
+        static async importAll(jsonData) {
+            try {
+                const data = JSON.parse(jsonData);
+                
+                // Validate the backup file
+                if (!data.version || !data.app || data.app !== 'CA Final Pro Tracker') {
+                    return { 
+                        success: false, 
+                        error: 'Invalid backup file format' 
+                    };
+                }
+                
+                // Import all data types
+                if (data.user) {
+                    currentUser = data.user;
+                    await DataStorage.save('user', currentUser);
+                }
+                
+                if (data.progress) {
+                    userProgress = data.progress;
+                    await DataStorage.save('progress', userProgress);
+                }
+                
+                if (data.targets) {
+                    userTargets = data.targets;
+                    await DataStorage.save('targets', userTargets);
+                }
+                
+                if (data.completedTargets) {
+                    completedTargets = data.completedTargets;
+                    await DataStorage.save('completedTargets', completedTargets);
+                }
+                
+                if (data.studyPlan) {
+                    userStudyPlan = data.studyPlan;
+                    await DataStorage.save('studyPlan', userStudyPlan);
+                }
+                
+                if (data.videos) {
+                    userVideos = data.videos;
+                    await DataStorage.save('videos', userVideos);
+                }
+                
+                if (data.resources) {
+                    userResources = data.resources;
+                    await DataStorage.save('resources', userResources);
+                }
+                
+                if (data.stats) {
+                    userStats = data.stats;
+                    await DataStorage.save('stats', userStats);
+                }
+                
+                if (data.motivation) {
+                    userMotivation = data.motivation;
+                    await DataStorage.save('motivation', userMotivation);
+                }
+                
+                return { success: true, message: 'Data imported successfully' };
+            } catch (error) {
+                console.error('Import error:', error);
+                return { 
+                    success: false, 
+                    error: 'Invalid backup file format or corrupted data' 
+                };
             }
-            
-            // Import all data
-            static async importAll(jsonData) {
-                return await IndexedDBStorage.importAll(jsonData);
-            }
+        }
         }
 
 
@@ -6474,30 +6551,34 @@ static async save(storeName, data) {
             });
         }
         
-         async function updateTargetHours(index, hours) {
-    if (index >= 0 && index < userTargets.length) {
-        const target = userTargets[index];
-        const previousHours = target.actualHours || 0;
-        target.actualHours = hours;
-        
-        if (hours >= target.plannedHours) {
-            target.completed = true;
-            target.status = 'completed';
-        }
-        
-        // Update heatmap data
-        if (hours !== previousHours) {
-            await updateHeatmapData(target.date, hours - previousHours);
-        }
-        
-        await DataStorage.manualSave('targets', userTargets, (success) => {
-            if (success) {
-                loadTargets();
-                updateDashboard();
+           async function updateTargetHours(index, hours) {
+            if (index >= 0 && index < userTargets.length) {
+                const target = userTargets[index];
+                const previousHours = target.actualHours || 0;
+                target.actualHours = hours;
+                
+                if (hours >= target.plannedHours) {
+                    target.completed = true;
+                    target.status = 'completed';
+                }
+                
+                // Update heatmap data from BOTH target and subject progress
+                if (hours !== previousHours) {
+                    // Update heatmap with target data
+                    await updateHeatmapData(target.date, hours - previousHours);
+                    
+                    // Also update from subject progress
+                    updateHeatmapFromSubjectProgress();
+                }
+                
+                await DataStorage.manualSave('targets', userTargets, (success) => {
+                    if (success) {
+                        loadTargets();
+                        updateDashboard();
+                    }
+                });
             }
-        });
-    }
-}
+        }
 
 // Fix the incomplete deleteTarget function
 async function deleteTarget(index) {
@@ -7110,7 +7191,8 @@ async function deleteTarget(index) {
             // Load random quote
             loadRandomQuote();
             
-            // Load heatmap
+             // Load heatmap from subject progress
+            updateHeatmapFromSubjectProgress();
             initializeHeatmap();
             
             // Load custom quotes
@@ -7361,14 +7443,21 @@ async function deleteTarget(index) {
                 // Create date string in YYYY-MM-DD format (FIXED)
                 const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 
-                // Calculate hours studied for this day
+                            // Calculate hours studied for this day from BOTH targets AND subject progress
                 let hours = 0;
+                
+                // 1. Check targets
                 const allTargets = [...userTargets, ...completedTargets];
                 allTargets.forEach(target => {
                     if (target.date === dateString) {
                         hours += target.actualHours || 0;
                     }
                 });
+                
+                // 2. Check subject progress (heatmap data)
+                if (userMotivation.heatmapData && userMotivation.heatmapData[dateString]) {
+                    hours += userMotivation.heatmapData[dateString].totalHours || 0;
+                }
                 
                 // Store in month data
                 monthData[day] = hours;
@@ -7829,45 +7918,90 @@ async function deleteTarget(index) {
             return weekDays;
         }
         
-      async function updateHeatmapData(dateString, hours, subjectId = null) {
-    if (!dateString) return;
-    
-    // Ensure heatmap data structure exists
-    if (!userMotivation.heatmapData) {
-        userMotivation.heatmapData = {};
-    }
-    
-    if (!userMotivation.heatmapData[dateString]) {
-        userMotivation.heatmapData[dateString] = {
-            totalHours: 0,
-            subjects: {}
-        };
-    }
-    
-    // Update total hours
-    userMotivation.heatmapData[dateString].totalHours = 
-        (userMotivation.heatmapData[dateString].totalHours || 0) + hours;
-    
-    // Update subject-specific hours if subjectId is provided
-    if (subjectId) {
-        if (!userMotivation.heatmapData[dateString].subjects[subjectId]) {
-            userMotivation.heatmapData[dateString].subjects[subjectId] = 0;
+            async function updateHeatmapData(dateString, hours, subjectId = null) {
+            if (!dateString) return;
+            
+            // Ensure heatmap data structure exists
+            if (!userMotivation.heatmapData) {
+                userMotivation.heatmapData = {};
+            }
+            
+            if (!userMotivation.heatmapData[dateString]) {
+                userMotivation.heatmapData[dateString] = {
+                    totalHours: 0,
+                    subjects: {}
+                };
+            }
+            
+            // Update total hours
+            userMotivation.heatmapData[dateString].totalHours = 
+                (userMotivation.heatmapData[dateString].totalHours || 0) + hours;
+            
+            // Update subject-specific hours if subjectId is provided
+            if (subjectId) {
+                if (!userMotivation.heatmapData[dateString].subjects[subjectId]) {
+                    userMotivation.heatmapData[dateString].subjects[subjectId] = 0;
+                }
+                userMotivation.heatmapData[dateString].subjects[subjectId] += hours;
+            }
+            
+            // Save to IndexedDB
+            await DataStorage.autoSave('motivation', userMotivation);
+            
+            // Update heatmap display if on motivation page
+            if (currentPage === 'motivation') {
+                if (heatmapViewMode === 'month') {
+                    generateMonthHeatmap(currentHeatmapYear, currentHeatmapMonth);
+                } else {
+                    generateYearHeatmap(currentHeatmapYear);
+                }
+            }
         }
-        userMotivation.heatmapData[dateString].subjects[subjectId] += hours;
-    }
-    
-    // Save to IndexedDB
-    await DataStorage.autoSave('motivation', userMotivation);
-    
-    // Update heatmap display if on motivation page
-    if (currentPage === 'motivation') {
-        if (heatmapViewMode === 'month') {
-            generateMonthHeatmap(currentHeatmapYear, currentHeatmapMonth);
-        } else {
-            generateYearHeatmap(currentHeatmapYear);
+         // Function to aggregate heatmap data from subject progress
+        function updateHeatmapFromSubjectProgress() {
+            const heatmapData = {};
+            
+            // Loop through all subjects and topics to collect daily study hours
+            for (const subjectId in userProgress.subjects) {
+                const subject = userProgress.subjects[subjectId];
+                
+                for (const topicName in subject.topics) {
+                    const topic = subject.topics[topicName];
+                    
+                    for (const subtopicName in topic.subtopics) {
+                        const subtopic = topic.subtopics[subtopicName];
+                        
+                        if (subtopic.actualHours > 0 && subtopic.lastUpdated) {
+                            // Extract date from lastUpdated
+                            const dateObj = new Date(subtopic.lastUpdated);
+                            const dateString = dateObj.toISOString().split('T')[0];
+                            
+                            if (!heatmapData[dateString]) {
+                                heatmapData[dateString] = {
+                                    totalHours: 0,
+                                    subjects: {}
+                                };
+                            }
+                            
+                            heatmapData[dateString].totalHours += subtopic.actualHours;
+                            
+                            if (!heatmapData[dateString].subjects[subjectId]) {
+                                heatmapData[dateString].subjects[subjectId] = 0;
+                            }
+                            heatmapData[dateString].subjects[subjectId] += subtopic.actualHours;
+                        }
+                    }
+                }
+            }
+            
+            // Update the motivation data
+            userMotivation.heatmapData = heatmapData;
+            
+            // Save to IndexedDB
+            DataStorage.autoSave('motivation', userMotivation);
+            
+            return heatmapData;
         }
-    }
-}
       // ====================
 // SERVICE WORKER FOR OFFLINE CAPABILITY
 // ====================
