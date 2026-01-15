@@ -3912,7 +3912,7 @@
                 console.log('Migration completed successfully');
             }
             
-      // Generic get function - UPDATED: Return data directly
+// Generic get function
 static async get(storeName, id) {
     return new Promise((resolve, reject) => {
         if (!db) {
@@ -3926,8 +3926,8 @@ static async get(storeName, id) {
         
         request.onsuccess = () => {
             const result = request.result;
-            // Return the data field if it exists, otherwise return the whole result
-            resolve(result?.data || result || null);
+            // Return the whole result (includes id and data fields)
+            resolve(result || null);
         };
         request.onerror = () => reject(request.error);
     });
@@ -3966,7 +3966,7 @@ static async get(storeName, id) {
                 });
             }
             
-// Get all items from a store - UPDATED: Get ALL items without filtering
+// Get all items from a store
 static async getAll(storeName) {
     return new Promise((resolve, reject) => {
         if (!db) {
@@ -3980,11 +3980,8 @@ static async getAll(storeName) {
         
         request.onsuccess = () => {
             const items = request.result || [];
-            // Get ALL data items from this store
-            const result = items
-                .map(item => item.data || item)
-                .filter(item => item !== null && item !== undefined);
-            resolve(result);
+            // Return items as-is without filtering
+            resolve(items);
         };
         request.onerror = () => reject(request.error);
     });
@@ -4112,74 +4109,97 @@ class DataStorage {
         }
     }
             
-            // Load user data from IndexedDB
-            static async loadUserData() {
-                try {
-                    const user = await IndexedDBStorage.get('user', 'user');
-                    const progress = await IndexedDBStorage.get('progress', 'progress');
-                    const targets = await IndexedDBStorage.getAll('targets');
-                    const completedTargets = await IndexedDBStorage.getAll('completedTargets');
-                    const studyPlan = await IndexedDBStorage.get('studyPlan', 'studyPlan');
-                    const videos = await IndexedDBStorage.getAll('videos');
-                    const resources = await IndexedDBStorage.getAll('resources');
-                    const stats = await IndexedDBStorage.get('stats', 'stats');
-                    const motivation = await IndexedDBStorage.get('motivation', 'motivation');
-                    
-                    return {
-                        user: user || initializeUser(),
-                        progress: progress || initializeProgress(),
-                        targets: Array.isArray(targets) ? targets : [],
-                        completedTargets: Array.isArray(completedTargets) ? completedTargets : [],
-                        studyPlan: studyPlan || initializeStudyPlan(),
-                        videos: Array.isArray(videos) ? videos : [],
-                        resources: Array.isArray(resources) ? resources : [],
-                        stats: stats || initializeStats(),
-                        motivation: motivation || initializeMotivation()
-                    };
-                } catch (error) {
-                    console.error('Error loading user data:', error);
-                    // Return default data if loading fails
-                    return {
-                        user: initializeUser(),
-                        progress: initializeProgress(),
-                        targets: [],
-                        completedTargets: [],
-                        studyPlan: initializeStudyPlan(),
-                        videos: [],
-                        resources: [],
-                        stats: initializeStats(),
-                        motivation: initializeMotivation()
-                    };
-                }
-            }
+          // Load user data from IndexedDB
+static async loadUserData() {
+    try {
+        const userResult = await IndexedDBStorage.get('user', 'user');
+        const progressResult = await IndexedDBStorage.get('progress', 'progress');
+        const targetsResult = await IndexedDBStorage.getAll('targets');
+        const completedTargetsResult = await IndexedDBStorage.getAll('completedTargets');
+        const studyPlanResult = await IndexedDBStorage.get('studyPlan', 'studyPlan');
+        const videosResult = await IndexedDBStorage.getAll('videos');
+        const resourcesResult = await IndexedDBStorage.getAll('resources');
+        const statsResult = await IndexedDBStorage.get('stats', 'stats');
+        const motivationResult = await IndexedDBStorage.get('motivation', 'motivation');
+        
+        // Extract data field from results or use the result directly
+        const user = userResult?.data || userResult || initializeUser();
+        const progress = progressResult?.data || progressResult || initializeProgress();
+        const studyPlan = studyPlanResult?.data || studyPlanResult || initializeStudyPlan();
+        const stats = statsResult?.data || statsResult || initializeStats();
+        const motivation = motivationResult?.data || motivationResult || initializeMotivation();
+        
+        // For array stores, extract data from each item
+        const targets = Array.isArray(targetsResult) ? 
+            targetsResult.map(item => item.data || item).filter(item => item) : [];
+        const completedTargets = Array.isArray(completedTargetsResult) ? 
+            completedTargetsResult.map(item => item.data || item).filter(item => item) : [];
+        const videos = Array.isArray(videosResult) ? 
+            videosResult.map(item => item.data || item).filter(item => item) : [];
+        const resources = Array.isArray(resourcesResult) ? 
+            resourcesResult.map(item => item.data || item).filter(item => item) : [];
+        
+        return {
+            user: user,
+            progress: progress,
+            targets: targets,
+            completedTargets: completedTargets,
+            studyPlan: studyPlan,
+            videos: videos,
+            resources: resources,
+            stats: stats,
+            motivation: motivation
+        };
+    } catch (error) {
+        console.error('Error loading user data:', error);
+        // Return default data if loading fails
+        return {
+            user: initializeUser(),
+            progress: initializeProgress(),
+            targets: [],
+            completedTargets: [],
+            studyPlan: initializeStudyPlan(),
+            videos: [],
+            resources: [],
+            stats: initializeStats(),
+            motivation: initializeMotivation()
+        };
+    }
+}
             
-            // Save specific data
-            static async save(storeName, data) {
-                try {
-                    if (storeName === 'targets' || storeName === 'completedTargets' || 
-                        storeName === 'videos' || storeName === 'resources') {
-                        // For array stores
-                        await IndexedDBStorage.clear(storeName);
-                        const items = Array.isArray(data) ? data : [];
-                        for (let i = 0; i < items.length; i++) {
-                            await IndexedDBStorage.set(storeName, {
-                                id: `${storeName}_${i}_${Date.now()}`,
-                                data: items[i]
-                            });
-                        }
-                    } else {
-                        // For single object stores
-                        await IndexedDBStorage.set(storeName, {
-                            id: storeName,
-                            data: data
-                        });
-                    }
-                    return true;
-                } catch (error) {
-                    console.error(`Error saving ${storeName}:`, error);
-                    return false;
-                }
+         // Save specific data
+static async save(storeName, data) {
+    try {
+        // For single object stores (user, progress, studyPlan, stats, settings, motivation)
+        const singleObjectStores = ['user', 'progress', 'studyPlan', 'stats', 'settings', 'motivation'];
+        
+        if (singleObjectStores.includes(storeName)) {
+            await IndexedDBStorage.set(storeName, {
+                id: storeName,
+                data: data
+            });
+        } else {
+            // For array stores (targets, completedTargets, videos, resources)
+            // Clear existing data first
+            await IndexedDBStorage.clear(storeName);
+            
+            const items = Array.isArray(data) ? data : [];
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                // Use existing id if available, otherwise create one
+                const id = item.id || `${storeName}_${i}_${Date.now()}`;
+                await IndexedDBStorage.set(storeName, {
+                    id: id,
+                    data: item
+                });
             }
+        }
+        return true;
+    } catch (error) {
+        console.error(`Error saving ${storeName}:`, error);
+        return false;
+    }
+}
             
             // Auto-save with debounce
             static async autoSave(storeName, data) {
