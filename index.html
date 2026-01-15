@@ -4038,60 +4038,62 @@ static async exportAll() {
     return JSON.stringify(allData, null, 2);
 }
             
-           // Import all data
-static async importAll(jsonData) {
-    try {
-        const data = JSON.parse(jsonData);
-        
-        // Clear existing data first
-        const stores = [
-            'user', 'progress', 'targets', 'completedTargets',
-            'studyPlan', 'videos', 'resources', 'stats', 'settings', 'motivation'
-        ];
-        
-        for (const storeName of stores) {
-            await IndexedDBStorage.clear(storeName);
-        }
-        
-        // Import new data - FIXED: Handle all data types correctly
-        for (const storeName of stores) {
-            if (data[storeName]) {
-                if (storeName === 'motivation') {
-                    // For motivation (single object with heatmap, quotes, etc.)
-                    await IndexedDBStorage.set(storeName, {
-                        id: storeName,
-                        data: data[storeName]
-                    });
-                } else if (storeName === 'user' || storeName === 'progress' || 
-                           storeName === 'studyPlan' || storeName === 'stats' || 
-                           storeName === 'settings') {
-                    // For single object stores
-                    const storeData = Array.isArray(data[storeName]) ? data[storeName][0] : data[storeName];
-                    await IndexedDBStorage.set(storeName, {
-                        id: storeName,
-                        data: storeData
-                    });
-                } else {
-                    // For array stores (targets, videos, resources, completedTargets)
-                    const items = Array.isArray(data[storeName]) ? data[storeName] : [];
-                    for (let i = 0; i < items.length; i++) {
-                        await IndexedDBStorage.set(storeName, {
-                            id: `${storeName}_${i}_${Date.now()}`,
-                            data: items[i]
-                        });
-                    }
-                }
-            }
-        }
-        
-        return { success: true, message: 'Data imported successfully' };
-    } catch (error) {
-        console.error('Import error:', error);
-        return { 
-            success: false, 
-            error: 'Invalid backup file format or corrupted data' 
-        };
+           async function processBackup() {
+    const fileInput = document.getElementById('backup-upload');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showToast('Please select a backup file', 'error');
+        return;
     }
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        // DEBUG: Log what's in the backup file
+        console.log('Backup file contents:', e.target.result.substring(0, 500) + '...');
+        
+        const result = await DataStorage.importAll(e.target.result);
+        
+        if (result.success) {
+            // DEBUG: Load and log what was imported
+            console.log('Import successful, now loading data...');
+            
+            const userData = await DataStorage.loadUserData();
+            console.log('Loaded user:', userData.user);
+            console.log('Loaded progress:', userData.progress?.subjects?.paper1);
+            console.log('Loaded studyPlan:', userData.studyPlan);
+            console.log('Loaded targets:', userData.targets?.length);
+            console.log('Loaded completedTargets:', userData.completedTargets?.length);
+            
+            // Reload all data
+            currentUser = userData.user;
+            userProgress = userData.progress;
+            userTargets = userData.targets;
+            completedTargets = userData.completedTargets;
+            userStudyPlan = userData.studyPlan;
+            userVideos = userData.videos;
+            userResources = userData.resources;
+            userStats = userData.stats;
+            userMotivation = userData.motivation;
+            
+            // Reload UI
+            loadSubjectContent();
+            loadPlanningPage();
+            loadVideos();
+            loadResources();
+            updateDashboard();
+            updateUserUI();
+            
+            document.getElementById('import-modal').classList.remove('active');
+            showToast('Backup restored successfully!', 'success');
+        } else {
+            document.getElementById('import-message').textContent = result.error;
+            document.getElementById('import-message').className = 'auth-message error';
+            document.getElementById('import-message').style.display = 'block';
+            console.error('Import failed:', result.error);
+        }
+    };
+    reader.readAsText(file);
 }}
 
  // ==================== DATA STORAGE SYSTEM ====================
@@ -7152,49 +7154,63 @@ async function deleteTarget(index) {
             event.target.value = '';
         }
         
-        async function processBackup() {
-            const fileInput = document.getElementById('backup-upload');
-            const file = fileInput.files[0];
+      async function processBackup() {
+    const fileInput = document.getElementById('backup-upload');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showToast('Please select a backup file', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        // DEBUG: Log what's in the backup file
+        console.log('Backup file contents:', e.target.result.substring(0, 500) + '...');
+        
+        const result = await DataStorage.importAll(e.target.result);
+        
+        if (result.success) {
+            // DEBUG: Load and log what was imported
+            console.log('Import successful, now loading data...');
             
-            if (!file) {
-                showToast('Please select a backup file', 'error');
-                return;
-            }
+            const userData = await DataStorage.loadUserData();
+            console.log('Loaded user:', userData.user);
+            console.log('Loaded progress:', userData.progress?.subjects?.paper1);
+            console.log('Loaded studyPlan:', userData.studyPlan);
+            console.log('Loaded targets:', userData.targets?.length);
+            console.log('Loaded completedTargets:', userData.completedTargets?.length);
             
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const result = await DataStorage.importAll(e.target.result);
-                
-                if (result.success) {
-                    // Reload all data
-                    const userData = await DataStorage.loadUserData();
-                    currentUser = userData.user;
-                    userProgress = userData.progress;
-                    userTargets = userData.targets;
-                    completedTargets = userData.completedTargets;
-                    userStudyPlan = userData.studyPlan;
-                    userVideos = userData.videos;
-                    userResources = userData.resources;
-                    userStats = userData.stats;
-                    
-                    // Reload UI
-                    loadSubjectContent();
-                    loadPlanningPage();
-                    loadVideos();
-                    loadResources();
-                    updateDashboard();
-                    updateUserUI();
-                    
-                    document.getElementById('import-modal').classList.remove('active');
-                    showToast('Backup restored successfully!', 'success');
-                } else {
-                    document.getElementById('import-message').textContent = result.error;
-                    document.getElementById('import-message').className = 'auth-message error';
-                    document.getElementById('import-message').style.display = 'block';
-                }
-            };
-            reader.readAsText(file);
+            // Reload all data
+            currentUser = userData.user;
+            userProgress = userData.progress;
+            userTargets = userData.targets;
+            completedTargets = userData.completedTargets;
+            userStudyPlan = userData.studyPlan;
+            userVideos = userData.videos;
+            userResources = userData.resources;
+            userStats = userData.stats;
+            userMotivation = userData.motivation;
+            
+            // Reload UI
+            loadSubjectContent();
+            loadPlanningPage();
+            loadVideos();
+            loadResources();
+            updateDashboard();
+            updateUserUI();
+            
+            document.getElementById('import-modal').classList.remove('active');
+            showToast('Backup restored successfully!', 'success');
+        } else {
+            document.getElementById('import-message').textContent = result.error;
+            document.getElementById('import-message').className = 'auth-message error';
+            document.getElementById('import-message').style.display = 'block';
+            console.error('Import failed:', result.error);
         }
+    };
+    reader.readAsText(file);
+}
         
         // ==================== HELPER FUNCTIONS ====================
         function getSubjectName(subjectId) {
