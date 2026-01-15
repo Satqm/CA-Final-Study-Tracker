@@ -3816,287 +3816,231 @@
         };
 
 
-        // ==================== INDEXEDDB FUNCTIONS ====================
-        class IndexedDBStorage {
-            // Initialize the database
-            static async init() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(DB_NAME, DB_VERSION);
-                    
-                    request.onerror = (event) => {
-                        console.error('IndexedDB error:', event.target.error);
-                        reject(event.target.error);
-                    };
-                    
-                    request.onsuccess = (event) => {
-                        db = event.target.result;
-                        console.log('IndexedDB initialized successfully');
-                        resolve(db);
-                    };
-                    
-                    request.onupgradeneeded = (event) => {
-                        const db = event.target.result;
-                        const oldVersion = event.oldVersion;
-                        
-                        // Create object stores if they don't exist
-                                               const stores = [
-                            'user', 'progress', 'targets', 'completedTargets', 
-                            'studyPlan', 'videos', 'resources', 'stats', 
-                            'settings', 'motivation', 'migration'
-                        ];
-                        
-                        stores.forEach(storeName => {
-                            if (!db.objectStoreNames.contains(storeName)) {
-                                db.createObjectStore(storeName, { keyPath: 'id' });
-                            }
-                        });
-                        
-                        // Migrate from localStorage if this is first time
-                        if (oldVersion === 0) {
-                            IndexedDBStorage.migrateFromLocalStorage();
-                        }
-                    };
-                });
-            }
+// ==================== INDEXEDDB FUNCTIONS ====================
+class IndexedDBStorage {
+    // Initialize the database
+    static async init() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
             
-            // Migrate data from localStorage to IndexedDB
-            static async migrateFromLocalStorage() {
-                console.log('Migrating from localStorage...');
+            request.onerror = (event) => {
+                console.error('IndexedDB error:', event.target.error);
+                reject(event.target.error);
+            };
+            
+            request.onsuccess = (event) => {
+                db = event.target.result;
+                console.log('IndexedDB initialized successfully');
+                resolve(db);
+            };
+            
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                const oldVersion = event.oldVersion;
                 
-                const migrationData = {
-                    id: 'migration',
-                    migrated: true,
-                    date: new Date().toISOString()
-                };
-                
-                // Check if we already migrated
-                const existingMigration = await IndexedDBStorage.get('migration', 'migration');
-                if (existingMigration) {
-                    console.log('Migration already completed');
-                    return;
-                }
-                
-                // Migrate each localStorage key
-                const localStorageKeys = [
-                    'ca_pro_user',
-                    'ca_pro_progress',
-                    'ca_pro_targets',
-                    'ca_pro_completedTargets',
-                    'ca_pro_studyPlan',
-                    'ca_pro_videos',
-                    'ca_pro_resources',
-                    'ca_pro_stats',
-                    'ca_pro_currentPage',
-                    'ca_pro_isLoggedIn'
+                // Create object stores if they don't exist
+                const stores = [
+                    'user', 'progress', 'targets', 'completedTargets', 
+                    'studyPlan', 'videos', 'resources', 'stats', 
+                    'settings', 'motivation', 'migration'
                 ];
                 
-                for (const key of localStorageKeys) {
-                    const data = localStorage.getItem(key);
-                    if (data) {
-                        try {
-                            const parsedData = JSON.parse(data);
-                            const storeName = key.replace('ca_pro_', '');
-                            await IndexedDBStorage.set(storeName, {
-                                id: storeName,
-                                data: parsedData
-                            });
-                            console.log(`Migrated ${key} to IndexedDB`);
-                        } catch (error) {
-                            console.error(`Error migrating ${key}:`, error);
-                        }
+                stores.forEach(storeName => {
+                    if (!db.objectStoreNames.contains(storeName)) {
+                        db.createObjectStore(storeName, { keyPath: 'id' });
                     }
-                }
+                });
                 
-                // Save migration record
-                await IndexedDBStorage.set('migration', migrationData);
-                console.log('Migration completed successfully');
-            }
-            
-// Generic get function
-static async get(storeName, id) {
-    return new Promise((resolve, reject) => {
-        if (!db) {
-            reject(new Error('Database not initialized'));
+                // Migrate from localStorage if this is first time
+                if (oldVersion === 0) {
+                    IndexedDBStorage.migrateFromLocalStorage();
+                }
+            };
+        });
+    }
+    
+    // Migrate data from localStorage to IndexedDB
+    static async migrateFromLocalStorage() {
+        console.log('Migrating from localStorage...');
+        
+        const migrationData = {
+            id: 'migration',
+            migrated: true,
+            date: new Date().toISOString()
+        };
+        
+        // Check if we already migrated
+        const existingMigration = await IndexedDBStorage.get('migration', 'migration');
+        if (existingMigration) {
+            console.log('Migration already completed');
             return;
         }
         
-        const transaction = db.transaction([storeName], 'readonly');
-        const store = transaction.objectStore(storeName);
-        const request = store.get(id);
+        // Migrate each localStorage key
+        const localStorageKeys = [
+            'ca_pro_user',
+            'ca_pro_progress',
+            'ca_pro_targets',
+            'ca_pro_completedTargets',
+            'ca_pro_studyPlan',
+            'ca_pro_videos',
+            'ca_pro_resources',
+            'ca_pro_stats',
+            'ca_pro_currentPage',
+            'ca_pro_isLoggedIn'
+        ];
         
-        request.onsuccess = () => {
-            const result = request.result;
-            // Return the whole result (includes id and data fields)
-            resolve(result || null);
-        };
-        request.onerror = () => reject(request.error);
-    });
-}
-            // Generic set function
-            static async set(storeName, data) {
-                return new Promise((resolve, reject) => {
-                    if (!db) {
-                        reject(new Error('Database not initialized'));
-                        return;
-                    }
-                    
-                    const transaction = db.transaction([storeName], 'readwrite');
-                    const store = transaction.objectStore(storeName);
-                    const request = store.put(data);
-                    
-                    request.onsuccess = () => resolve();
-                    request.onerror = () => reject(request.error);
-                });
-            }
-            
-            // Generic delete function
-            static async delete(storeName, id) {
-                return new Promise((resolve, reject) => {
-                    if (!db) {
-                        reject(new Error('Database not initialized'));
-                        return;
-                    }
-                    
-                    const transaction = db.transaction([storeName], 'readwrite');
-                    const store = transaction.objectStore(storeName);
-                    const request = store.delete(id);
-                    
-                    request.onsuccess = () => resolve();
-                    request.onerror = () => reject(request.error);
-                });
-            }
-            
-// Get all items from a store
-static async getAll(storeName) {
-    return new Promise((resolve, reject) => {
-        if (!db) {
-            reject(new Error('Database not initialized'));
-            return;
-        }
-        
-        const transaction = db.transaction([storeName], 'readonly');
-        const store = transaction.objectStore(storeName);
-        const request = store.getAll();
-        
-        request.onsuccess = () => {
-            const items = request.result || [];
-            // Return items as-is without filtering
-            resolve(items);
-        };
-        request.onerror = () => reject(request.error);
-    });
-}
-            
-            // Clear a store
-            static async clear(storeName) {
-                return new Promise((resolve, reject) => {
-                    if (!db) {
-                        reject(new Error('Database not initialized'));
-                        return;
-                    }
-                    
-                    const transaction = db.transaction([storeName], 'readwrite');
-                    const store = transaction.objectStore(storeName);
-                    const request = store.clear();
-                    
-                    request.onsuccess = () => resolve();
-                    request.onerror = () => reject(request.error);
-                });
-            }
-            
-        // Export all data - UPDATED: Export all data types correctly
-static async exportAll() {
-    const stores = [
-        'user', 'progress', 'targets', 'completedTargets',
-        'studyPlan', 'videos', 'resources', 'stats', 'settings', 'motivation'
-    ];
-    
-    const allData = {};
-    
-    for (const storeName of stores) {
-        if (storeName === 'motivation' || storeName === 'user' || 
-            storeName === 'progress' || storeName === 'studyPlan' || 
-            storeName === 'stats' || storeName === 'settings') {
-            // For single object stores
-            const data = await IndexedDBStorage.get(storeName, storeName);
+        for (const key of localStorageKeys) {
+            const data = localStorage.getItem(key);
             if (data) {
-                allData[storeName] = data;
-            }
-        } else {
-            // For array stores
-            const data = await IndexedDBStorage.getAll(storeName);
-            if (data.length > 0) {
-                allData[storeName] = data;
+                try {
+                    const parsedData = JSON.parse(data);
+                    const storeName = key.replace('ca_pro_', '');
+                    await IndexedDBStorage.set(storeName, {
+                        id: storeName,
+                        data: parsedData
+                    });
+                    console.log(`Migrated ${key} to IndexedDB`);
+                } catch (error) {
+                    console.error(`Error migrating ${key}:`, error);
+                }
             }
         }
+        
+        // Save migration record
+        await IndexedDBStorage.set('migration', migrationData);
+        console.log('Migration completed successfully');
     }
     
-    allData.exportDate = new Date().toISOString();
-    allData.version = '2.1'; // Update version
-    allData.app = 'CA Final Pro Tracker';
-    
-    return JSON.stringify(allData, null, 2);
-}
+    // Generic get function
+    static async get(storeName, id) {
+        return new Promise((resolve, reject) => {
+            if (!db) {
+                reject(new Error('Database not initialized'));
+                return;
+            }
             
-           async function processBackup() {
-    const fileInput = document.getElementById('backup-upload');
-    const file = fileInput.files[0];
-    
-    if (!file) {
-        showToast('Please select a backup file', 'error');
-        return;
+            const transaction = db.transaction([storeName], 'readonly');
+            const store = transaction.objectStore(storeName);
+            const request = store.get(id);
+            
+            request.onsuccess = () => {
+                const result = request.result;
+                // Return the whole result (includes id and data fields)
+                resolve(result || null);
+            };
+            request.onerror = () => reject(request.error);
+        });
     }
     
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        // DEBUG: Log what's in the backup file
-        console.log('Backup file contents:', e.target.result.substring(0, 500) + '...');
+    // Generic set function
+    static async set(storeName, data) {
+        return new Promise((resolve, reject) => {
+            if (!db) {
+                reject(new Error('Database not initialized'));
+                return;
+            }
+            
+            const transaction = db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            const request = store.put(data);
+            
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+    
+    // Generic delete function
+    static async delete(storeName, id) {
+        return new Promise((resolve, reject) => {
+            if (!db) {
+                reject(new Error('Database not initialized'));
+                return;
+            }
+            
+            const transaction = db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            const request = store.delete(id);
+            
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+    
+    // Get all items from a store
+    static async getAll(storeName) {
+        return new Promise((resolve, reject) => {
+            if (!db) {
+                reject(new Error('Database not initialized'));
+                return;
+            }
+            
+            const transaction = db.transaction([storeName], 'readonly');
+            const store = transaction.objectStore(storeName);
+            const request = store.getAll();
+            
+            request.onsuccess = () => {
+                const items = request.result || [];
+                // Return items as-is without filtering
+                resolve(items);
+            };
+            request.onerror = () => reject(request.error);
+        });
+    }
+    
+    // Clear a store
+    static async clear(storeName) {
+        return new Promise((resolve, reject) => {
+            if (!db) {
+                reject(new Error('Database not initialized'));
+                return;
+            }
+            
+            const transaction = db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            const request = store.clear();
+            
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+    
+    // Export all data
+    static async exportAll() {
+        const stores = [
+            'user', 'progress', 'targets', 'completedTargets',
+            'studyPlan', 'videos', 'resources', 'stats', 'settings', 'motivation'
+        ];
         
-        const result = await DataStorage.importAll(e.target.result);
+        const allData = {};
         
-        if (result.success) {
-            // DEBUG: Load and log what was imported
-            console.log('Import successful, now loading data...');
-            
-            const userData = await DataStorage.loadUserData();
-            console.log('Loaded user:', userData.user);
-            console.log('Loaded progress:', userData.progress?.subjects?.paper1);
-            console.log('Loaded studyPlan:', userData.studyPlan);
-            console.log('Loaded targets:', userData.targets?.length);
-            console.log('Loaded completedTargets:', userData.completedTargets?.length);
-            
-            // Reload all data
-            currentUser = userData.user;
-            userProgress = userData.progress;
-            userTargets = userData.targets;
-            completedTargets = userData.completedTargets;
-            userStudyPlan = userData.studyPlan;
-            userVideos = userData.videos;
-            userResources = userData.resources;
-            userStats = userData.stats;
-            userMotivation = userData.motivation;
-            
-            // Reload UI
-            loadSubjectContent();
-            loadPlanningPage();
-            loadVideos();
-            loadResources();
-            updateDashboard();
-            updateUserUI();
-            
-            document.getElementById('import-modal').classList.remove('active');
-            showToast('Backup restored successfully!', 'success');
-        } else {
-            document.getElementById('import-message').textContent = result.error;
-            document.getElementById('import-message').className = 'auth-message error';
-            document.getElementById('import-message').style.display = 'block';
-            console.error('Import failed:', result.error);
+        for (const storeName of stores) {
+            if (storeName === 'motivation' || storeName === 'user' || 
+                storeName === 'progress' || storeName === 'studyPlan' || 
+                storeName === 'stats' || storeName === 'settings') {
+                // For single object stores
+                const data = await IndexedDBStorage.get(storeName, storeName);
+                if (data) {
+                    allData[storeName] = data;
+                }
+            } else {
+                // For array stores
+                const data = await IndexedDBStorage.getAll(storeName);
+                if (data.length > 0) {
+                    allData[storeName] = data;
+                }
+            }
         }
-    };
-    reader.readAsText(file);
-}
+        
+        allData.exportDate = new Date().toISOString();
+        allData.version = '2.1';
+        allData.app = 'CA Final Pro Tracker';
+        
+        return JSON.stringify(allData, null, 2);
+    }
+} 
 
- // ==================== DATA STORAGE SYSTEM ====================
+// ==================== DATA STORAGE SYSTEM ====================
 class DataStorage {
     // Initialize IndexedDB
     static async init() {
