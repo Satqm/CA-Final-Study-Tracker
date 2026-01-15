@@ -3263,7 +3263,7 @@
                 </div>
                 
                 <div class="password-input">
-                    <input type="password" id="delete-password" placeholder="Enter password to confirm deletion" form="delete-form">
+                    <input type="password" id="delete-password" placeholder="Enter password to confirm deletion" form="delete-form" autocomplete="current-password">
                 </div>
                 
                 <button class="btn btn-accent" id="confirm-delete-btn" style="margin-top: 20px; width: 100%;" type="submit">
@@ -4097,21 +4097,20 @@ static async importAll(jsonData) {
     }
 }
 
-
-               // ==================== DATA STORAGE SYSTEM ====================
-        class DataStorage {
-            // Initialize IndexedDB
-            static async init() {
-                try {
-                    await IndexedDBStorage.init();
-                    console.log('IndexedDB initialized successfully');
-                    return true;
-                } catch (error) {
-                    console.error('Failed to initialize IndexedDB:', error);
-                    // Fallback to localStorage if IndexedDB fails
-                    return false;
-                }
-            }
+ // ==================== DATA STORAGE SYSTEM ====================
+class DataStorage {
+    // Initialize IndexedDB
+    static async init() {
+        try {
+            await IndexedDBStorage.init();
+            console.log('IndexedDB initialized successfully');
+            return true;
+        } catch (error) {
+            console.error('Failed to initialize IndexedDB:', error);
+            // Fallback to localStorage if IndexedDB fails
+            return false;
+        }
+    }
             
             // Load user data from IndexedDB
             static async loadUserData() {
@@ -6506,41 +6505,41 @@ static async importAll(jsonData) {
             }
             
                 
-              // Add the completeTarget function
-            async function completeTarget(index) {
-                if (index >= 0 && index < userTargets.length) {
-                    const target = userTargets[index];
-                    target.completed = true;
-                    target.status = 'completed';
-                    
-                    // Auto-update the corresponding subtopic in Subjects tab
-                    if (target.autoUpdateSubtopic !== false && target.subtopic && 
-                        target.subject && target.topic && target.actualHours > 0) {
-                        await updateSubtopicFromCompletedTarget(target);
-                    }
-                    
-                    // Move target from userTargets to completedTargets
-                    const completedTarget = { ...target };
-                    completedTargets.push(completedTarget);
-                    userTargets.splice(index, 1);
-                    
-                    try {
-                        // Save ALL changes to IndexedDB
-                        await DataStorage.manualSave('targets', userTargets);
-                        await DataStorage.manualSave('completedTargets', completedTargets);
-                        
-                        // Update UI
-                        loadTargets();
-                        loadTargetHistory();
-                        updateDashboard();
-                        
-                        showToast('Target marked as complete! Subtopic updated in Subjects tab.', 'success');
-                    } catch (error) {
-                        console.error('Error saving completed target:', error);
-                        showToast('Error saving completed target. Please try again.', 'error');
-                    }
-                }
-            }
+           // Add the completeTarget function
+async function completeTarget(index) {
+    if (index >= 0 && index < userTargets.length) {
+        const target = userTargets[index];
+        target.completed = true;
+        target.status = 'completed';
+        
+        // Auto-update the corresponding subtopic in Subjects tab
+        if (target.autoUpdateSubtopic !== false && target.subtopic && 
+            target.subject && target.topic && target.actualHours > 0) {
+            await updateSubtopicFromCompletedTarget(target);
+        }
+        
+        // Move target from userTargets to completedTargets
+        const completedTarget = { ...target };
+        completedTargets.push(completedTarget);
+        userTargets.splice(index, 1);
+        
+        try {
+            // Save ALL changes to IndexedDB
+            await DataStorage.manualSave('targets', userTargets);
+            await DataStorage.manualSave('completedTargets', completedTargets);
+            
+            // Update UI
+            loadTargets();
+            loadTargetHistory();
+            updateDashboard();
+            
+            showToast('Target marked as complete! Subtopic updated in Subjects tab.', 'success');
+        } catch (error) {
+            console.error('Error saving completed target:', error);
+            showToast('Error saving completed target. Please try again.', 'error');
+        }
+    }
+}
             // Add event listeners for auto-update subtopic buttons
             document.querySelectorAll('.auto-update-subtopic-btn').forEach((btn, index) => {
                 btn.addEventListener('click', async function() {
