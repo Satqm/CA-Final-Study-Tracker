@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ca-final-tracker-v4';
+const CACHE_NAME = 'ca-final-tracker-v5'; // Changed from v4 to v5
 const APP_PREFIX = 'CAFINAL_';
 const urlsToCache = [
   './',
