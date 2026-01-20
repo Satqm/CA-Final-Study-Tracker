@@ -2421,6 +2421,61 @@
                 gap: 10px;
             }
         }
+        /* Desktop Mode Styles */
+.desktop-mode .container {
+    max-width: 1400px !important;
+}
+
+.desktop-mode .nav-links {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+}
+
+.desktop-mode .main-content {
+    padding: 40px 0;
+}
+
+.desktop-mode .kpi-cards {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.desktop-mode .planning-container {
+    grid-template-columns: 1fr 1fr;
+}
+
+.desktop-mode .resources-container {
+    grid-template-columns: 1fr 1fr;
+}
+
+.desktop-mode .motivation-container {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.desktop-mode .chart-wrapper {
+    height: 450px;
+}
+
+.desktop-mode .target-form {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Larger screens adjustments */
+@media (min-width: 1200px) {
+    .desktop-mode .container {
+        padding: 0 40px;
+    }
+    
+    .desktop-mode .target-setup-card,
+    .desktop-mode .chart-container,
+    .desktop-mode .subject-content {
+        padding: 40px;
+    }
+    
+    .desktop-mode .heatmap-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+}
           
         
     </style>
@@ -3296,19 +3351,40 @@
                     </div>
                 </div>
                 
-                <div style="margin-bottom: 30px;">
-                    <h4 style="margin-bottom: 15px;">Study Preferences</h4>
-                    <div class="form-group">
-                        <label for="default-daily-hours">Default Daily Study Hours</label>
-                        <input type="number" id="default-daily-hours" min="1" max="16" value="4" step="0.5">
-                    </div>
-                </div>
-                
-                <div style="text-align: center;">
-                    <button class="btn btn-accent" id="save-settings-btn" style="width: 100%;">
-                        <i class="fas fa-save"></i> Save Settings
-                    </button>
-                </div>
+             <div style="margin-bottom: 30px;">
+    <h4 style="margin-bottom: 15px;">Study Preferences</h4>
+    <div class="form-group">
+        <label for="default-daily-hours">Default Daily Study Hours</label>
+        <input type="number" id="default-daily-hours" min="1" max="16" value="4" step="0.5">
+    </div>
+</div>
+
+<!-- NEW: Desktop Site Toggle -->
+<div style="margin-bottom: 30px;">
+    <h4 style="margin-bottom: 15px;">Display Settings</h4>
+    <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <input type="checkbox" id="desktop-mode-toggle">
+        <span>Desktop Mode (Force desktop layout on mobile)</span>
+    </label>
+</div>
+
+<!-- NEW: PWA Install Button -->
+<div style="margin-bottom: 30px; display: none;" id="pwa-install-section">
+    <h4 style="margin-bottom: 15px;">Install App</h4>
+    <p style="margin-bottom: 15px; color: var(--gray); font-size: 14px;">
+        Install this app on your device for offline access and better experience.
+    </p>
+    <button class="btn btn-success" id="install-pwa-btn" style="width: 100%;">
+        <i class="fas fa-download"></i> Install CA Final Tracker App
+    </button>
+    <div id="install-message" style="margin-top: 10px; font-size: 14px; color: var(--gray);"></div>
+</div>
+
+<div style="text-align: center;">
+    <button class="btn btn-accent" id="save-settings-btn" style="width: 100%;">
+        <i class="fas fa-save"></i> Save Settings
+    </button>
+</div>
             </div>
         </div>
     </div>
@@ -3375,7 +3451,7 @@
         // IndexedDB variables
         let db = null;
         const DB_NAME = 'CAFinalProTrackerDB';
-        const DB_VERSION = 2;
+        const DB_VERSION = 3; // Increased from 2 to 3
         
         // Auto-save variables
         let autoSaveTimer = null;
@@ -3833,28 +3909,38 @@
                         resolve(db);
                     };
                     
-                    request.onupgradeneeded = (event) => {
-                        const db = event.target.result;
-                        const oldVersion = event.oldVersion;
-                        
-                        // Create object stores if they don't exist
-                                               const stores = [
-                            'user', 'progress', 'targets', 'completedTargets', 
-                            'studyPlan', 'videos', 'resources', 'stats', 
-                            'settings', 'motivation', 'migration'
-                        ];
-                        
-                        stores.forEach(storeName => {
-                            if (!db.objectStoreNames.contains(storeName)) {
-                                db.createObjectStore(storeName, { keyPath: 'id' });
-                            }
-                        });
-                        
-                        // Migrate from localStorage if this is first time
-                        if (oldVersion === 0) {
-                            IndexedDBStorage.migrateFromLocalStorage();
-                        }
-                    };
+               request.onupgradeneeded = (event) => {
+    const db = event.target.result;
+    const oldVersion = event.oldVersion;
+    
+    // Create object stores if they don't exist - WITHOUT deleting existing ones
+    const stores = [
+        'user', 'progress', 'targets', 'completedTargets', 
+        'studyPlan', 'videos', 'resources', 'stats', 
+        'settings', 'motivation', 'migration'
+    ];
+    
+    stores.forEach(storeName => {
+        if (!db.objectStoreNames.contains(storeName)) {
+            db.createObjectStore(storeName, { keyPath: 'id' });
+        }
+    });
+    
+    // Migration logic with version checks
+    if (oldVersion === 0) {
+        // First install
+        IndexedDBStorage.migrateFromLocalStorage();
+    } else if (oldVersion === 1) {
+        // Upgrade from version 1 to 2
+        console.log('Upgrading from version 1 to 2');
+        // No data loss - just add new stores if needed
+    } else if (oldVersion === 2) {
+        // Upgrade from version 2 to 3
+        console.log('Upgrading from version 2 to 3');
+        // Keep all existing data, just update schema
+        // This prevents data loss during app updates
+    }
+};
                 });
             }
             
@@ -4163,21 +4249,43 @@ static async save(storeName, data) {
         const singleObjectStores = ['user', 'progress', 'studyPlan', 'stats', 'settings', 'motivation'];
         const arrayStores = ['targets', 'completedTargets', 'videos', 'resources'];
         
-        if (arrayStores.includes(storeName)) {
-            // Array store - clear and save all items with IDs
-            await IndexedDBStorage.clear(storeName);
-            if (Array.isArray(data)) {
-                for (let i = 0; i < data.length; i++) {
-                    const item = data[i];
-                    // Preserve existing ID or create new one
-                    const id = item.id || `${storeName}_${i}_${Date.now()}`;
-                    await IndexedDBStorage.set(storeName, {
-                        id: id,
-                        data: item
-                    });
+    if (arrayStores.includes(storeName)) {
+    // Array store - UPDATE existing items, don't clear!
+    if (Array.isArray(data)) {
+        // Get existing items first
+        const existingItems = await IndexedDBStorage.getAll(storeName);
+        const existingMap = new Map();
+        existingItems.forEach(item => {
+            existingMap.set(item.id, item);
+        });
+        
+        // Update or add new items
+        for (let i = 0; i < data.length; i++) {
+            const item = data[i];
+            // Preserve existing ID or create new one
+            const id = item.id || `${storeName}_${i}_${Date.now()}`;
+            item.id = id; // Ensure item has ID
+            
+            // Check if item exists and has timestamp
+            const existingItem = existingMap.get(id);
+            if (existingItem && existingItem.timestamp && item.timestamp) {
+                // Keep the newer version based on timestamp
+                if (new Date(existingItem.timestamp) > new Date(item.timestamp)) {
+                    // Keep existing item (it's newer)
+                    continue;
                 }
             }
-        } else if (singleObjectStores.includes(storeName)) {
+            
+            // Save the item
+            await IndexedDBStorage.set(storeName, {
+                id: id,
+                data: item,
+                timestamp: new Date().toISOString()
+            });
+        }
+    }
+}
+        else if (singleObjectStores.includes(storeName)) {
             // Single object store
             await IndexedDBStorage.set(storeName, {
                 id: storeName,
@@ -4503,10 +4611,16 @@ static async save(storeName, data) {
             
             document.getElementById('confirm-delete-btn').addEventListener('click', deleteSelectedEntries);
             
-            // Settings modal
-            document.getElementById('settings-close').addEventListener('click', () => {
-                document.getElementById('settings-modal').classList.remove('active');
-            });
+        // Settings modal
+document.getElementById('settings-btn').addEventListener('click', () => {
+    document.getElementById('settings-modal').classList.add('active');
+    
+    // Check PWA install capability
+    checkPWAInstallCapability();
+    
+    // Load current desktop mode setting
+    loadDesktopModeSetting();
+});
             
             document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
             
@@ -4563,6 +4677,115 @@ static async save(storeName, data) {
                 form.style.display = form.style.display === 'none' ? 'block' : 'none';
             });
         }
+        // ==================== PWA INSTALL & DESKTOP MODE FUNCTIONS ====================
+let deferredPrompt = null;
+
+// PWA Install functionality
+function checkPWAInstallCapability() {
+    // Check if PWA can be installed
+    if (window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true) {
+        // Already installed
+        document.getElementById('pwa-install-section').style.display = 'none';
+    } else {
+        document.getElementById('pwa-install-section').style.display = 'block';
+    }
+}
+
+// Listen for beforeinstallprompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 76+ from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
+    
+    // Show install button in settings
+    document.getElementById('install-pwa-btn').style.display = 'block';
+});
+
+// Handle PWA install button click
+document.getElementById('install-pwa-btn')?.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        // Show the install prompt
+        deferredPrompt.prompt();
+        
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+            document.getElementById('install-message').textContent = 'App installed successfully!';
+            document.getElementById('install-message').style.color = 'var(--success)';
+            document.getElementById('pwa-install-section').style.display = 'none';
+        } else {
+            document.getElementById('install-message').textContent = 'Installation cancelled';
+            document.getElementById('install-message').style.color = 'var(--accent)';
+        }
+        
+        // Clear the deferredPrompt variable
+        deferredPrompt = null;
+    }
+});
+
+// Desktop Mode functionality
+function loadDesktopModeSetting() {
+    // Load from settings or default to false
+    const settings = userStats.settings || {};
+    document.getElementById('desktop-mode-toggle').checked = settings.desktopMode || false;
+    
+    // Apply immediately
+    applyDesktopMode(settings.desktopMode || false);
+}
+
+function applyDesktopMode(enabled) {
+    if (enabled) {
+        document.body.classList.add('desktop-mode');
+        // Force desktop viewport
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+            viewport.content = 'width=1200, initial-scale=1.0';
+        }
+    } else {
+        document.body.classList.remove('desktop-mode');
+        // Reset to responsive viewport
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+            viewport.content = 'width=device-width, initial-scale=1.0';
+        }
+    }
+}
+
+// Update saveSettings function to include desktop mode
+const originalSaveSettings = saveSettings;
+saveSettings = async function() {
+    const enableNotifications = document.getElementById('enable-notifications').checked;
+    const enableDailySummary = document.getElementById('enable-daily-summary').checked;
+    const defaultDailyHours = parseFloat(document.getElementById('default-daily-hours').value) || 4;
+    const desktopMode = document.getElementById('desktop-mode-toggle').checked;
+    
+    const settings = {
+        enableNotifications,
+        enableDailySummary,
+        defaultDailyHours,
+        desktopMode
+    };
+    
+    userStats.settings = settings;
+    
+    // Apply desktop mode immediately
+    applyDesktopMode(desktopMode);
+    
+    // Save to IndexedDB
+    await DataStorage.save('stats', userStats);
+    
+    showToast('Settings saved successfully!', 'success');
+    
+    if (userStudyPlan && !userStudyPlan.customDistribution) {
+        userStudyPlan.dailyHours = defaultDailyHours;
+        userStudyPlan.totalHours = userStudyPlan.daysToExam * defaultDailyHours;
+        await DataStorage.save('studyPlan', userStudyPlan);
+        updatePlanDisplay();
+    }
+};
         
         function navigateToPage(pageId) {
             // Update navigation
