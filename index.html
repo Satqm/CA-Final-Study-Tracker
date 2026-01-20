@@ -7,11 +7,8 @@
     <meta name="description" content="CA Final Professional Offline Tracker - Advanced study planning and progress analytics">
     <title>CA Final Pro Tracker</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -2425,106 +2422,11 @@
             }
         }
           
-        /* Cloud Backup Styles */
-        .cloud-backup-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 40px;
-            color: white;
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
-        }
         
-        .cloud-status {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .cloud-icon {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: #667eea;
-        }
-        
-        .cloud-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .btn-cloud {
-            background: white;
-            color: #667eea;
-            border: none;
-        }
-        
-        .btn-cloud:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-3px);
-        }
-        
-        /* Auth Modal */
-        .auth-form {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .auth-tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            background: none;
-            border: none;
-            font-weight: 600;
-            color: var(--gray);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-        
-        .auth-tab.active {
-            color: var(--secondary);
-            border-bottom: 2px solid var(--secondary);
-        }
-        
-        .auth-content {
-            display: none;
-        }
-        
-        .auth-content.active {
-            display: block;
-        }
-        
-        /* Master password info */
-        .master-password-info {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid rgba(255, 193, 7, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 14px;
-        }
-        
-        .master-password-info strong {
-            color: #ff9800;
-        }
     </style>
 </head>
 <body>
-     <!-- Welcome Screen -->
+    <!-- Welcome Screen -->
     <div class="welcome-container" id="welcome-container">
         <div class="welcome-box">
             <div class="welcome-header">
@@ -2535,11 +2437,12 @@
                 <p>Professional Offline Study Management System</p>
             </div>
             
-            <div class="demo-video">
-                <a href="https://youtube.com/@__satyamkumar?si=yTdGDrWa-VE2_R5m" target="_blank">
-                    <i class="fab fa-youtube"></i> Watch Demo Video
-                </a>
-            </div>
+          <div class="demo-video">
+    <a href="https://youtu.be/VqMSwJIjfoM?si=YNhAxuaEiaeACs8o" target="_blank">
+        <i class="fab fa-youtube"></i> Watch Demo Video
+    </a>
+</div>
+
             
             <div class="name-input-section">
                 <input type="text" 
@@ -2619,7 +2522,7 @@
 </nav>
         </header>
         
-          <main class="main-content">
+        <main class="main-content">
             <div class="container">
                 <!-- Dashboard Page -->
                 <div class="page active" id="dashboard-page">
@@ -2629,29 +2532,7 @@
                             <button class="btn" id="update-target-btn">
                                 <i class="fas fa-calendar-alt"></i> Update Study Plan
                             </button>
-                            <button class="btn btn-cloud" id="cloud-backup-btn">
-                                <i class="fas fa-cloud"></i> Cloud Backup
-                            </button>
                         </div>
-                    </div>
-                    
-                    <!-- Cloud Backup Section -->
-                    <div class="cloud-backup-section" id="cloud-backup-section" style="display: none;">
-                        <div class="cloud-status">
-                            <div class="cloud-icon">
-                                <i class="fas fa-cloud"></i>
-                            </div>
-                            <div>
-                                <h3 style="margin: 0; color: white;">Cloud Backup Status</h3>
-                                <p id="cloud-status-text" style="margin: 5px 0 0 0; opacity: 0.9;">
-                                    Not connected to cloud
-                                </p>
-                            </div>
-                        </div>
-                        <div class="cloud-actions" id="cloud-actions">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
-                        <div id="last-sync-info" style="margin-top: 15px; font-size: 14px; opacity: 0.8;"></div>
                     </div>
                     
                     <!-- Study Plan Card -->
@@ -3362,97 +3243,6 @@
             </div>
         </footer>
     </div>
-
- <!-- Cloud Backup Modal -->
-    <div class="modal" id="cloud-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-cloud-upload-alt"></i> Cloud Backup & Sync</h3>
-                <button class="modal-close" id="cloud-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="auth-form">
-                    <div class="auth-tabs">
-                        <button class="auth-tab active" data-tab="login">Login</button>
-                        <button class="auth-tab" data-tab="signup">Sign Up</button>
-                    </div>
-                    
-                    <!-- Login Form -->
-                    <div class="auth-content active" id="login-form">
-                        <div class="form-group">
-                            <label for="login-email">Email</label>
-                            <input type="email" id="login-email" placeholder="Enter your email" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" placeholder="Enter your password" class="form-control">
-                        </div>
-                        <button class="btn" id="login-btn" style="width: 100%;">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </button>
-                        <div id="login-message" class="auth-message" style="margin-top: 15px;"></div>
-                    </div>
-                    
-                    <!-- Signup Form -->
-                    <div class="auth-content" id="signup-form">
-                        <div class="form-group">
-                            <label for="signup-email">Email</label>
-                            <input type="email" id="signup-email" placeholder="Enter your email" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-password">Password</label>
-                            <input type="password" id="signup-password" placeholder="Create a password (min 6 characters)" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="master-password">Master Password</label>
-                            <input type="password" id="master-password" placeholder="Enter master password" class="form-control">
-                        </div>
-                        <div class="master-password-info">
-                            <strong>Note:</strong> Master password is required for signup. 
-                            Contact admin or use the default: <strong>S@R@dha</strong>
-                        </div>
-                        <button class="btn" id="signup-btn" style="width: 100%; margin-top: 20px;">
-                            <i class="fas fa-user-plus"></i> Create Account
-                        </button>
-                        <div id="signup-message" class="auth-message" style="margin-top: 15px;"></div>
-                    </div>
-                    
-                    <!-- Backup Actions (shown after login) -->
-                    <div class="auth-content" id="backup-actions" style="display: none;">
-                        <div style="text-align: center; margin-bottom: 25px;">
-                            <div class="cloud-icon" style="margin: 0 auto 15px auto;">
-                                <i class="fas fa-cloud-check"></i>
-                            </div>
-                            <h4>Cloud Backup Active</h4>
-                            <p id="user-email-display"></p>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Auto Sync</label>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <input type="checkbox" id="auto-sync-checkbox" checked>
-                                <span>Automatically sync data to cloud</span>
-                            </div>
-                            <small style="color: var(--gray);">Data will be synced every 5 minutes</small>
-                        </div>
-                        
-                        <div class="data-actions" style="margin-top: 25px;">
-                            <button class="btn btn-accent" id="force-sync-btn" style="width: 100%; margin-bottom: 10px;">
-                                <i class="fas fa-sync-alt"></i> Sync Now
-                            </button>
-                            <button class="btn" id="download-cloud-btn" style="width: 100%; margin-bottom: 10px;">
-                                <i class="fas fa-download"></i> Download from Cloud
-                            </button>
-                            <button class="btn btn-warning" id="logout-cloud-btn" style="width: 100%;">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </button>
-                        </div>
-                        <div id="backup-action-message" class="auth-message" style="margin-top: 15px;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     
     <!-- Delete Entries Modal -->
     <div class="modal" id="delete-modal">
@@ -3561,42 +3351,8 @@
 
 
     <script>
-        // ==================== FIREBASE CONFIGURATION ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDqLun-YXJBxDjXgzzrrprIuaQs-L5A7qk",
-            authDomain: "ca-final-537aa.firebaseapp.com",
-            projectId: "ca-final-537aa",
-            storageBucket: "ca-final-537aa.firebasestorage.app",
-            messagingSenderId: "156489737512",
-            appId: "1:156489737512:web:14435d787884c3f5e99c1d"
-        };
-
-        // Firebase variables - DO NOT REDECLARE
-        let firebaseApp, firebaseAuth, firebaseDb;
-        let isFirebaseInitialized = false;
-
-        // Only initialize if not already initialized
-        if (!firebase.apps.length) {
-            try {
-                firebaseApp = firebase.initializeApp(firebaseConfig);
-                firebaseAuth = firebase.auth();
-                firebaseDb = firebase.firestore();
-                isFirebaseInitialized = true;
-                console.log("Firebase initialized successfully");
-            } catch (error) {
-                console.error("Firebase initialization error:", error);
-                isFirebaseInitialized = false;
-            }
-        } else {
-            firebaseApp = firebase.app();
-            firebaseAuth = firebase.auth();
-            firebaseDb = firebase.firestore();
-            isFirebaseInitialized = true;
-            console.log("Firebase already initialized");
-        }
-
         // ==================== GLOBAL VARIABLES ====================
-        let currentUser = { name: "", initials: "GU" };
+           let currentUser = { name: "", initials: "GU" };
         let userProgress = {};
         let userTargets = [];
         let completedTargets = [];
@@ -3616,993 +3372,16 @@
         let currentSubjectFilter = 'all';
         let currentPage = 'dashboard';
         
-        // Cloud backup variables
-        let cloudUser = null;
-        let autoSyncInterval = null;
-        let isAutoSyncEnabled = true;
-        
         // IndexedDB variables
         let db = null;
         const DB_NAME = 'CAFinalProTrackerDB';
-        const DB_VERSION = 3; // Increased version for cloud sync
+        const DB_VERSION = 2;
         
         // Auto-save variables
         let autoSaveTimer = null;
-        const AUTO_SAVE_DELAY = 2000;
+        const AUTO_SAVE_DELAY = 2000; // 2 seconds
         let pendingSave = false;
         let isSaving = false;
-
-       
-        // ==================== ENHANCED DATA STORAGE WITH CLOUD SYNC ====================
-        class DataStorage {
-            static async init() {
-                try {
-                    await IndexedDBStorage.init();
-                    
-                    // Check cloud sync status
-                    const cloudStatus = await IndexedDBStorage.getCloudSyncStatus();
-                    if (cloudStatus && cloudStatus.userId) {
-                        await CloudBackup.restoreUserSession(cloudStatus.userId);
-                    }
-                    
-                    return true;
-                } catch (error) {
-                    console.error('Failed to initialize storage:', error);
-                    return false;
-                }
-            }
-            
-            static async loadUserData() {
-                try {
-                    const [
-                        user, progress, targets, completedTargets,
-                        studyPlan, videos, resources, stats,
-                        motivation, settings
-                    ] = await Promise.all([
-                        IndexedDBStorage.get('user', 'user'),
-                        IndexedDBStorage.get('progress', 'progress'),
-                        IndexedDBStorage.getAll('targets'),
-                        IndexedDBStorage.getAll('completedTargets'),
-                        IndexedDBStorage.get('studyPlan', 'studyPlan'),
-                        IndexedDBStorage.getAll('videos'),
-                        IndexedDBStorage.getAll('resources'),
-                        IndexedDBStorage.get('stats', 'stats'),
-                        IndexedDBStorage.get('motivation', 'motivation'),
-                        IndexedDBStorage.get('settings', 'settings')
-                    ]);
-                    
-                    return {
-                        user: user || initializeUser(),
-                        progress: progress || initializeProgress(),
-                        targets: targets || [],
-                        completedTargets: completedTargets || [],
-                        studyPlan: studyPlan || initializeStudyPlan(),
-                        videos: videos || [],
-                        resources: resources || [],
-                        stats: stats || initializeStats(),
-                        motivation: motivation || initializeMotivation(),
-                        settings: settings || {}
-                    };
-                } catch (error) {
-                    console.error('Error loading user data:', error);
-                    return {
-                        user: initializeUser(),
-                        progress: initializeProgress(),
-                        targets: [],
-                        completedTargets: [],
-                        studyPlan: initializeStudyPlan(),
-                        videos: [],
-                        resources: [],
-                        stats: initializeStats(),
-                        motivation: initializeMotivation(),
-                        settings: {}
-                    };
-                }
-            }
-            
-            static async save(storeName, data) {
-                try {
-                    // Save to IndexedDB
-                    await IndexedDBStorage.set(storeName, data);
-                    
-                    // Auto-sync to cloud if enabled
-                    if (cloudUser && isAutoSyncEnabled && isFirebaseInitialized) {
-                        CloudBackup.autoSyncData(storeName, data);
-                    }
-                    
-                    return true;
-                } catch (error) {
-                    console.error(`Error saving ${storeName}:`, error);
-                    return false;
-                }
-            }
-            
-            static async autoSave(storeName, data) {
-                if (autoSaveTimer) {
-                    clearTimeout(autoSaveTimer);
-                }
-                
-                pendingSave = true;
-                updateAutoSaveIndicator('saving');
-                
-                autoSaveTimer = setTimeout(async () => {
-                    if (pendingSave && !isSaving) {
-                        isSaving = true;
-                        try {
-                            await DataStorage.save(storeName, data);
-                            pendingSave = false;
-                            updateAutoSaveIndicator('saved');
-                        } catch (error) {
-                            console.error('Auto-save error:', error);
-                            updateAutoSaveIndicator('error');
-                        } finally {
-                            isSaving = false;
-                        }
-                    }
-                }, AUTO_SAVE_DELAY);
-            }
-            
-            static async manualSave(storeName, data, callback) {
-                if (isSaving) {
-                    showToast('Already saving, please wait...', 'warning');
-                    return;
-                }
-                
-                isSaving = true;
-                const startTime = Date.now();
-                
-                try {
-                    await DataStorage.save(storeName, data);
-                    const elapsedTime = Date.now() - startTime;
-                    
-                    if (elapsedTime < 500) {
-                        await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
-                    }
-                    
-                    if (callback) callback(true);
-                    showToast('Saved successfully!', 'success');
-                } catch (error) {
-                    console.error('Manual save error:', error);
-                    if (callback) callback(false);
-                    showToast('Save failed. Please try again.', 'error');
-                } finally {
-                    isSaving = false;
-                }
-            }
-            
-            static async clearAll() {
-                const stores = [
-                    'user', 'progress', 'targets', 'completedTargets',
-                    'studyPlan', 'videos', 'resources', 'stats', 
-                    'settings', 'motivation', 'cloudSync'
-                ];
-                
-                for (const storeName of stores) {
-                    await IndexedDBStorage.clear(storeName);
-                }
-                
-                localStorage.removeItem('ca_pro_migrated');
-            }
-            
-            static async exportAll() {
-                return await IndexedDBStorage.exportAll();
-            }
-            
-            static async importAll(jsonData) {
-                return await IndexedDBStorage.importAll(jsonData);
-            }
-        }
-
-        // ==================== CLOUD BACKUP SYSTEM ====================
-        class CloudBackup {
-            static async signup(email, password, masterPassword) {
-                if (!isFirebaseInitialized) {
-                    throw new Error('Firebase is not initialized');
-                }
-                
-                // Check master password
-                if (masterPassword !== 'S@R@dha') {
-                    throw new Error('Invalid master password. Please use the correct master password.');
-                }
-                
-                try {
-                    // Create user in Firebase Auth
-                    const userCredential = await firebaseAuth.createUserWithEmailAndPassword(email, password);
-                    
-                    // Create user document in Firestore
-                    await firebaseDb.collection('users').doc(userCredential.user.uid).set({
-                        email: email,
-                        createdAt: new Date().toISOString(),
-                        lastSync: new Date().toISOString(),
-                        plan: 'free',
-                        deviceCount: 1
-                    });
-                    
-                    // Save sync status
-                    await IndexedDBStorage.setCloudSyncStatus({
-                        userId: userCredential.user.uid,
-                        email: email,
-                        lastSync: new Date().toISOString(),
-                        autoSync: true
-                    });
-                    
-                    cloudUser = userCredential.user;
-                    return { success: true, user: userCredential.user };
-                } catch (error) {
-                    throw new Error(this.getFirebaseError(error));
-                }
-            }
-            
-            static async login(email, password) {
-                if (!isFirebaseInitialized) {
-                    throw new Error('Firebase is not initialized');
-                }
-                
-                try {
-                    const userCredential = await firebaseAuth.signInWithEmailAndPassword(email, password);
-                    
-                    // Save sync status
-                    await IndexedDBStorage.setCloudSyncStatus({
-                        userId: userCredential.user.uid,
-                        email: email,
-                        lastSync: new Date().toISOString(),
-                        autoSync: true
-                    });
-                    
-                    cloudUser = userCredential.user;
-                    return { success: true, user: userCredential.user };
-                } catch (error) {
-                    throw new Error(this.getFirebaseError(error));
-                }
-            }
-            
-            static async logout() {
-                if (!isFirebaseInitialized) return;
-                
-                try {
-                    await firebaseAuth.signOut();
-                    await IndexedDBStorage.setCloudSyncStatus(null);
-                    cloudUser = null;
-                    
-                    // Clear auto-sync interval
-                    if (autoSyncInterval) {
-                        clearInterval(autoSyncInterval);
-                        autoSyncInterval = null;
-                    }
-                    
-                    return { success: true };
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    throw error;
-                }
-            }
-            
-            static async restoreUserSession(userId) {
-                if (!isFirebaseInitialized) return;
-                
-                try {
-                    // Check if user is still logged in
-                    const currentUser = firebaseAuth.currentUser;
-                    if (currentUser) {
-                        cloudUser = currentUser;
-                        this.startAutoSync();
-                        return true;
-                    }
-                } catch (error) {
-                    console.error('Session restore error:', error);
-                }
-                return false;
-            }
-            
-            static async uploadAllData() {
-                if (!cloudUser || !isFirebaseInitialized) {
-                    throw new Error('Not authenticated with cloud');
-                }
-                
-                try {
-                    // Get all data from IndexedDB
-                    const allData = await DataStorage.exportAll();
-                    const parsedData = JSON.parse(allData);
-                    
-                    // Add user info
-                    parsedData.userId = cloudUser.uid;
-                    parsedData.syncDate = new Date().toISOString();
-                    parsedData.deviceId = this.getDeviceId();
-                    
-                    // Upload to Firestore
-                    await firebaseDb.collection('backups').doc(cloudUser.uid).set({
-                        data: parsedData,
-                        timestamp: new Date().toISOString(),
-                        version: '3.0',
-                        deviceInfo: {
-                            userAgent: navigator.userAgent,
-                            platform: navigator.platform,
-                            deviceId: this.getDeviceId()
-                        }
-                    });
-                    
-                    // Update sync status
-                    await IndexedDBStorage.setCloudSyncStatus({
-                        userId: cloudUser.uid,
-                        email: cloudUser.email,
-                        lastSync: new Date().toISOString(),
-                        autoSync: true
-                    });
-                    
-                    return { success: true };
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    throw new Error('Failed to upload data to cloud');
-                }
-            }
-            
-            static async downloadAllData() {
-                if (!cloudUser || !isFirebaseInitialized) {
-                    throw new Error('Not authenticated with cloud');
-                }
-                
-                try {
-                    // Get data from Firestore
-                    const doc = await firebaseDb.collection('backups').doc(cloudUser.uid).get();
-                    
-                    if (!doc.exists) {
-                        throw new Error('No backup found in cloud');
-                    }
-                    
-                    const cloudData = doc.data();
-                    
-                    // Import the data
-                    const importResult = await DataStorage.importAll(JSON.stringify(cloudData.data));
-                    
-                    if (importResult.success) {
-                        // Update sync status
-                        await IndexedDBStorage.setCloudSyncStatus({
-                            userId: cloudUser.uid,
-                            email: cloudUser.email,
-                            lastSync: new Date().toISOString(),
-                            autoSync: true
-                        });
-                        
-                        return { success: true, data: cloudData.data };
-                    } else {
-                        throw new Error(importResult.error);
-                    }
-                } catch (error) {
-                    console.error('Download error:', error);
-                    throw new Error('Failed to download data from cloud: ' + error.message);
-                }
-            }
-            
-            static async autoSyncData(storeName, data) {
-                if (!cloudUser || !isAutoSyncEnabled) return;
-                
-                try {
-                    // Debounced sync - only sync if no sync in last 30 seconds
-                    const lastSync = await IndexedDBStorage.getCloudSyncStatus();
-                    const now = new Date();
-                    const lastSyncTime = lastSync ? new Date(lastSync.lastSync) : null;
-                    
-                    if (lastSyncTime && (now - lastSyncTime) < 30000) {
-                        return; // Skip sync if last sync was less than 30 seconds ago
-                    }
-                    
-                    // Upload all data
-                    await this.uploadAllData();
-                } catch (error) {
-                    console.error('Auto-sync error:', error);
-                }
-            }
-            
-            static startAutoSync() {
-                if (autoSyncInterval) {
-                    clearInterval(autoSyncInterval);
-                }
-                
-                // Sync every 5 minutes
-                autoSyncInterval = setInterval(async () => {
-                    if (cloudUser && isAutoSyncEnabled) {
-                        try {
-                            await CloudBackup.uploadAllData();
-                            console.log('Auto-sync completed');
-                        } catch (error) {
-                            console.error('Auto-sync failed:', error);
-                        }
-                    }
-                }, 5 * 60 * 1000); // 5 minutes
-            }
-            
-            static getDeviceId() {
-                // Generate a unique device ID
-                let deviceId = localStorage.getItem('deviceId');
-                if (!deviceId) {
-                    deviceId = 'device_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('deviceId', deviceId);
-                }
-                return deviceId;
-            }
-            
-            static getFirebaseError(error) {
-                switch (error.code) {
-                    case 'auth/email-already-in-use':
-                        return 'Email already in use. Please login instead.';
-                    case 'auth/invalid-email':
-                        return 'Invalid email address.';
-                    case 'auth/operation-not-allowed':
-                        return 'Email/password accounts are not enabled.';
-                    case 'auth/weak-password':
-                        return 'Password is too weak.';
-                    case 'auth/user-disabled':
-                        return 'This account has been disabled.';
-                    case 'auth/user-not-found':
-                        return 'No account found with this email.';
-                    case 'auth/wrong-password':
-                        return 'Incorrect password.';
-                    default:
-                        return error.message || 'An error occurred. Please try again.';
-                }
-            }
-        }
-
-        // ==================== FIXED HEATMAP DATA STORAGE ====================
-        function initializeMotivation() {
-            const heatmapData = {};
-            const currentYear = new Date().getFullYear();
-            const currentMonth = new Date().getMonth();
-            
-            // Initialize empty heatmap for current month
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                heatmapData[dateStr] = {
-                    totalHours: 0,
-                    subjects: {}
-                };
-            }
-            
-            return {
-                heatmapData: heatmapData,
-                weeklyQuotes: {},
-                favoriteQuotes: [],
-                currentWeekQuote: null,
-                quoteProgress: {}
-            };
-        }
-
-        // ==================== FIXED PERCENTAGE CALCULATIONS ====================
-        function calculateSubjectProgress(subjectId) {
-            const subject = syllabusData[subjectId];
-            const progress = userProgress.subjects[subjectId];
-            
-            if (!subject || !progress) return { percentage: 0, completed: 0, total: 0 };
-            
-            let totalWeight = 0;
-            let completedWeight = 0;
-            let completedTopics = 0;
-            
-            subject.topics.forEach(topic => {
-                const topicProgress = progress.topics[topic.name];
-                totalWeight += topic.weightage;
-                
-                if (topicProgress) {
-                    // Calculate subtopic completion
-                    let subtopicCompletedWeight = 0;
-                    topic.subtopics.forEach(subtopic => {
-                        const subtopicProgress = topicProgress.subtopics[subtopic.name];
-                        if (subtopicProgress && subtopicProgress.completed) {
-                            subtopicCompletedWeight += subtopic.weight;
-                        }
-                    });
-                    
-                    // Topic is completed if all subtopics are done OR manually marked as completed
-                    if (topicProgress.status === 'completed' || 
-                        (topic.subtopics.length > 0 && subtopicCompletedWeight >= 100)) {
-                        completedWeight += topic.weightage;
-                        completedTopics++;
-                    }
-                }
-            });
-            
-            const percentage = totalWeight > 0 ? Math.round((completedWeight / totalWeight) * 100) : 0;
-            
-            return {
-                percentage: percentage,
-                completed: completedTopics,
-                total: subject.topics.length,
-                weightPercentage: totalWeight > 0 ? Math.round((completedWeight / totalWeight) * 100) : 0
-            };
-        }
-
-        function updateGlobalKPIs() {
-            let totalActualHours = 0;
-            let totalPlannedHours = userStudyPlan?.totalHours || 720;
-            let totalSubjects = Object.keys(syllabusData).length;
-            let completedSubjects = 0;
-            let totalTopics = 0;
-            let completedTopics = 0;
-            let totalSubtopics = 0;
-            let completedSubtopics = 0;
-            
-            // Calculate progress for each subject
-            for (const subjectId in syllabusData) {
-                const progress = calculateSubjectProgress(subjectId);
-                
-                totalTopics += progress.total;
-                completedTopics += progress.completed;
-                
-                if (progress.percentage >= 100) {
-                    completedSubjects++;
-                }
-                
-                // Calculate hours for this subject
-                if (userProgress.subjects[subjectId]) {
-                    for (const topicName in userProgress.subjects[subjectId].topics) {
-                        const topic = userProgress.subjects[subjectId].topics[topicName];
-                        if (topic.subtopics) {
-                            Object.values(topic.subtopics).forEach(subtopic => {
-                                totalSubtopics++;
-                                totalActualHours += subtopic.actualHours || 0;
-                                if (subtopic.completed) {
-                                    completedSubtopics++;
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-            
-            // Update UI elements
-            document.getElementById('actual-hours').textContent = Math.round(totalActualHours);
-            document.getElementById('planned-hours').textContent = totalPlannedHours;
-            document.getElementById('overall-progress').textContent = `${Math.round((completedSubtopics / totalSubtopics) * 100)}%`;
-            document.getElementById('subjects-completed').textContent = completedSubjects;
-            document.getElementById('topics-completed').textContent = completedTopics;
-            document.getElementById('total-topics').textContent = totalTopics;
-            document.getElementById('plan-completion').textContent = `${Math.round((totalActualHours / totalPlannedHours) * 100)}%`;
-            
-            // Update remaining dashboard calculations...
-        }
-
-        // ==================== ENHANCED HEATMAP UPDATE FUNCTION ====================
-            async function updateHeatmapData(dateString, hours, subjectId = null) {
-            if (!dateString || hours <= 0) return;
-            
-            console.log(`Updating heatmap for ${dateString}: ${hours} hours, subject: ${subjectId}`);
-            
-            // Ensure heatmap data structure exists
-            if (!userMotivation.heatmapData) {
-                userMotivation.heatmapData = {};
-            }
-            
-            // Initialize year object if needed
-            const year = dateString.split('-')[0];
-            if (!userMotivation.heatmapData[year]) {
-                userMotivation.heatmapData[year] = {};
-            }
-            
-            // Initialize or update the date entry
-            if (!userMotivation.heatmapData[year][dateString]) {
-                userMotivation.heatmapData[year][dateString] = {
-                    totalHours: 0,
-                    subjects: {}
-                };
-            }
-            
-            // Update total hours - ADD to existing, don't replace
-            userMotivation.heatmapData[year][dateString].totalHours = 
-                (userMotivation.heatmapData[year][dateString].totalHours || 0) + hours;
-            
-            // Update subject-specific hours if subjectId is provided
-            if (subjectId) {
-                if (!userMotivation.heatmapData[year][dateString].subjects[subjectId]) {
-                    userMotivation.heatmapData[year][dateString].subjects[subjectId] = 0;
-                }
-                userMotivation.heatmapData[year][dateString].subjects[subjectId] += hours;
-            }
-            
-            // Also maintain a flat structure for backward compatibility
-            if (!userMotivation.heatmapData[dateString]) {
-                userMotivation.heatmapData[dateString] = {
-                    totalHours: 0,
-                    subjects: {}
-                };
-            }
-            userMotivation.heatmapData[dateString].totalHours = 
-                (userMotivation.heatmapData[dateString].totalHours || 0) + hours;
-            
-            if (subjectId) {
-                if (!userMotivation.heatmapData[dateString].subjects[subjectId]) {
-                    userMotivation.heatmapData[dateString].subjects[subjectId] = 0;
-                }
-                userMotivation.heatmapData[dateString].subjects[subjectId] += hours;
-            }
-            
-            // Save to IndexedDB
-            await DataStorage.autoSave('motivation', userMotivation);
-            
-            // Update heatmap display if on motivation page
-            if (currentPage === 'motivation') {
-                if (heatmapViewMode === 'month') {
-                    generateMonthHeatmap(currentHeatmapYear, currentHeatmapMonth);
-                } else {
-                    generateYearHeatmap(currentHeatmapYear);
-                }
-            }
-        }
-
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize IndexedDB
-            const dbInitialized = await DataStorage.init();
-            if (!dbInitialized) {
-                showToast('Failed to initialize database. Some features may not work.', 'error');
-            }
-            
-            // Set today's date in start date input
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('start-date').value = today;
-            document.getElementById('target-date').value = today;
-            
-            // Check if user is already logged in
-            const userData = await DataStorage.loadUserData();
-            const savedUser = userData.user;
-            
-            if (savedUser && savedUser.name) {
-                currentUser = savedUser;
-                userProgress = userData.progress;
-                userTargets = userData.targets;
-                completedTargets = userData.completedTargets;
-                userStudyPlan = userData.studyPlan;
-                userVideos = userData.videos;
-                userResources = userData.resources;
-                userStats = userData.stats;
-                userMotivation = userData.motivation;
-                loadApp();
-            } else {
-                document.getElementById('welcome-container').style.display = 'flex';
-                document.getElementById('app-container').style.display = 'none';
-            }
-            
-            setupEventListeners();
-            if (savedUser && savedUser.name) {
-                loadDefaultContent();
-                updateUserUI();
-            }
-        });
-
-        // ==================== CLOUD BACKUP EVENT HANDLERS ====================
-        function setupCloudEventListeners() {
-            // Cloud backup button
-            document.getElementById('cloud-backup-btn').addEventListener('click', () => {
-                document.getElementById('cloud-modal').classList.add('active');
-                updateCloudModalUI();
-            });
-            
-            // Cloud modal close
-            document.getElementById('cloud-close').addEventListener('click', () => {
-                document.getElementById('cloud-modal').classList.remove('active');
-            });
-            
-            // Auth tabs
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.getAttribute('data-tab');
-                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.auth-content').forEach(c => c.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.getElementById(`${tabId}-form`).classList.add('active');
-                });
-            });
-            
-            // Login button
-            document.getElementById('login-btn').addEventListener('click', async () => {
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                
-                if (!email || !password) {
-                    showAuthMessage('Please enter email and password', 'error', 'login-message');
-                    return;
-                }
-                
-                try {
-                    const result = await CloudBackup.login(email, password);
-                    if (result.success) {
-                        showAuthMessage('Login successful!', 'success', 'login-message');
-                        CloudBackup.startAutoSync();
-                        updateCloudUI();
-                        updateCloudModalUI();
-                        
-                        // Auto-sync after login
-                        setTimeout(async () => {
-                            try {
-                                await CloudBackup.uploadAllData();
-                                showToast('Data synced to cloud successfully!', 'success');
-                            } catch (error) {
-                                console.error('Initial sync error:', error);
-                            }
-                        }, 1000);
-                    }
-                } catch (error) {
-                    showAuthMessage(error.message, 'error', 'login-message');
-                }
-            });
-            
-            // Signup button
-            document.getElementById('signup-btn').addEventListener('click', async () => {
-                const email = document.getElementById('signup-email').value;
-                const password = document.getElementById('signup-password').value;
-                const masterPassword = document.getElementById('master-password').value;
-                
-                if (!email || !password || !masterPassword) {
-                    showAuthMessage('Please fill all fields', 'error', 'signup-message');
-                    return;
-                }
-                
-                if (password.length < 6) {
-                    showAuthMessage('Password must be at least 6 characters', 'error', 'signup-message');
-                    return;
-                }
-                
-                try {
-                    const result = await CloudBackup.signup(email, password, masterPassword);
-                    if (result.success) {
-                        showAuthMessage('Account created successfully!', 'success', 'signup-message');
-                        CloudBackup.startAutoSync();
-                        updateCloudUI();
-                        updateCloudModalUI();
-                        
-                        // Upload existing data to cloud
-                        setTimeout(async () => {
-                            try {
-                                await CloudBackup.uploadAllData();
-                                showToast('Initial backup completed successfully!', 'success');
-                            } catch (error) {
-                                console.error('Initial backup error:', error);
-                            }
-                        }, 1000);
-                    }
-                } catch (error) {
-                    showAuthMessage(error.message, 'error', 'signup-message');
-                }
-            });
-            
-            // Force sync button
-            document.getElementById('force-sync-btn').addEventListener('click', async () => {
-                try {
-                    showAuthMessage('Syncing data to cloud...', 'info', 'backup-action-message');
-                    await CloudBackup.uploadAllData();
-                    showAuthMessage('Sync completed successfully!', 'success', 'backup-action-message');
-                    showToast('Data synced to cloud', 'success');
-                } catch (error) {
-                    showAuthMessage('Sync failed: ' + error.message, 'error', 'backup-action-message');
-                }
-            });
-            
-            // Download from cloud button
-            document.getElementById('download-cloud-btn').addEventListener('click', async () => {
-                if (!confirm('This will replace your local data with cloud data. Continue?')) {
-                    return;
-                }
-                
-                try {
-                    showAuthMessage('Downloading data from cloud...', 'info', 'backup-action-message');
-                    const result = await CloudBackup.downloadAllData();
-                    
-                    if (result.success) {
-                        // Reload all data
-                        const userData = await DataStorage.loadUserData();
-                        currentUser = userData.user;
-                        userProgress = userData.progress;
-                        userTargets = userData.targets;
-                        completedTargets = userData.completedTargets;
-                        userStudyPlan = userData.studyPlan;
-                        userVideos = userData.videos;
-                        userResources = userData.resources;
-                        userStats = userData.stats;
-                        userMotivation = userData.motivation;
-                        
-                        // Reload UI
-                        if (currentPage === 'subjects') loadSubjectContent();
-                        if (currentPage === 'planning') loadPlanningPage();
-                        if (currentPage === 'videos') loadVideos();
-                        if (currentPage === 'resources') loadResources();
-                        if (currentPage === 'motivation') loadMotivationPage();
-                        updateDashboard();
-                        
-                        showAuthMessage('Data restored successfully!', 'success', 'backup-action-message');
-                        showToast('Cloud data restored', 'success');
-                    }
-                } catch (error) {
-                    showAuthMessage('Download failed: ' + error.message, 'error', 'backup-action-message');
-                }
-            });
-            
-            // Logout button
-            document.getElementById('logout-cloud-btn').addEventListener('click', async () => {
-                try {
-                    await CloudBackup.logout();
-                    updateCloudUI();
-                    updateCloudModalUI();
-                    showAuthMessage('Logged out successfully', 'success', 'backup-action-message');
-                    showToast('Logged out from cloud', 'info');
-                } catch (error) {
-                    showAuthMessage('Logout failed: ' + error.message, 'error', 'backup-action-message');
-                }
-            });
-            
-            // Auto-sync checkbox
-            document.getElementById('auto-sync-checkbox').addEventListener('change', (e) => {
-                isAutoSyncEnabled = e.target.checked;
-                if (isAutoSyncEnabled && cloudUser) {
-                    CloudBackup.startAutoSync();
-                } else if (autoSyncInterval) {
-                    clearInterval(autoSyncInterval);
-                    autoSyncInterval = null;
-                }
-            });
-        }
-
-        // ==================== CLOUD UI UPDATE FUNCTIONS ====================
-        function updateCloudUI() {
-            const cloudSection = document.getElementById('cloud-backup-section');
-            const cloudStatusText = document.getElementById('cloud-status-text');
-            const cloudActions = document.getElementById('cloud-actions');
-            const lastSyncInfo = document.getElementById('last-sync-info');
-            
-            if (cloudUser) {
-                cloudSection.style.display = 'block';
-                cloudStatusText.textContent = `Connected as ${cloudUser.email}`;
-                cloudActions.innerHTML = `
-                    <button class="btn btn-cloud" id="sync-now-btn">
-                        <i class="fas fa-sync-alt"></i> Sync Now
-                    </button>
-                    <button class="btn btn-cloud" id="manage-cloud-btn">
-                        <i class="fas fa-cog"></i> Manage
-                    </button>
-                `;
-                
-                // Update sync buttons
-                document.getElementById('sync-now-btn').addEventListener('click', async () => {
-                    try {
-                        showToast('Syncing to cloud...', 'info');
-                        await CloudBackup.uploadAllData();
-                        showToast('Sync completed!', 'success');
-                    } catch (error) {
-                        showToast('Sync failed: ' + error.message, 'error');
-                    }
-                });
-                
-                document.getElementById('manage-cloud-btn').addEventListener('click', () => {
-                    document.getElementById('cloud-modal').classList.add('active');
-                    updateCloudModalUI();
-                });
-                
-            } else {
-                cloudSection.style.display = 'block';
-                cloudStatusText.textContent = 'Not connected to cloud';
-                cloudActions.innerHTML = `
-                    <button class="btn btn-cloud" id="enable-cloud-btn">
-                        <i class="fas fa-cloud-upload-alt"></i> Enable Cloud Backup
-                    </button>
-                `;
-                
-                document.getElementById('enable-cloud-btn').addEventListener('click', () => {
-                    document.getElementById('cloud-modal').classList.add('active');
-                    updateCloudModalUI();
-                });
-            }
-        }
-
-        function updateCloudModalUI() {
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const backupActions = document.getElementById('backup-actions');
-            const userEmailDisplay = document.getElementById('user-email-display');
-            const autoSyncCheckbox = document.getElementById('auto-sync-checkbox');
-            
-            if (cloudUser) {
-                loginForm.classList.remove('active');
-                signupForm.classList.remove('active');
-                backupActions.classList.add('active');
-                userEmailDisplay.textContent = cloudUser.email;
-                autoSyncCheckbox.checked = isAutoSyncEnabled;
-            } else {
-                loginForm.classList.add('active');
-                signupForm.classList.remove('active');
-                backupActions.classList.remove('active');
-                document.querySelector('.auth-tab[data-tab="login"]').click();
-            }
-        }
-
-        function showAuthMessage(message, type, elementId) {
-            const element = document.getElementById(elementId);
-            element.textContent = message;
-            element.className = `auth-message ${type}`;
-            element.style.display = 'block';
-            
-            if (type === 'success') {
-                setTimeout(() => {
-                    element.style.display = 'none';
-                }, 3000);
-            }
-        }
-
-        // ==================== MODIFIED SETUP EVENT LISTENERS ====================
-        function setupEventListeners() {
-            // Existing event listeners...
-            
-            // Cloud backup listeners
-            setupCloudEventListeners();
-            
-            // Modified save target to update heatmap with subject
-            document.getElementById('save-target-btn').addEventListener('click', async () => {
-                // ... existing save target code ...
-                
-                                 // Update heatmap with today's date
-                    const subjectId = this.getAttribute('data-subject');
-                    const hours = parseFloat(input.value) || 0;
-                    if (hours > 0) {
-                        const today = new Date().toISOString().split('T')[0];
-                        await updateHeatmapData(today, hours, subjectId);
-                    }
-            });
-            
-            // Modified subtopic save to update heatmap
-            document.querySelectorAll('.subtopic-save-btn').forEach(btn => {
-                btn.addEventListener('click', async function() {
-                    // ... existing save code ...
-                    
-                    // Update heatmap
-                    const subjectId = this.getAttribute('data-subject');
-                    const hours = parseFloat(input.value) || 0;
-                    if (hours > 0) {
-                        await updateHeatmapData(new Date().toISOString().split('T')[0], hours, subjectId);
-                    }
-                });
-            });
-        }
-
-        // ==================== FIXED DATA EXPORT/IMPORT ====================
-        async function backupAllData() {
-            try {
-                const backupData = await DataStorage.exportAll();
-                const blob = new Blob([backupData], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `ca_final_backup_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showToast('Backup created successfully!', 'success');
-            } catch (error) {
-                console.error('Backup error:', error);
-                showToast('Failed to create backup: ' + error.message, 'error');
-            }
-        }
-
-        // ==================== ENHANCED APP INITIALIZATION ====================
-        function loadApp() {
-            document.getElementById('welcome-container').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            
-            updateUserUI();
-            updateCloudUI(); // Add cloud UI update
-            loadDefaultContent();
-            navigateToPage('dashboard');
-            updateDashboard();
-        }
-
-        // ==================== START THE APP ====================
-        // Initialize the application
-        setTimeout(() => {
-            if (cloudUser) {
-                CloudBackup.startAutoSync();
-            }
-        }, 2000);
-
         
         // CA Syllabus Data
         const syllabusData = {
@@ -5184,28 +3963,30 @@
             }
             
               // Get all items from a store
-    static async getAll(storeName) {
-        return new Promise((resolve, reject) => {
-            if (!db) {
-                reject(new Error('Database not initialized'));
-                return;
-            }
-            
-            const transaction = db.transaction([storeName], 'readonly');
-            const store = transaction.objectStore(storeName);
-            const request = store.getAll();
-            
-            request.onsuccess = () => {
-                const items = request.result || [];
-                // For targets and completedTargets, we need all items
-                const result = items
-                    .filter(item => item.id && item.id.includes(storeName)) // Only get items for this store
-                    .map(item => item.data || item);
-                resolve(result);
-            };
-            request.onerror = () => reject(request.error);
-        });
-    }
+static async getAll(storeName) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject(new Error('Database not initialized'));
+            return;
+        }
+        
+        const transaction = db.transaction([storeName], 'readonly');
+        const store = transaction.objectStore(storeName);
+        const request = store.getAll();
+        
+        request.onsuccess = () => {
+            const items = request.result || [];
+            // Extract data field from each item
+            const result = items.map(item => {
+                // For array stores, return the data field
+                // For single object stores, also return the data field
+                return item.data || item;
+            });
+            resolve(result);
+        };
+        request.onerror = () => reject(request.error);
+    });
+}
             
             // Clear a store
             static async clear(storeName) {
@@ -5225,64 +4006,96 @@
             }
             
             // Export all data
-            static async exportAll() {
-                const stores = [
-                    'user', 'progress', 'targets', 'completedTargets',
-                    'studyPlan', 'videos', 'resources', 'stats', 'settings'
-                ];
-                
-                const allData = {};
-                
-                for (const storeName of stores) {
-                    const data = await IndexedDBStorage.getAll(storeName);
-                    if (data.length > 0) {
-                        allData[storeName] = data;
-                    }
-                }
-                
-                allData.exportDate = new Date().toISOString();
-                allData.version = '2.0';
-                allData.app = 'CA Final Pro Tracker';
-                
-                return JSON.stringify(allData, null, 2);
+   static async exportAll() {
+    const singleObjectStores = ['user', 'progress', 'studyPlan', 'stats', 'settings', 'motivation'];
+    const arrayStores = ['targets', 'completedTargets', 'videos', 'resources'];
+    const allStores = [...singleObjectStores, ...arrayStores];
+    
+    const allData = {};
+    
+    for (const storeName of allStores) {
+        if (singleObjectStores.includes(storeName)) {
+            // Single object store - get single item
+            const data = await IndexedDBStorage.get(storeName, storeName);
+            if (data) {
+                allData[storeName] = [data]; // Wrap in array for compatibility
             }
+        } else {
+            // Array store - get all items
+            const data = await IndexedDBStorage.getAll(storeName);
+            if (data && data.length > 0) {
+                allData[storeName] = data;
+            }
+        }
+    }
+    
+    allData.exportDate = new Date().toISOString();
+    allData.version = '2.0';
+    allData.app = 'CA Final Pro Tracker';
+    
+    return JSON.stringify(allData, null, 2);
+}
             
             // Import all data
-                    static async importAll(jsonData) {
-                try {
-                    const data = JSON.parse(jsonData);
-                    
-                    // Validate data structure
-                    if (!data) {
-                        throw new Error('Empty backup file');
+static async importAll(jsonData) {
+    try {
+        const data = JSON.parse(jsonData);
+        
+        // Define store types
+        const singleObjectStores = ['user', 'progress', 'studyPlan', 'stats', 'settings', 'motivation'];
+        const arrayStores = ['targets', 'completedTargets', 'videos', 'resources'];
+        const allStores = [...singleObjectStores, ...arrayStores];
+        
+        // Clear existing data first
+        for (const storeName of allStores) {
+            await IndexedDBStorage.clear(storeName);
+        }
+        
+        // Import new data
+        for (const storeName of allStores) {
+            if (data[storeName]) {
+                if (singleObjectStores.includes(storeName)) {
+                    // Single object store
+                    if (Array.isArray(data[storeName]) && data[storeName].length > 0) {
+                        // Take first item from array (backward compatibility)
+                        await IndexedDBStorage.set(storeName, {
+                            id: storeName,
+                            data: data[storeName][0]
+                        });
+                    } else if (typeof data[storeName] === 'object') {
+                        // Direct object
+                        await IndexedDBStorage.set(storeName, {
+                            id: storeName,
+                            data: data[storeName]
+                        });
                     }
-                    
-                    console.log('Importing data:', Object.keys(data));
-                    
-                    // Import each store - USE DataStorage.save which handles arrays properly
-                    const stores = [
-                        'user', 'progress', 'targets', 'completedTargets',
-                        'studyPlan', 'videos', 'resources', 'stats', 
-                        'settings', 'motivation'
-                    ];
-                    
-                    for (const storeName of stores) {
-                        if (data[storeName] !== undefined) {
-                            console.log(`Importing ${storeName}:`, Array.isArray(data[storeName]) ? `Array with ${data[storeName].length} items` : 'Single object');
-                            await DataStorage.save(storeName, data[storeName]);
+                } else if (arrayStores.includes(storeName)) {
+                    // Array store - save each item with unique ID
+                    if (Array.isArray(data[storeName])) {
+                        for (let i = 0; i < data[storeName].length; i++) {
+                            const item = data[storeName][i];
+                            // Use existing ID or create a unique one
+                            const id = item.id || `${storeName}_${i}_${Date.now()}`;
+                            await IndexedDBStorage.set(storeName, {
+                                id: id,
+                                data: item
+                            });
                         }
                     }
-                    
-                    return { success: true, message: 'Data imported successfully' };
-                } catch (error) {
-                    console.error('Import error:', error);
-                    return { 
-                        success: false, 
-                        error: error.message || 'Invalid backup file format. Please ensure it was exported from this app.' 
-                    };
                 }
             }
-            }
+        }
+        
+        return { success: true, message: 'Data imported successfully' };
+    } catch (error) {
+        console.error('Import error:', error);
+        return { 
+            success: false, 
+            error: 'Invalid backup file format or corrupted data' 
+        };
+    }
+}
+}
 
 
         // ==================== DATA STORAGE SYSTEM ====================
@@ -5304,18 +4117,18 @@
                                     const [
                         user, progress, targets, completedTargets,
                         studyPlan, videos, resources, stats,
-                        motivation
-                    ] = await Promise.all([
-                        IndexedDBStorage.get('user', 'user'),
-                        IndexedDBStorage.get('progress', 'progress'),
-                        IndexedDBStorage.getAll('targets'),
-                        IndexedDBStorage.getAll('completedTargets'),
-                        IndexedDBStorage.get('studyPlan', 'studyPlan'),
-                        IndexedDBStorage.getAll('videos'),
-                        IndexedDBStorage.getAll('resources'),
-                        IndexedDBStorage.get('stats', 'stats'),
-                        IndexedDBStorage.get('motivation', 'motivation')
-                    ]);
+                   motivation
+   ] = await Promise.all([
+    IndexedDBStorage.get('user', 'user'),
+    IndexedDBStorage.get('progress', 'progress'),
+    IndexedDBStorage.getAll('targets'),
+    IndexedDBStorage.getAll('completedTargets'),
+    IndexedDBStorage.get('studyPlan', 'studyPlan'),
+    IndexedDBStorage.getAll('videos'),
+    IndexedDBStorage.getAll('resources'),
+    IndexedDBStorage.get('stats', 'stats'),
+    IndexedDBStorage.get('motivation', 'motivation')
+           ]);
                     
                                    return {
                         user: user || initializeUser(),
@@ -5345,39 +4158,38 @@
             }
             
                // Save specific data
-    static async save(storeName, data) {
-        try {
-            if (storeName === 'targets' || storeName === 'completedTargets') {
-                // For targets and completedTargets, save each item individually
-                await IndexedDBStorage.clear(storeName);
+static async save(storeName, data) {
+    try {
+        const singleObjectStores = ['user', 'progress', 'studyPlan', 'stats', 'settings', 'motivation'];
+        const arrayStores = ['targets', 'completedTargets', 'videos', 'resources'];
+        
+        if (arrayStores.includes(storeName)) {
+            // Array store - clear and save all items with IDs
+            await IndexedDBStorage.clear(storeName);
+            if (Array.isArray(data)) {
                 for (let i = 0; i < data.length; i++) {
+                    const item = data[i];
+                    // Preserve existing ID or create new one
+                    const id = item.id || `${storeName}_${i}_${Date.now()}`;
                     await IndexedDBStorage.set(storeName, {
-                        id: `${storeName}_${i}_${Date.now()}`,
-                        data: data[i]
+                        id: id,
+                        data: item
                     });
                 }
-            } else if (storeName === 'videos' || storeName === 'resources') {
-                // These stores contain multiple items, need to save all
-                await IndexedDBStorage.clear(storeName);
-                for (let i = 0; i < data.length; i++) {
-                    await IndexedDBStorage.set(storeName, {
-                        id: `${storeName}_${i}_${Date.now()}`,
-                        data: data[i]
-                    });
-                }
-            } else {
-                // Single item stores
-                await IndexedDBStorage.set(storeName, {
-                    id: storeName,
-                    data: data
-                });
             }
-            return true;
-        } catch (error) {
-            console.error(`Error saving ${storeName}:`, error);
-            return false;
+        } else if (singleObjectStores.includes(storeName)) {
+            // Single object store
+            await IndexedDBStorage.set(storeName, {
+                id: storeName,
+                data: data
+            });
         }
+        return true;
+    } catch (error) {
+        console.error(`Error saving ${storeName}:`, error);
+        return false;
     }
+}
             
             // Auto-save with debounce
             static async autoSave(storeName, data) {
@@ -5787,37 +4599,39 @@
         }
         
         function loadDefaultContent() {
-            // Add default videos if none exist
-            if (userVideos.length === 0) {
-                userVideos = [
-                    {
-                        id: Date.now(),
-                        title: "Financial Reporting - Complete Guide",
-                        subject: "paper1",
-                        link: "https://youtube.com/playlist?list=example1",
-                        author: "CA Expert",
-                        addedDate: new Date().toISOString()
-                    }
-                ];
-                DataStorage.save('videos', userVideos);
-            }
-            
-            // Add default resources if none exist
-            if (userResources.length === 0) {
-                userResources = [
-                    {
-                        id: Date.now(),
-                        title: "FR Formula Sheet",
-                        subject: "paper1",
-                        type: "formulas",
-                        link: "#",
-                        author: "Satyam Kumar",
-                        addedDate: new Date().toISOString()
-                    }
-                ];
-                DataStorage.save('resources', userResources);
-            }
+   // Add default videos if none exist
+if (userVideos.length === 0) {
+    userVideos = [
+        {
+            id: Date.now(),
+            title: "Financial Reporting - By PW",
+            subject: "paper1",
+            link: "https://youtube.com/playlist?list=PLgE50OYPyT6pZTMhQ4de-Rh-mOrT2O3l_&si=RwB8IOWC2q9ZN441",
+            author: "CA Expert",
+            addedDate: new Date().toISOString()
         }
+    ];
+    DataStorage.save('videos', userVideos);
+}
+
+            
+  // Add default resources if none exist
+if (userResources.length === 0) {
+    userResources = [
+        {
+            id: Date.now(),
+            title: "ICAI Study Material",
+            subject: "Genral",
+            type: "notes",
+            link: "https://boslive.icai.org/study_material_new_paper_details.php?c=final&language=English&year=Applicable%20for%20May%202026%20Exam%20Onwards",
+            author: "ICAI",
+            addedDate: new Date().toISOString()
+        }
+    ];
+    DataStorage.save('resources', userResources);
+}
+}
+
         
         function updateUserUI() {
             if (currentUser) {
@@ -8551,65 +7365,31 @@ async function deleteTarget(index) {
             let totalMonthHours = 0;
             let monthData = {};
             
-                       // Get data for all days in month
-                for (let day = 1; day <= daysInMonth; day++) {
-                    // Create date string in YYYY-MM-DD format
-                    const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    
-                    // Calculate hours studied for this day - CHECK MULTIPLE SOURCES
-                    let hours = 0;
-                    
-                    // 1. Check targets (from planning page)
-                    const allTargets = [...userTargets, ...completedTargets];
-                    allTargets.forEach(target => {
-                        if (target.date === dateString && target.actualHours) {
-                            hours += target.actualHours || 0;
-                        }
-                    });
-                    
-                    // 2. Check subject progress (from subjects page)
-                    if (userProgress && userProgress.subjects) {
-                        Object.values(userProgress.subjects).forEach(subject => {
-                            if (subject.topics) {
-                                Object.values(subject.topics).forEach(topic => {
-                                    if (topic.subtopics) {
-                                        Object.values(topic.subtopics).forEach(subtopic => {
-                                            if (subtopic.lastUpdated && subtopic.lastUpdated.includes(dateString) && subtopic.actualHours) {
-                                                hours += subtopic.actualHours || 0;
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+            // Get data for all days in month
+            for (let day = 1; day <= daysInMonth; day++) {
+                // Create date string in YYYY-MM-DD format (FIXED)
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                // Calculate hours studied for this day
+                let hours = 0;
+                const allTargets = [...userTargets, ...completedTargets];
+                allTargets.forEach(target => {
+                    if (target.date === dateString) {
+                        hours += target.actualHours || 0;
                     }
-                    
-                    // 3. Check heatmap data storage (from motivation data)
-                    if (userMotivation.heatmapData && userMotivation.heatmapData[year] && userMotivation.heatmapData[year][dateString]) {
-                        hours += userMotivation.heatmapData[year][dateString].totalHours || 0;
-                    } else if (userMotivation.heatmapData && userMotivation.heatmapData[dateString]) {
-                        // Backward compatibility with old structure
-                        hours += userMotivation.heatmapData[dateString].totalHours || 0;
-                    }
-                    
-                    // Store in month data
-                    monthData[day] = hours;
-                    totalMonthHours += hours;
-                    
-                    // Update heatmap data storage if not already present
-                    if (!userMotivation.heatmapData[year]) {
-                        userMotivation.heatmapData[year] = {};
-                    }
-                    if (!userMotivation.heatmapData[year][dateString]) {
-                        userMotivation.heatmapData[year][dateString] = {
-                            totalHours: hours,
-                            subjects: {}
-                        };
-                    } else if (userMotivation.heatmapData[year][dateString].totalHours < hours) {
-                        // Update if we found more hours from other sources
-                        userMotivation.heatmapData[year][dateString].totalHours = hours;
-                    }
+                });
+                
+                // Store in month data
+                monthData[day] = hours;
+                totalMonthHours += hours;
+                
+                // Store in heatmap data
+                if (!userMotivation.heatmapData[year]) {
+                    userMotivation.heatmapData[year] = {};
                 }
+                userMotivation.heatmapData[year][dateString] = hours;
+            }
+            
             // Generate week rows (max 6 weeks in a month)
             for (let week = 0; week < 6; week++) {
                 // Add week number cell
@@ -9105,7 +7885,6 @@ console.log('ServiceWorker registration successful with scope:', registration.sc
     </script>
 </body>
 </html>
-
 
 
 
