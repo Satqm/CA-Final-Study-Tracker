@@ -13,8 +13,23 @@
   "lang": "en-US",
   "dir": "ltr",
   "id": "/Pro/",
-  
+
   "icons": [
+    {
+      "src": "./icon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
     {
       "src": "./icon-192.png",
       "sizes": "192x192",
@@ -28,7 +43,7 @@
       "purpose": "any maskable"
     }
   ],
-  
+
   "screenshots": [
     {
       "src": "https://via.placeholder.com/1280x720/2c3e50/ffffff?text=CA+Final+Tracker+Dashboard",
@@ -45,7 +60,7 @@
       "label": "Mobile View"
     }
   ],
-  
+
   "shortcuts": [
     {
       "name": "Dashboard",
@@ -62,7 +77,7 @@
       "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
     }
   ],
-  
+
   "prefer_related_applications": false,
   "related_applications": []
 }
