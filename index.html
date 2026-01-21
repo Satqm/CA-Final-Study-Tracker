@@ -2337,6 +2337,10 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(100px); }
+    to { opacity: 1; transform: translateX(0); }
+}
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -4698,8 +4702,9 @@ document.getElementById('settings-btn').addEventListener('click', () => {
                 form.style.display = form.style.display === 'none' ? 'block' : 'none';
             });
         }
-        // ==================== PWA INSTALL & DESKTOP MODE FUNCTIONS ====================
+// ==================== PWA INSTALL & DESKTOP MODE FUNCTIONS ====================
 let deferredPrompt = null;
+let installPromptShown = false; // Track if we've shown the prompt
 
 // PWA Install functionality
 function checkPWAInstallCapability() {
@@ -4708,8 +4713,7 @@ function checkPWAInstallCapability() {
     const installMessage = document.getElementById('install-status');
     
     // Check if PWA is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches ||
-        window.navigator.standalone === true) {
+    if (isAppInstalled()) {
         installMessage.innerHTML = '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> App is already installed</span>';
         installBtn.style.display = 'none';
         installSection.style.display = 'block';
@@ -4739,8 +4743,91 @@ window.addEventListener('beforeinstallprompt', (e) => {
     
     // Show install button in settings
     document.getElementById('install-pwa-btn').style.display = 'block';
+    
+    // Check if we should show automatic install prompt
+    setTimeout(() => {
+        if (!installPromptShown && !isAppInstalled()) {
+            showInstallPrompt();
+        }
+    }, 3000); // Show after 3 seconds delay
 });
 
+// Check if app is already installed
+function isAppInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           window.navigator.standalone === true;
+}
+
+// Show install prompt to user
+function showInstallPrompt() {
+    if (!deferredPrompt || installPromptShown) return;
+    
+    // Create and show install prompt banner
+    const installBanner = document.createElement('div');
+    installBanner.id = 'install-prompt-banner';
+    installBanner.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        z-index: 9999;
+        max-width: 350px;
+        animation: slideUp 0.3s ease;
+        border: 2px solid var(--secondary);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    `;
+    
+    installBanner.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="width: 50px; height: 50px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                <i class="fas fa-download"></i>
+            </div>
+            <div style="flex: 1;">
+                <h4 style="margin: 0 0 5px 0; color: var(--primary);">Install CA Final Tracker</h4>
+                <p style="margin: 0; font-size: 14px; color: var(--gray);">Install for offline access & better experience</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button id="install-now-btn" style="flex: 1; padding: 12px; background: var(--success); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                Install Now
+            </button>
+            <button id="install-later-btn" style="padding: 12px 20px; background: #f8f9fa; color: var(--gray); border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                Later
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(installBanner);
+    installPromptShown = true;
+    
+    // Add event listeners
+    document.getElementById('install-now-btn').addEventListener('click', async () => {
+        if (deferredPrompt) {
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                showToast('App installed successfully!', 'success');
+            }
+            
+            // Clear the deferredPrompt variable
+            deferredPrompt = null;
+        }
+        installBanner.remove();
+    });
+    
+    document.getElementById('install-later-btn').addEventListener('click', () => {
+        installBanner.remove();
+    });
+}
 // Handle PWA install button click
 document.getElementById('install-pwa-btn')?.addEventListener('click', async () => {
     if (deferredPrompt) {
@@ -4751,12 +4838,11 @@ document.getElementById('install-pwa-btn')?.addEventListener('click', async () =
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
-            document.getElementById('install-message').textContent = 'App installed successfully!';
-            document.getElementById('install-message').style.color = 'var(--success)';
-            document.getElementById('pwa-install-section').style.display = 'none';
+            showToast('App installed successfully!', 'success');
+            document.getElementById('install-status').innerHTML = '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> App installed!</span>';
         } else {
-            document.getElementById('install-message').textContent = 'Installation cancelled';
-            document.getElementById('install-message').style.color = 'var(--accent)';
+            showToast('Installation cancelled', 'warning');
+            document.getElementById('install-status').innerHTML = '<span style="color: var(--warning);"><i class="fas fa-times-circle"></i> Installation cancelled</span>';
         }
         
         // Clear the deferredPrompt variable
