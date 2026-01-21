@@ -6,6 +6,15 @@
     <meta name="theme-color" content="#2c3e50">
     <meta name="description" content="CA Final Professional Offline Tracker - Advanced study planning and progress analytics">
     <title>CA Final Pro Tracker</title>
+    
+    <!-- Favicon configuration -->
+    <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="icon-48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -3369,15 +3378,16 @@
 </div>
 
 <!-- NEW: PWA Install Button -->
-<div style="margin-bottom: 30px; display: none;" id="pwa-install-section">
+<div style="margin-bottom: 30px;" id="pwa-install-section">
     <h4 style="margin-bottom: 15px;">Install App</h4>
     <p style="margin-bottom: 15px; color: var(--gray); font-size: 14px;">
         Install this app on your device for offline access and better experience.
     </p>
-    <button class="btn btn-success" id="install-pwa-btn" style="width: 100%;">
+    <button class="btn btn-success" id="install-pwa-btn" style="width: 100%; display: none;">
         <i class="fas fa-download"></i> Install CA Final Tracker App
     </button>
     <div id="install-message" style="margin-top: 10px; font-size: 14px; color: var(--gray);"></div>
+    <div id="install-status" style="margin-top: 10px; font-size: 14px;"></div>
 </div>
 
 <div style="text-align: center;">
@@ -4434,23 +4444,34 @@ static async save(storeName, data) {
             }
         });
         
-        function loadApp() {
-            // Hide welcome, show app
-            document.getElementById('welcome-container').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            
-            // Update UI
-            updateUserUI();
-            
-            // Load default content
-            loadDefaultContent();
-            
-            // Navigate to dashboard
-            navigateToPage('dashboard');
-            
-            // Update dashboard
-            updateDashboard();
-        }
+   function loadApp() {
+    // Hide welcome, show app
+    document.getElementById('welcome-container').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    
+    // Update UI
+    updateUserUI();
+    
+    // Check and apply saved desktop mode
+    const savedDesktopMode = localStorage.getItem('desktopMode') === 'true';
+    if (savedDesktopMode && !userStats.settings?.desktopMode) {
+        // Update settings if not already set
+        userStats.settings = userStats.settings || {};
+        userStats.settings.desktopMode = true;
+        applyDesktopMode(true);
+    } else if (userStats.settings?.desktopMode) {
+        applyDesktopMode(userStats.settings.desktopMode);
+    }
+    
+    // Load default content
+    loadDefaultContent();
+    
+    // Navigate to dashboard
+    navigateToPage('dashboard');
+    
+    // Update dashboard
+    updateDashboard();
+}
         
         function setupEventListeners() {
             // Welcome screen
@@ -4682,14 +4703,31 @@ let deferredPrompt = null;
 
 // PWA Install functionality
 function checkPWAInstallCapability() {
-    // Check if PWA can be installed
+    const installSection = document.getElementById('pwa-install-section');
+    const installBtn = document.getElementById('install-pwa-btn');
+    const installMessage = document.getElementById('install-status');
+    
+    // Check if PWA is already installed
     if (window.matchMedia('(display-mode: standalone)').matches ||
         window.navigator.standalone === true) {
-        // Already installed
-        document.getElementById('pwa-install-section').style.display = 'none';
-    } else {
-        document.getElementById('pwa-install-section').style.display = 'block';
+        installMessage.innerHTML = '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> App is already installed</span>';
+        installBtn.style.display = 'none';
+        installSection.style.display = 'block';
+        return;
     }
+    
+    // Check if browser supports PWA installation
+    if (!deferredPrompt) {
+        installMessage.innerHTML = '<span style="color: var(--gray);"><i class="fas fa-info-circle"></i> Install option will appear when supported</span>';
+        installBtn.style.display = 'none';
+        installSection.style.display = 'block';
+        return;
+    }
+    
+    // Show install button
+    installBtn.style.display = 'block';
+    installMessage.innerHTML = '<span style="color: var(--secondary);"><i class="fas fa-mobile-alt"></i> Ready to install</span>';
+    installSection.style.display = 'block';
 }
 
 // Listen for beforeinstallprompt event
@@ -4739,19 +4777,31 @@ function loadDesktopModeSetting() {
 function applyDesktopMode(enabled) {
     if (enabled) {
         document.body.classList.add('desktop-mode');
-        // Force desktop viewport
+        // Force desktop viewport - use a more compatible approach
         const viewport = document.querySelector('meta[name="viewport"]');
         if (viewport) {
-            viewport.content = 'width=1200, initial-scale=1.0';
+            viewport.content = 'width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
         }
+        // Store in localStorage for persistence
+        localStorage.setItem('desktopMode', 'true');
     } else {
         document.body.classList.remove('desktop-mode');
         // Reset to responsive viewport
         const viewport = document.querySelector('meta[name="viewport"]');
         if (viewport) {
-            viewport.content = 'width=device-width, initial-scale=1.0';
+            viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0';
         }
+        // Remove from localStorage
+        localStorage.removeItem('desktopMode');
     }
+    
+    // Update all UI elements immediately
+    setTimeout(() => {
+        if (currentPage === 'dashboard') updateDashboard();
+        if (currentPage === 'subjects') loadSubjectContent();
+        if (currentPage === 'planning') loadPlanningPage();
+        if (currentPage === 'motivation') loadMotivationPage();
+    }, 100);
 }
 
 // Update saveSettings function to include desktop mode
@@ -4771,20 +4821,29 @@ saveSettings = async function() {
     
     userStats.settings = settings;
     
-    // Apply desktop mode immediately
-    applyDesktopMode(desktopMode);
-    
     // Save to IndexedDB
-    await DataStorage.save('stats', userStats);
-    
-    showToast('Settings saved successfully!', 'success');
-    
-    if (userStudyPlan && !userStudyPlan.customDistribution) {
-        userStudyPlan.dailyHours = defaultDailyHours;
-        userStudyPlan.totalHours = userStudyPlan.daysToExam * defaultDailyHours;
-        await DataStorage.save('studyPlan', userStudyPlan);
-        updatePlanDisplay();
-    }
+    await DataStorage.manualSave('stats', userStats, async (success) => {
+        if (success) {
+            // Apply desktop mode immediately
+            applyDesktopMode(desktopMode);
+            
+            showToast('Settings saved successfully!', 'success');
+            
+            // Close settings modal after a short delay
+            setTimeout(() => {
+                document.getElementById('settings-modal').classList.remove('active');
+            }, 1000);
+            
+            if (userStudyPlan && !userStudyPlan.customDistribution) {
+                userStudyPlan.dailyHours = defaultDailyHours;
+                userStudyPlan.totalHours = userStudyPlan.daysToExam * defaultDailyHours;
+                await DataStorage.save('studyPlan', userStudyPlan);
+                updatePlanDisplay();
+            }
+        } else {
+            showToast('Failed to save settings', 'error');
+        }
+    });
 };
         
         function navigateToPage(pageId) {
