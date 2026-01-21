@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ca-final-tracker-v5';
+const CACHE_NAME = 'ca-final-tracker-v6';
 const APP_PREFIX = 'CAFINAL_';
 const urlsToCache = [
   './',
@@ -20,7 +20,10 @@ self.addEventListener('install', event => {
         console.log('[Service Worker] Caching app shell');
         return cache.addAll(urlsToCache);
       })
-      .then(() => self.skipWaiting())
+      .then(() => {
+        console.log('[Service Worker] Skip waiting');
+        return self.skipWaiting();
+      })
   );
 });
 
@@ -37,9 +40,10 @@ self.addEventListener('activate', event => {
           }
         })
       );
+    }).then(() => {
+      console.log('[Service Worker] Claiming clients');
+      return self.clients.claim();
     })
-    .then(() => self.clients.claim())
-    .then(() => scheduleNotifications())
   );
 });
 
@@ -62,22 +66,29 @@ self.addEventListener('fetch', event => {
         // Clone the request
         const fetchRequest = event.request.clone();
 
-        return fetch(fetchRequest).then(response => {
-          // Check if we received a valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        return fetch(fetchRequest)
+          .then(response => {
+            // Check if we received a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+
             return response;
-          }
-
-          // Clone the response
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
-
-          return response;
-        });
+          })
+          .catch(() => {
+            // If fetch fails and we're requesting a page, return the cached homepage
+            if (event.request.headers.get('accept').includes('text/html')) {
+              return caches.match('./index.html');
+            }
+          });
       })
   );
 });
@@ -92,7 +103,7 @@ self.addEventListener('notificationclick', event => {
       .then(clientList => {
         // Focus existing window if available
         for (const client of clientList) {
-          if (client.url === self.location.origin && 'focus' in client) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
             return client.focus();
           }
         }
@@ -104,65 +115,9 @@ self.addEventListener('notificationclick', event => {
   );
 });
 
-// Notification close handler
-self.addEventListener('notificationclose', event => {
-  console.log('[Service Worker] Notification closed:', event.notification.tag);
+// Listen for messages from the main app
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
-
-// Schedule daily notifications
-const scheduleNotifications = () => {
-  // Check if notifications are supported
-  if (!self.Notification || !self.registration) return;
-
-  // Check permission
-  if (Notification.permission !== 'granted') return;
-
-  // Morning notification at 9:00 AM
-  const morningTime = new Date();
-  morningTime.setHours(9, 0, 0, 0);
-  if (morningTime < new Date()) {
-    morningTime.setDate(morningTime.getDate() + 1);
-  }
-
-  // Evening notification at 8:00 PM
-  const eveningTime = new Date();
-  eveningTime.setHours(20, 0, 0, 0);
-  if (eveningTime < new Date()) {
-    eveningTime.setDate(eveningTime.getDate() + 1);
-  }
-
-  const now = Date.now();
-  const morningDelay = morningTime.getTime() - now;
-  const eveningDelay = eveningTime.getTime() - now;
-
-  // Schedule morning notification
-  if (morningDelay > 0) {
-    setTimeout(() => {
-      self.registration.showNotification('CA Final Pro Tracker', {
-        body: '📚 Good morning! Time to plan your study targets for today.',
-        icon: './icon-192.png',
-        badge: './icon-192.png',
-        tag: 'morning-reminder',
-        requireInteraction: false,
-        vibrate: [200, 100, 200]
-      });
-
-      // Reschedule for next day
-      scheduleNotifications();
-    }, morningDelay);
-  }
-
-  // Schedule evening notification
-  if (eveningDelay > 0) {
-    setTimeout(() => {
-      self.registration.showNotification('CA Final Pro Tracker', {
-        body: '📊 Evening check! Update your study hours and track progress.',
-        icon: './icon-192.png',
-        badge: './icon-192.png',
-        tag: 'evening-reminder',
-        requireInteraction: false,
-        vibrate: [200, 100, 200]
-      });
-    }, eveningDelay);
-  }
-};
