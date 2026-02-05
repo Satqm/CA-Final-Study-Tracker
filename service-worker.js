@@ -1,5 +1,5 @@
-const CACHE_NAME = 'ca-final-tracker-v6';
-const APP_PREFIX = 'CAFINAL_';
+const CACHE_NAME = 'UPSC-tracker-v6';
+const APP_PREFIX = 'UPSC_';
 const urlsToCache = [
   './',
   './index.html',
