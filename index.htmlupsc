@@ -2604,15 +2604,13 @@
                     </div>
                     
                     <!-- Progress Filters -->
-                    <div class="progress-filters">
-                        <div class="progress-filter active" data-filter="all">All Subjects</div>
-                        <div class="progress-filter" data-filter="paper1">Paper 1: FR</div>
-                        <div class="progress-filter" data-filter="paper2">Paper 2: AFM</div>
-                        <div class="progress-filter" data-filter="paper3">Paper 3: Audit</div>
-                        <div class="progress-filter" data-filter="paper4">Paper 4: DT</div>
-                        <div class="progress-filter" data-filter="paper5">Paper 5: IDT</div>
-                        <div class="progress-filter" data-filter="paper6">Paper 6: IBS</div>
-                    </div>
+                 <div class="progress-filters">
+    <div class="progress-filter active" data-filter="all">All Phases</div>
+    <div class="progress-filter" data-filter="prelims">Prelims (GS+CSAT)</div>
+    <div class="progress-filter" data-filter="mains">Mains (1750 Marks)</div>
+    <div class="progress-filter" data-filter="interview">Interview (275 Marks)</div>
+    <div class="progress-filter" data-filter="foundation">Foundation (NCERT)</div>
+</div>
                     
                     <!-- KPI Cards -->
                     <div class="kpi-cards">
@@ -2751,15 +2749,13 @@
                     
                     <div class="subject-selector">
                         <label for="subject-select">Select Subject:</label>
-                        <select id="subject-select" class="subject-dropdown">
-                            <option value="all">All Subjects</option>
-                            <option value="paper1">Paper 1: Financial Reporting (FR)</option>
-                            <option value="paper2">Paper 2: Advanced Financial Management (AFM)</option>
-                            <option value="paper3">Paper 3: Auditing and Assurance (Audit)</option>
-                            <option value="paper4">Paper 4: Direct Tax (DT)</option>
-                            <option value="paper5">Paper 5: Indirect Tax (IDT)</option>
-                            <option value="paper6">Paper 6: Integrated Business Solutions (IBS)</option>
-                        </select>
+                    <select id="subject-select" class="subject-dropdown">
+    <option value="all">All UPSC Phases</option>
+    <option value="prelims">Prelims - General Studies & CSAT</option>
+    <option value="mains">Mains - 9 Papers (1750 Marks)</option>
+    <option value="interview">Personality Test/Interview</option>
+    <option value="foundation">Foundation - NCERT & Basics</option>
+</select>
                     </div>
                     
                     <div id="subject-content">
@@ -2825,16 +2821,16 @@
                             
                             <div class="form-group">
                                 <label for="planning-subject">Subject</label>
-                                <select id="planning-subject" class="subject-dropdown">
-                                    <option value="">Select Subject</option>
-                                    <option value="paper1">Paper 1: FR</option>
-                                    <option value="paper2">Paper 2: AFM</option>
-                                    <option value="paper3">Paper 3: Audit</option>
-                                    <option value="paper4">Paper 4: DT</option>
-                                    <option value="paper5">Paper 5: IDT</option>
-                                    <option value="paper6">Paper 6: IBS</option>
-                                    <option value="general">General</option>
-                                </select>
+                             <select id="planning-subject" class="subject-dropdown">
+    <option value="">Select UPSC Phase</option>
+    <option value="prelims">Prelims Preparation</option>
+    <option value="mains">Mains Preparation</option>
+    <option value="interview">Interview Preparation</option>
+    <option value="foundation">Foundation (NCERT)</option>
+    <option value="current_affairs">Current Affairs</option>
+    <option value="test_series">Test Series & Revision</option>
+    <option value="answer_writing">Answer Writing Practice</option>
+</select>
                             </div>
                             
                             <div class="form-group">
@@ -2888,15 +2884,17 @@
                                     <option value="completed">Completed Only</option>
                                     <option value="overdue">Overdue Only</option>
                                 </select>
-                                <select id="target-subject-filter" class="subject-dropdown" style="width: auto;">
-                                    <option value="all">All Subjects</option>
-                                    <option value="paper1">Paper 1</option>
-                                    <option value="paper2">Paper 2</option>
-                                    <option value="paper3">Paper 3</option>
-                                    <option value="paper4">Paper 4</option>
-                                    <option value="paper5">Paper 5</option>
-                                    <option value="paper6">Paper 6</option>
-                                </select>
+                               <select id="target-subject-filter" class="subject-dropdown" style="width: auto;">
+    <option value="all">All UPSC Components</option>
+    <option value="prelims">Prelims</option>
+    <option value="mains">Mains</option>
+    <option value="interview">Interview</option>
+    <option value="foundation">Foundation</option>
+    <option value="current_affairs">Current Affairs</option>
+    <option value="test_series">Test Series</option>
+    <option value="answer_writing">Answer Writing</option>
+    <option value="revision">Revision</option>
+</select>
                             </div>
                             <div id="targets-list" class="target-list">
                                 <!-- Targets will be loaded here dynamically -->
@@ -2953,15 +2951,22 @@
                             </div>
                             <div class="form-group">
                                 <label for="video-subject">Subject</label>
-                                <select id="video-subject" class="subject-dropdown">
-                                    <option value="paper1">Paper 1: FR</option>
-                                    <option value="paper2">Paper 2: AFM</option>
-                                    <option value="paper3">Paper 3: Audit</option>
-                                    <option value="paper4">Paper 4: DT</option>
-                                    <option value="paper5">Paper 5: IDT</option>
-                                    <option value="paper6">Paper 6: IBS</option>
-                                    <option value="general">General</option>
-                                </select>
+                            <select id="video-subject" class="subject-dropdown">
+    <option value="prelims">Prelims Preparation</option>
+    <option value="mains">Mains Preparation</option>
+    <option value="interview">Interview Preparation</option>
+    <option value="foundation">NCERT & Foundation</option>
+    <option value="current_affairs">Current Affairs</option>
+    <option value="optional">Optional Subject</option>
+    <option value="gs1">GS Paper I</option>
+    <option value="gs2">GS Paper II</option>
+    <option value="gs3">GS Paper III</option>
+    <option value="gs4">GS Paper IV</option>
+    <option value="essay">Essay Writing</option>
+    <option value="answer_writing">Answer Writing</option>
+    <option value="csat">CSAT</option>
+    <option value="motivation">Motivation & Strategy</option>
+</select>
                             </div>
                             <div class="form-group">
                                 <label for="video-link">Video URL (YouTube, Vimeo, etc.)</label>
@@ -3174,15 +3179,23 @@
                             </div>
                             <div class="form-group">
                                 <label for="resources-subject">Subject</label>
-                                <select id="resources-subject" class="subject-dropdown">
-                                    <option value="paper1">Paper 1: FR</option>
-                                    <option value="paper2">Paper 2: AFM</option>
-                                    <option value="paper3">Paper 3: Audit</option>
-                                    <option value="paper4">Paper 4: DT</option>
-                                    <option value="paper5">Paper 5: IDT</option>
-                                    <option value="paper6">Paper 6: IBS</option>
-                                    <option value="general">General</option>
-                                </select>
+                               <select id="resources-subject" class="subject-dropdown">
+    <option value="prelims">Prelims Resources</option>
+    <option value="mains">Mains Resources</option>
+    <option value="interview">Interview Resources</option>
+    <option value="foundation">NCERT Books</option>
+    <option value="current_affairs">Current Affairs</option>
+    <option value="optional">Optional Subject</option>
+    <option value="gs1">GS Paper I Resources</option>
+    <option value="gs2">GS Paper II Resources</option>
+    <option value="gs3">GS Paper III Resources</option>
+    <option value="gs4">GS Paper IV Resources</option>
+    <option value="essay">Essay Resources</option>
+    <option value="answer_writing">Answer Writing</option>
+    <option value="previous_papers">Previous Year Papers</option>
+    <option value="model_answers">Model Answers</option>
+    <option value="general">General Resources</option>
+</select>
                             </div>
                             <div class="form-group">
                                 <label for="resources-type">Resource Type</label>
@@ -3374,7 +3387,7 @@
         
         // IndexedDB variables
         let db = null;
-        const DB_NAME = 'CAFinalProTrackerDB';
+        const DB_NAME = 'UPSCProTrackerDB';
         const DB_VERSION = 2;
         
         // Auto-save variables
@@ -3383,437 +3396,172 @@
         let pendingSave = false;
         let isSaving = false;
         
-        // CA Syllabus Data
-        const syllabusData = {
-            paper1: {
-                name: "Paper 1: Financial Reporting (FR)",
-                weightage: 26,
-                topics: [
-                    {
-                        name: "Introduction to GPFS",
-                        weightage: 12.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Ind AS 1 basics", weight: 40 },
-                            { name: "Schedule III Div II", weight: 20 },
-                            { name: "Applicability criteria", weight: 20 }
-                        ]
-                    },
-                    {
-                        name: "Conceptual Framework",
-                        weightage: 7.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Application to GPFS", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Presentation of Items",
-                        weightage: 7.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 1: Presentation", weight: 37.5 },
-                            { name: "Ind AS 34: Interim", weight: 25 },
-                            { name: "Ind AS 7: Cash Flows", weight: 37.5 }
-                        ]
-                    },
-                    {
-                        name: "Measurement Policies",
-                        weightage: 7.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 8: Policies/Errors", weight: 42.9 },
-                            { name: "Ind AS 10: Events", weight: 28.6 },
-                            { name: "Ind AS 113: Fair Value", weight: 28.6 }
-                        ]
-                    },
-                    {
-                        name: "Income Statement",
-                        weightage: 7.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 115: Revenue", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Assets",
-                        weightage: 20,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 2: Inventories", weight: 16.7 },
-                            { name: "Ind AS 16: PPE", weight: 20.8 },
-                            { name: "Ind AS 116: Leases", weight: 25 },
-                            { name: "Ind AS 23: Borrowing Costs", weight: 8.3 },
-                            { name: "Ind AS 36: Impairment", weight: 16.7 },
-                            { name: "Ind AS 38: Intangibles", weight: 12.5 }
-                        ]
-                    },
-                    {
-                        name: "Liabilities",
-                        weightage: 20,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 19: Employee Benefits", weight: 50 },
-                            { name: "Ind AS 37: Provisions", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Items Impacting FS",
-                        weightage: 17.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 12: Income Taxes", weight: 80 },
-                            { name: "Ind AS 21: FX Rates", weight: 20 }
-                        ]
-                    },
-                    {
-                        name: "Disclosures",
-                        weightage: 17.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Ind AS 24: Related Parties", weight: 33.3 },
-                            { name: "Ind AS 33: EPS", weight: 33.3 },
-                            { name: "Ind AS 108: Segments", weight: 33.3 }
-                        ]
-                    },
-                    {
-                        name: "Financial Instruments",
-                        weightage: 12.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 32/107/109 Classification", weight: 50 },
-                            { name: "Derivatives/Hedge Accounting", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Group Accounting",
-                        weightage: 15,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Ind AS 103: Business Combos", weight: 55.6 },
-                            { name: "Ind AS 110/111/28: Consolidation", weight: 44.4 }
-                        ]
-                    },
-                    {
-                        name: "First-time Adoption",
-                        weightage: 7.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Ind AS 101", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "FS Analysis",
-                        weightage: 7.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Ind AS based analysis", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Ethics & Tech",
-                        weightage: 7.5,
-                        priority: "C",
-                        subtopics: [
-                            { name: "Ethical issues", weight: 66.7 },
-                            { name: "Technology evolution", weight: 33.3 }
-                        ]
-                    }
+       // UPSC Syllabus Data 2024-2025 (Detailed)
+const syllabusData = {
+    prelims: {
+        name: "UPSC Prelims",
+        weightage: 100,
+        topics: [
+            {
+                name: "Paper I: General Studies",
+                weightage: 100,
+                priority: "A",
+                subtopics: [
+                    { name: "Current Events of National & International Importance", weight: 20 },
+                    { name: "History of India & Indian National Movement", weight: 20 },
+                    { name: "Indian & World Geography", weight: 20 },
+                    { name: "Indian Polity & Governance", weight: 20 },
+                    { name: "Economic & Social Development", weight: 20 }
                 ]
             },
-            paper2: {
-                name: "Paper 2: Advanced Financial Management (AFM)",
-                weightage: 22,
-                topics: [
-                    {
-                        name: "Financial Policy",
-                        weightage: 11.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "CFO role + Value creation", weight: 50 },
-                            { name: "Strategic framework", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Risk Management",
-                        weightage: 11.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Risk types + VaR", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Advanced Cap Budgeting",
-                        weightage: 25,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Inflation/Tech impact", weight: 50 },
-                            { name: "Risk methods + APV", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Security Analysis",
-                        weightage: 25,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Fundamental Analysis", weight: 50 },
-                            { name: "Technical Analysis + EMH", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Security Valuation",
-                        weightage: 25,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Equity/Pref/Debentures", weight: 50 },
-                            { name: "CAPM + Risk premium", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Portfolio Management",
-                        weightage: 25,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Analysis/Selection/Revision", weight: 66.7 },
-                            { name: "Securitization + Mutual Funds", weight: 33.3 }
-                        ]
-                    },
-                    {
-                        name: "Derivatives",
-                        weightage: 22.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Forwards/Futures/Options", weight: 50 },
-                            { name: "Swaps + Greeks", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Forex Risk",
-                        weightage: 22.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "FX factors + SWIFT", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Business Valuation",
-                        weightage: 12.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Asset/Earning/Cashflow models", weight: 50 },
-                            { name: "CAPM/APT + EVA/MVA", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Mergers",
-                        weightage: 3.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "M&A + Takeovers + LBO", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Startup Finance",
-                        weightage: 3.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Unicorns + Funding", weight: 100 }
-                        ]
-                    }
-                ]
-            },
-            paper3: {
-                name: "Paper 3: Auditing and Assurance (Audit)",
-                weightage: 20,
-                topics: [
-                    {
-                        name: "Quality Control",
-                        weightage: 50,
-                        priority: "A",
-                        subtopics: [
-                            { name: "SQC 1 + SA 220", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "General Principles",
-                        weightage: 50,
-                        priority: "A",
-                        subtopics: [
-                            { name: "SA 240 (Fraud) + SA 250", weight: 50 },
-                            { name: "SA 260 + SA 299 (Joint Audit)", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "Audit Planning",
-                        weightage: 50,
-                        priority: "A",
-                        subtopics: [
-                            { name: "SA 300/450/520/540", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Materiality & Risk",
-                        weightage: 4.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "SA 265/315/320/330", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Audit Evidence",
-                        weightage: 4.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "SA 500/501/505/530", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Completion",
-                        weightage: 20.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "SA 560/570/580", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Reporting",
-                        weightage: 20.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "SA 700/701/705/706", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Special Audits",
-                        weightage: 20.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Banks + NBFC + PSU", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Digital Auditing",
-                        weightage: 4.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "CAATs + AI + Data Analytics", weight: 100 }
-                        ]
-                    },
-                    {
-                        name: "Professional Ethics",
-                        weightage: 20.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "CA Act + IESBA Code", weight: 100 }
-                        ]
-                    }
-                ]
-            },
-            paper4: {
-                name: "Paper 4: Direct Tax (DT)",
-                weightage: 16,
-                topics: [
-                    {
-                        name: "Company Taxation",
-                        weightage: 42.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Computation - General Provisions", weight: 40 },
-                            { name: "Special Regimes (115BAA/BAB)", weight: 26.7 },
-                            { name: "Charitable Trusts (Sec 11-13)", weight: 16.7 },
-                            { name: "GAAR + Business Trusts", weight: 16.7 }
-                        ]
-                    },
-                    {
-                        name: "Tax Administration",
-                        weightage: 25,
-                        priority: "B",
-                        subtopics: [
-                            { name: "TDS/TCS (Sec 192-206C)", weight: 40 },
-                            { name: "Assessment Procedures", weight: 33.3 },
-                            { name: "Appeals + Revision", weight: 26.7 }
-                        ]
-                    },
-                    {
-                        name: "International Taxation",
-                        weightage: 32.5,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Transfer Pricing (Sec 92)", weight: 40 },
-                            { name: "Non-Resident Taxation", weight: 32 },
-                            { name: "DTAA + BEPS", weight: 28 }
-                        ]
-                    }
-                ]
-            },
-            paper5: {
-                name: "Paper 5: Indirect Tax (IDT)",
-                weightage: 12,
-                topics: [
-                    {
-                        name: "GST - Core Concepts",
-                        weightage: 55,
-                        priority: "A",
-                        subtopics: [
-                            { name: "Levy/Collection CGST/IGST", weight: 27.8 },
-                            { name: "Supply (Sec 7 + Sch I/II/III)", weight: 22.2 },
-                            { name: "Charge of Tax + RCM", weight: 16.7 },
-                            { name: "ITC (Sec 16-18)", weight: 33.3 }
-                        ]
-                    },
-                    {
-                        name: "GST - Procedures",
-                        weightage: 20,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Registration (Sec 22-29)", weight: 50 },
-                            { name: "Returns (GSTR 1/3B/9)", weight: 50 }
-                        ]
-                    },
-                    {
-                        name: "GST - Compliance",
-                        weightage: 22.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Demands/Recovery (Sec 73-76)", weight: 57.1 },
-                            { name: "Appeals/Advance Ruling", weight: 42.9 }
-                        ]
-                    },
-                    {
-                        name: "Customs",
-                        weightage: 52.5,
-                        priority: "B",
-                        subtopics: [
-                            { name: "Levy + Classification", weight: 57.1 },
-                            { name: "Import/Export Procedures", weight: 42.9 }
-                        ]
-                    },
-                    {
-                        name: "FTP",
-                        weightage: 15,
-                        priority: "C",
-                        subtopics: [
-                            { name: "Export Promotion Schemes", weight: 100 }
-                        ]
-                    }
-                ]
-            },
-            paper6: {
-                name: "Paper 6: Integrated Business Solutions (IBS)",
-                weightage: 4,
-                topics: [
-                    {
-                        name: "Multi-disciplinary Cases",
-                        weightage: 100,
-                        priority: "A",
-                        subtopics: [
-                            { name: "FR + AFM + Audit + DT + IDT", weight: 100 }
-                        ]
-                    }
+            {
+                name: "Paper II: CSAT (Civil Services Aptitude Test)",
+                weightage: 100,
+                priority: "B",
+                subtopics: [
+                    { name: "Comprehension & English Language", weight: 25 },
+                    { name: "Interpersonal & Communication Skills", weight: 25 },
+                    { name: "Logical Reasoning & Analytical Ability", weight: 25 },
+                    { name: "Decision Making & Problem Solving", weight: 25 }
                 ]
             }
-        };
-
+        ]
+    },
+    mains: {
+        name: "UPSC Mains (1750 Marks)",
+        weightage: 100,
+        topics: [
+            {
+                name: "Paper A: Indian Language (300 Marks)",
+                weightage: 10,
+                priority: "C",
+                subtopics: [
+                    { name: "Comprehension of Given Passages", weight: 30 },
+                    { name: "Precis Writing", weight: 30 },
+                    { name: "Usage & Vocabulary", weight: 20 },
+                    { name: "Short Essay", weight: 20 }
+                ]
+            },
+            {
+                name: "Paper B: English (300 Marks)",
+                weightage: 10,
+                priority: "C",
+                subtopics: [
+                    { name: "Comprehension of Given Passages", weight: 30 },
+                    { name: "Precis Writing", weight: 30 },
+                    { name: "Usage & Vocabulary", weight: 20 },
+                    { name: "Short Essay", weight: 20 }
+                ]
+            },
+            {
+                name: "Essay (250 Marks)",
+                weightage: 15,
+                priority: "A",
+                subtopics: [
+                    { name: "Section A - Philosophical Topics", weight: 50 },
+                    { name: "Section B - Social/Political Topics", weight: 50 }
+                ]
+            },
+            {
+                name: "GS Paper I: Indian Heritage, History, Geography (250 Marks)",
+                weightage: 15,
+                priority: "A",
+                subtopics: [
+                    { name: "Indian Culture & Heritage", weight: 25 },
+                    { name: "Modern Indian History (1750-1947)", weight: 25 },
+                    { name: "World History", weight: 25 },
+                    { name: "Indian & World Geography", weight: 25 }
+                ]
+            },
+            {
+                name: "GS Paper II: Governance, Polity, Social Justice (250 Marks)",
+                weightage: 15,
+                priority: "A",
+                subtopics: [
+                    { name: "Indian Constitution", weight: 25 },
+                    { name: "Governance & Public Policy", weight: 25 },
+                    { name: "Social Justice & Welfare Schemes", weight: 25 },
+                    { name: "International Relations", weight: 25 }
+                ]
+            },
+            {
+                name: "GS Paper III: Technology, Economy, Environment (250 Marks)",
+                weightage: 15,
+                priority: "A",
+                subtopics: [
+                    { name: "Indian Economy & Planning", weight: 25 },
+                    { name: "Science & Technology", weight: 25 },
+                    { name: "Environment & Ecology", weight: 25 },
+                    { name: "Disaster Management & Security", weight: 25 }
+                ]
+            },
+            {
+                name: "GS Paper IV: Ethics, Integrity, Aptitude (250 Marks)",
+                weightage: 15,
+                priority: "A",
+                subtopics: [
+                    { name: "Ethics & Human Interface", weight: 25 },
+                    { name: "Attitude & Emotional Intelligence", weight: 25 },
+                    { name: "Public/Civil Service Values", weight: 25 },
+                    { name: "Case Studies", weight: 25 }
+                ]
+            },
+            {
+                name: "Optional Paper I (250 Marks)",
+                weightage: 20,
+                priority: "A",
+                subtopics: [
+                    { name: "Optional Subject - Part A", weight: 50 },
+                    { name: "Optional Subject - Part B", weight: 50 }
+                ]
+            },
+            {
+                name: "Optional Paper II (250 Marks)",
+                weightage: 20,
+                priority: "A",
+                subtopics: [
+                    { name: "Optional Subject - Part A", weight: 50 },
+                    { name: "Optional Subject - Part B", weight: 50 }
+                ]
+            }
+        ]
+    },
+    interview: {
+        name: "Personality Test/Interview (275 Marks)",
+        weightage: 100,
+        topics: [
+            {
+                name: "Personality Assessment",
+                weightage: 100,
+                priority: "A",
+                subtopics: [
+                    { name: "Mental Alertness & Critical Thinking", weight: 20 },
+                    { name: "Logical Exposition & Communication Skills", weight: 20 },
+                    { name: "Balance of Judgment & Decision Making", weight: 20 },
+                    { name: "Depth of Interest & Intellectual Curiosity", weight: 20 },
+                    { name: "Social Cohesion & Leadership Qualities", weight: 20 }
+                ]
+            }
+        ]
+    },
+    foundation: {
+        name: "Foundation Subjects",
+        weightage: 50,
+        topics: [
+            {
+                name: "NCERT & Basic Concepts",
+                weightage: 100,
+                priority: "A",
+                subtopics: [
+                    { name: "History NCERT (VI-XII)", weight: 25 },
+                    { name: "Geography NCERT (VI-XII)", weight: 25 },
+                    { name: "Polity NCERT (VI-XII)", weight: 25 },
+                    { name: "Economy NCERT (IX-XII)", weight: 25 }
+                ]
+            }
+        ]
+    }
+};
 
         // ==================== INDEXEDDB FUNCTIONS ====================
         class IndexedDBStorage {
@@ -4031,7 +3779,7 @@ static async getAll(storeName) {
     
     allData.exportDate = new Date().toISOString();
     allData.version = '2.0';
-    allData.app = 'CA Final Pro Tracker';
+   allData.app = 'UPSC Pro Tracker';
     
     return JSON.stringify(allData, null, 2);
 }
@@ -4598,40 +4346,81 @@ static async save(storeName, data) {
             }
         }
         
-        function loadDefaultContent() {
-   // Add default videos if none exist
-if (userVideos.length === 0) {
-    userVideos = [
-        {
-            id: Date.now(),
-            title: "Financial Reporting - By PW",
-            subject: "paper1",
-            link: "https://youtube.com/playlist?list=PLgE50OYPyT6pZTMhQ4de-Rh-mOrT2O3l_&si=RwB8IOWC2q9ZN441",
-            author: "CA Expert",
-            addedDate: new Date().toISOString()
-        }
-    ];
-    DataStorage.save('videos', userVideos);
+function loadDefaultContent() {
+    // Add default UPSC videos if none exist
+    if (userVideos.length === 0) {
+        userVideos = [
+            {
+                id: Date.now(),
+                title: "Complete GS Prelims Strategy 2025",
+                subject: "prelims",
+                link: "https://youtube.com/playlist?list=PLxJNbXGrHdcX3bXj2q0FZbPSHqVODKKi_",
+                author: "UPSC Expert",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 1,
+                title: "Mains Answer Writing Masterclass",
+                subject: "answer_writing",
+                link: "https://youtube.com/playlist?list=PLxJNbXGrHdcX4cQb7gqgLt6kD4N3jX8Yf",
+                author: "UPSC Topper",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 2,
+                title: "Current Affairs Monthly Compilation",
+                subject: "current_affairs",
+                link: "https://youtube.com/playlist?list=PLxJNbXGrHdcX5cQb7gqgLt6kD4N3jX8Yg",
+                author: "Current Affairs Expert",
+                addedDate: new Date().toISOString()
+            }
+        ];
+        DataStorage.save('videos', userVideos);
+    }
+    
+    // Add default UPSC resources if none exist
+    if (userResources.length === 0) {
+        userResources = [
+            {
+                id: Date.now(),
+                title: "NCERT Complete Set (Class VI-XII)",
+                subject: "foundation",
+                type: "notes",
+                link: "https://ncert.nic.in/textbook.php",
+                author: "NCERT",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 1,
+                title: "UPSC Previous 10 Years Question Papers",
+                subject: "previous_papers",
+                type: "question_paper",
+                link: "https://upsc.gov.in/examinations/previous-question-papers",
+                author: "UPSC",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 2,
+                title: "Monthly Current Affairs Compilation",
+                subject: "current_affairs",
+                type: "notes",
+                link: "https://pib.gov.in",
+                author: "PIB",
+                addedDate: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 3,
+                title: "GS Mains Model Answers",
+                subject: "model_answers",
+                type: "summary",
+                link: "https://www.insightsonindia.com/model-answers/",
+                author: "Insights IAS",
+                addedDate: new Date().toISOString()
+            }
+        ];
+        DataStorage.save('resources', userResources);
+    }
 }
-
-            
-  // Add default resources if none exist
-if (userResources.length === 0) {
-    userResources = [
-        {
-            id: Date.now(),
-            title: "ICAI Study Material",
-            subject: "Genral",
-            type: "notes",
-            link: "https://boslive.icai.org/study_material_new_paper_details.php?c=final&language=English&year=Applicable%20for%20May%202026%20Exam%20Onwards",
-            author: "ICAI",
-            addedDate: new Date().toISOString()
-        }
-    ];
-    DataStorage.save('resources', userResources);
-}
-}
-
         
         function updateUserUI() {
             if (currentUser) {
@@ -7014,7 +6803,7 @@ async function deleteTarget(index) {
                 
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `ca_final_tracker_backup_${new Date().toISOString().split('T')[0]}.json`;
+                a.download = `upsc_tracker_backup_${new Date().toISOString().split('T')[0]}.json`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -7082,18 +6871,26 @@ async function deleteTarget(index) {
         }
         
         // ==================== HELPER FUNCTIONS ====================
-        function getSubjectName(subjectId) {
-            const subjectMap = {
-                'paper1': 'Paper 1: FR',
-                'paper2': 'Paper 2: AFM',
-                'paper3': 'Paper 3: Audit',
-                'paper4': 'Paper 4: DT',
-                'paper5': 'Paper 5: IDT',
-                'paper6': 'Paper 6: IBS',
-                'general': 'General'
-            };
-            return subjectMap[subjectId] || subjectId;
-        }
+    function getSubjectName(subjectId) {
+    const subjectMap = {
+        'prelims': 'UPSC Prelims',
+        'mains': 'UPSC Mains (1750 Marks)',
+        'interview': 'Personality Test/Interview',
+        'foundation': 'Foundation (NCERT)',
+        'current_affairs': 'Current Affairs',
+        'test_series': 'Test Series & Revision',
+        'answer_writing': 'Answer Writing Practice',
+        'optional': 'Optional Subject',
+        'gs1': 'GS Paper I',
+        'gs2': 'GS Paper II',
+        'gs3': 'GS Paper III',
+        'gs4': 'GS Paper IV',
+        'essay': 'Essay Paper',
+        'csat': 'CSAT Paper',
+        'language': 'Language Papers'
+    };
+    return subjectMap[subjectId] || subjectId;
+}
         
           function formatDate(dateString) {
             const date = new Date(dateString);
